@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Client Portal</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: CLIENT PORTAL NAVIGATION (DO NOT MODIFY FOR PAGE CONTENT)
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* 3-Column Grid locks the center nav links to the exact horizontal center of the viewport */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Left Track) */
+    .brand-logo-link {
+      grid-column: 1;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Desktop & Tablet Navigation Links (Center Track - Horizontal Row) */
+    .nav-links-list {
+      grid-column: 2;
+      justify-self: center;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+      padding: 4px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    /* Underline strictly targets .nav-link-text so (7) is never underlined */
+    .nav-link-item:hover .nav-link-text,
+    .nav-link-item.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    .cart-count-badge {
+      color: var(--color-orange);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+      text-decoration: none;
+    }
+
+    /* Right Controls: Profile Avatar & Mobile Hamburger Trigger (Right Track) */
+    .nav-actions {
+      grid-column: 3;
+      justify-self: end;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .profile-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .profile-avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-btn:hover,
+    .profile-avatar-btn:focus-visible,
+    .profile-avatar-btn[aria-expanded="true"] {
+      border-color: var(--color-navy);
+      outline: none;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Profile Popover Menu */
+    .profile-dropdown-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 1100;
+    }
+
+    .profile-dropdown-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-dropdown-header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-dropdown-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-dropdown-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-online-dot {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--color-trend-up-stroke);
+      border: 1.5px solid var(--color-white);
+    }
+
+    .profile-dropdown-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    .profile-dropdown-divider-soft {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .profile-dropdown-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .profile-dropdown-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover,
+    .profile-dropdown-item:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--color-navy);
+      font-size: 24px;
+    }
+
+    /* Mobile Dropdown Drawer */
+    .mobile-nav-drawer {
+      display: none;
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px 24px;
+    }
+
+    .mobile-nav-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 22px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    /* Mobile Hover & Active: Clean 10px offset underline only, no background/shadow */
+    .mobile-nav-link:hover .nav-link-text,
+    .mobile-nav-link.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+
+    /* Small Desktop / Laptop (1025px – 1280px): Adjust side gutters smoothly */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    /* Tablet Breakpoint (769px – 1024px) */
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .nav-links-list {
+        gap: 16px;
+      }
+
+      .nav-link-item {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    /* Mobile Breakpoint (<= 768px): Show Burger Icon & Collapsible Menu */
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      /* Hide inline desktop nav links */
+      .nav-links-list {
+        display: none;
+      }
+
+      /* Show burger button */
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .profile-dropdown-popover {
+        right: -56px;
+      }
+    }
+
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       4. MAIN PAGE BODY: PRODUCT CATEGORIES & ACTIONS HEADER
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 96px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .products-header-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+
+    .products-header-main {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .products-categories-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .products-title-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+    }
+
+    .products-page-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .products-page-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    /* Segmented Category Tabs Bar */
+    .category-tabs-bar {
+      display: inline-flex;
+      align-items: stretch;
+      max-width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-tabs-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-tab-btn {
+      padding: 10px 16px;
+      background-color: var(--color-white);
+      border-right: 1px solid var(--color-input-border);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .category-tab-btn:last-child {
+      border-right: none;
+    }
+
+    .category-tab-btn:hover,
+    .category-tab-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      outline: none;
+    }
+
+    .category-tab-btn.is-active,
+    .category-tab-btn[aria-selected="true"] {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+    }
+
+    /* Right Action Buttons & Request a Product Link */
+    .products-actions-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .products-cta-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-secondary-outline {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-text-secondary);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .btn-secondary-outline:hover,
+    .btn-secondary-outline:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .btn-primary-orange {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-orange);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-primary-orange:hover,
+    .btn-primary-orange:focus-visible {
+      background-color: var(--color-orange-hover);
+      border-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    .products-request-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .request-product-link {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color var(--transition-fast);
+    }
+
+    .request-product-link:hover,
+    .request-product-link:focus-visible {
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Slot container ready for the upcoming Products Table section */
+    .products-table-slot {
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       4B. SHARED FULL-SCREEN MODALS: REQUEST A PRODUCT & CONFIRMATION
+       ========================================================================== */
+    .portal-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .portal-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 8px solid var(--color-footer-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .request-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .request-modal-header {
+      width: 100%;
+      max-width: 486px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .request-modal-heading-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .request-modal-subtitle {
+      max-width: 340px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .request-modal-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .request-modal-fields {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .request-field-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .request-field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .request-field-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .request-required-star {
+      color: var(--color-trend-down-text);
+      font-weight: 500;
+    }
+
+    .request-text-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .request-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .request-text-input:focus {
+      border-color: var(--color-navy);
+    }
+
+    .request-textarea {
+      width: 100%;
+      min-height: 154px;
+      padding: 10px 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .request-textarea::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .request-textarea:focus {
+      border-color: var(--color-navy);
+    }
+
+    .request-modal-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .btn-request-cancel {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-request-cancel:hover,
+    .btn-request-cancel:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    .btn-request-submit {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-request-submit:hover,
+    .btn-request-submit:focus-visible {
+      background-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    .success-modal-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 34px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      margin: auto;
+    }
+
+    .success-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #DCFCE7;
+      outline: 8px solid var(--color-badge-approved-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #16A34A;
+      stroke: #16A34A;
+      flex-shrink: 0;
+    }
+
+    .success-modal-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .success-modal-copy {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .success-modal-description {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .btn-success-primary {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #16A34A;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-success-primary:hover,
+    .btn-success-primary:focus-visible {
+      background-color: var(--color-trend-up-text);
+      outline: none;
+    }
+
+    /* Products Responsive Breakpoints (Matches Navigation & Footer Gutters) */
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 96px 48px 80px;
+      }
+
+      .products-header-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+      }
+
+      .products-actions-col {
+        align-items: flex-start;
+      }
+
+      .products-request-row {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 96px 32px 64px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 96px 20px 56px;
+      }
+
+      .products-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .products-cta-group {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .request-modal-card {
+        padding: 24px 16px;
+        gap: 24px;
+      }
+
+      .request-modal-form {
+        gap: 28px;
+      }
+
+      .request-field-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .request-modal-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .success-modal-card {
+        padding: 24px 20px;
+      }
+
+      .success-modal-content {
+        gap: 24px;
+      }
+    }
+
+    /* ==========================================================================
+       4C. PRODUCTS TABLE & BOTTOM ACTION / TOTAL BAR
+       ========================================================================== */
+    .products-table-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .products-table-header {
+      width: 100%;
+      padding: 20px 24px 19px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .products-table-title-group {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .products-table-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .products-count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .products-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .products-items-table {
+      width: 100%;
+      min-width: 960px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .products-items-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .products-items-table thead th.is-center,
+    .products-items-table tbody td.is-center {
+      text-align: center;
+    }
+
+    .products-items-table tbody tr {
+      height: 132px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .products-items-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .products-items-table tbody tr.is-selected {
+      background-color: rgba(240, 84, 43, 0.02);
+    }
+
+    .products-items-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+    }
+
+    .products-th-select-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Custom Accessible Checkbox (20x20px, 6px radius, #D4D4D4 unchecked, #F0542B checked) */
+    .product-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .product-checkbox:hover,
+    .product-checkbox:focus-visible {
+      border-color: var(--color-orange);
+      outline: none;
+    }
+
+    .product-checkbox[aria-checked="true"],
+    .product-checkbox[aria-checked="mixed"] {
+      border-color: var(--color-orange);
+      background-color: var(--color-white);
+      color: var(--color-orange);
+    }
+
+    .product-checkbox-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      stroke: currentColor;
+      stroke-width: 2px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .products-item-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+    }
+
+    .products-item-thumb {
+      width: 100px;
+      height: 100px;
+      border-radius: 14px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-white);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .products-item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .products-item-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .products-item-name {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .products-item-details-link {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      transition: color var(--transition-fast);
+    }
+
+    .products-item-details-link:hover,
+    .products-item-details-link:focus-visible {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+
+    .products-variant-text {
+      max-width: 148px;
+      white-space: normal;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    /* Quantity Stepper Control */
+    .product-qty-stepper {
+      padding: 7px 8px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .product-qty-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-button);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .product-qty-btn:hover:not(:disabled),
+    .product-qty-btn:focus-visible:not(:disabled) {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .product-qty-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .product-qty-value {
+      min-width: 40px;
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .product-qty-value.has-qty {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    .products-table-empty {
+      text-align: center !important;
+      padding: 48px 24px !important;
+      color: var(--color-text-muted) !important;
+      font-size: 14px !important;
+    }
+
+    /* Bottom Footer Row inside Table Card */
+    .products-table-footer {
+      width: 100%;
+      padding: 12px 24px 16px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .products-table-footer-actions {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .products-table-total-badge {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 768px) {
+      .products-table-header {
+        padding: 16px;
+      }
+
+      .products-items-table thead th,
+      .products-items-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .products-table-footer {
+        padding: 12px 16px 16px;
+      }
+
+      .products-table-footer-actions {
+        width: 100%;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: CLIENT PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Top Row: Logo Left + 4 Link Columns Right */
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Bottom Row: Divider + Tagline & Copyright */
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    /* Footer Responsive Breakpoints (Matches Navigation Gutters) */
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL NAVIGATION
+       Locked component — add page body and footer below without altering this block.
+       ======================================================================== -->
+  <header class="portal-header" id="clientPortalHeader">
+    <nav class="portal-nav-container" aria-label="Client Portal Primary Navigation">
+
+      <!-- Arena Branding Logo -->
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+
+      <!-- Center Navigation Links (Desktop & Tablet) -->
+      <ul class="nav-links-list">
+        <li>
+          <a href="Dashboard.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="nav-link-item active" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Favorites.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">My Favorites</span>
+          </a>
+        </li>
+        <li>
+          <a href="Cart.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Cart Items</span>
+            <span class="cart-count-badge">(7)</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Controls: Profile Circle & Mobile Burger Trigger -->
+      <div class="nav-actions">
+        <!-- Profile Avatar Button & Popover Menu -->
+        <div class="profile-menu-wrapper" id="profileMenuWrapper">
+          <button
+            type="button"
+            class="profile-avatar-btn"
+            id="profileMenuTrigger"
+            aria-label="Open user profile menu"
+            aria-expanded="false"
+            aria-controls="profileDropdownPopover"
+          >
+            <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
+            <img
+              src=""
+              alt="Jemma Emma"
+              class="profile-avatar-img"
+              style="display: none;"
+              onerror="this.style.display='none'"
+            />
+          </button>
+
+          <!-- Profile Dropdown Popover -->
+          <div
+            class="profile-dropdown-popover"
+            id="profileDropdownPopover"
+            role="menu"
+            aria-label="User profile options"
+          >
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar-wrap">
+                <img
+                  src=""
+                  alt="Jemma Emma"
+                  class="profile-dropdown-avatar-img"
+                  style="display: none;"
+                  onerror="this.style.display='none'"
+                />
+                <span class="profile-online-dot" aria-hidden="true"></span>
+              </div>
+              <span class="profile-dropdown-name">Jemma Emma</span>
+            </div>
+
+            <div class="profile-dropdown-divider-soft"></div>
+
+            <div class="profile-dropdown-actions">
+              <a href="Profile.html" class="profile-dropdown-item" role="menuitem" data-profile-action="view-profile">
+                View profile
+              </a>
+              <div class="profile-dropdown-divider"></div>
+              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileNavDrawer"
+        >
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Collapsible Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="Dashboard.html" class="mobile-nav-link " data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="mobile-nav-link active" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Favorites.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">My Favorites</span>
+          </a>
+        </li>
+        <li>
+          <a href="Cart.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Cart Items</span>
+            <span class="cart-count-badge">(7)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL NAVIGATION
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+
+    <!-- Section 1: Product Categories Header, Tabs & Actions -->
+    <section class="products-header-section" aria-label="Product Categories and Actions">
+      <div class="products-header-main">
+        <!-- Left: Heading, Subtitle & Clickable Category Tabs -->
+        <div class="products-categories-block">
+          <div class="products-title-row">
+            <h1 class="products-page-title">Product Categories</h1>
+            <p class="products-page-subtitle">Select products to add to your quote or save to your favorites.</p>
+          </div>
+
+          <div class="category-tabs-bar" role="tablist" aria-label="Product categories">
+            <button
+              type="button"
+              class="category-tab-btn is-active"
+              role="tab"
+              aria-selected="true"
+              data-category-tab="outdoor-signs"
+              data-category-label="Outdoor Signs"
+            >
+              Outdoor Signs
+            </button>
+            <button
+              type="button"
+              class="category-tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-category-tab="branded-furniture"
+              data-category-label="Branded Furniture"
+            >
+              Branded Furniture
+            </button>
+            <button
+              type="button"
+              class="category-tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-category-tab="inflatable-signs-and-tents"
+              data-category-label="Inflatable Signs and Tents"
+            >
+              Inflatable Signs and Tents
+            </button>
+            <button
+              type="button"
+              class="category-tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-category-tab="indoor-signs"
+              data-category-label="Indoor Signs"
+            >
+              Indoor Signs
+            </button>
+            <button
+              type="button"
+              class="category-tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-category-tab="signboards"
+              data-category-label="Signboards"
+            >
+              Signboards
+            </button>
+            <button
+              type="button"
+              class="category-tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-category-tab="accessories"
+              data-category-label="Accessories"
+            >
+              Accessories
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Add to Favorites, Create Quote & Request a Product Link -->
+        <div class="products-actions-col">
+          <div class="products-cta-group">
+            <button
+              type="button"
+              class="btn-secondary-outline"
+              id="addToFavoritesBtn"
+            >
+              Add to Favorites
+            </button>
+            <button
+              type="button"
+              class="btn-primary-orange"
+              id="createQuoteBtn"
+            >
+              Create Quote
+            </button>
+          </div>
+
+          <div class="products-request-row">
+            <span>Can't find what you're looking for?</span>
+            <button
+              type="button"
+              class="request-product-link"
+              id="requestProductTrigger"
+              aria-haspopup="dialog"
+              aria-controls="requestProductModal"
+              aria-expanded="false"
+            >
+              Request a Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Products Table & Bottom Summary Bar -->
+    <section class="products-table-slot" id="productsTableSlot" data-active-category="outdoor-signs" aria-label="Category Products List">
+      <div class="products-table-card">
+        <!-- Table Header -->
+        <div class="products-table-header">
+          <div class="products-table-title-group">
+            <h2 class="products-table-title" id="productsCategoryHeading">Outdoor Signs</h2>
+            <span class="products-count-pill" id="productsCategoryCountBadge">17 products</span>
+          </div>
+        </div>
+
+        <!-- Responsive Products Table -->
+        <div class="products-table-scroll">
+          <table class="products-items-table" id="productsItemsTable">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="products-th-select-wrap">
+                    <button
+                      type="button"
+                      class="product-checkbox"
+                      id="selectAllProductsCheckbox"
+                      role="checkbox"
+                      aria-checked="false"
+                      aria-label="Select all products in current category"
+                    >
+                      <svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <span>Products</span>
+                  </div>
+                </th>
+                <th scope="col">Variant</th>
+                <th scope="col" class="is-center">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Tax %</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody id="productsItemsTableBody">
+              <!-- Populated dynamically based on selected product category -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Bottom Actions & Summarized Total -->
+        <div class="products-table-footer">
+          <div class="products-table-footer-actions">
+            <button
+              type="button"
+              class="btn-secondary-outline"
+              id="tableAddToFavoritesBtn"
+            >
+              Add to Favorites
+            </button>
+            <button
+              type="button"
+              class="btn-primary-orange"
+              id="tableCreateQuoteBtn"
+            >
+              Create Quote
+            </button>
+          </div>
+
+          <div class="products-table-total-badge" aria-label="Summarized Total">
+            <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M128 24V232" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M184 88C184 65.9086 158.928 48 128 48C97.0721 48 72 65.9086 72 88C72 110.091 97.0721 128 128 128C158.928 128 184 145.909 184 168C184 190.091 158.928 208 128 208C97.0721 208 72 190.091 72 168" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span id="productsSummarizedTotal">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: REQUEST A PRODUCT FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="requestProductModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="requestProductModalTitle"
+    aria-hidden="true"
+  >
+    <div class="request-modal-card" id="requestProductModalCard">
+      <div class="request-modal-header">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M224 177.321V78.6789C224 75.8644 223.271 73.0977 221.884 70.649C220.497 68.2003 218.499 66.1539 216.086 64.7107L136.086 16.8678C133.638 15.4041 130.844 14.6309 128 14.6309C125.156 14.6309 122.362 15.4041 119.914 16.8678L39.9143 64.7107C37.5011 66.1539 35.5028 68.2003 34.1158 70.649C32.7289 73.0977 32 75.8644 32 78.6789V177.321C32 180.136 32.7289 182.902 34.1158 185.351C35.5028 187.8 37.5011 189.846 39.9143 191.289L119.914 239.132C122.362 240.596 125.156 241.369 128 241.369C130.844 241.369 133.638 240.596 136.086 239.132L216.086 191.289C218.499 189.846 220.497 187.8 221.884 185.351C223.271 182.902 224 180.136 224 177.321Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M177.024 152.51V100.58L80 42.8101" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M222.897 74.6199L128.949 128L33.103 74.6199" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128.949 128L128 241.37" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="request-modal-heading-group">
+          <h2 class="modal-title" id="requestProductModalTitle">Request a Product</h2>
+          <p class="request-modal-subtitle">
+            Share the item details below and our team will review availability and follow up via email.
+          </p>
+        </div>
+      </div>
+
+      <form class="request-modal-form" id="requestProductForm">
+        <div class="request-modal-fields">
+          <div class="request-field-group">
+            <label class="request-field-label" for="requestProductNameInput">
+              Product Name <span class="request-required-star" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="requestProductNameInput"
+              name="productName"
+              class="request-text-input"
+              placeholder="e.g., Custom Event Signage, Pop-Up Banner, Hanging Banner"
+              required
+            />
+          </div>
+
+          <div class="request-field-row">
+            <div class="request-field-group">
+              <label class="request-field-label" for="requestReferenceFileInput">
+                Reference Image or File Link
+              </label>
+              <input
+                type="url"
+                id="requestReferenceFileInput"
+                name="referenceFileLink"
+                class="request-text-input"
+                placeholder="drive.google.com or dropbox link"
+              />
+            </div>
+
+            <div class="request-field-group">
+              <label class="request-field-label" for="requestReferenceUrlInput">
+                Reference Website URL
+              </label>
+              <input
+                type="url"
+                id="requestReferenceUrlInput"
+                name="referenceWebsiteUrl"
+                class="request-text-input"
+                placeholder="https://example.com/product-page"
+              />
+            </div>
+          </div>
+
+          <div class="request-field-group">
+            <label class="request-field-label" for="requestProductDetailsInput">
+              Product Specifications &amp; Details
+            </label>
+            <textarea
+              id="requestProductDetailsInput"
+              name="productDetails"
+              class="request-textarea"
+              placeholder="Describe the item you need (dimensions, material, estimated quantity, or event requirements). You can also paste additional reference links here."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="request-modal-actions">
+          <button
+            type="button"
+            class="btn-request-cancel"
+            id="cancelRequestProductBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-request-submit"
+            id="submitRequestProductBtn"
+          >
+            Submit Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: REQUEST A PRODUCT FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="requestSubmittedModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="requestSubmittedModalTitle"
+    aria-hidden="true"
+  >
+    <div class="success-modal-card" id="requestSubmittedModalCard">
+      <div class="success-modal-icon-badge" aria-hidden="true">
+        <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="success-modal-content">
+        <div class="success-modal-copy">
+          <h2 class="modal-title" id="requestSubmittedModalTitle">Product Request Submitted</h2>
+          <p class="success-modal-description" id="requestSubmittedModalMessage">
+            We’ve received your product request. Our team will review the details and reach out to you via email shortly.
+          </p>
+        </div>
+
+        <a
+          href="Products.html"
+          class="btn-success-primary"
+          id="backToProductsBtn"
+        >
+          Back to Products
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="clientPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: NAVIGATION & PROFILE POPOVER
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+
+      const profileMenuWrapper = document.getElementById('profileMenuWrapper');
+      const profileMenuTrigger = document.getElementById('profileMenuTrigger');
+      const profileDropdownPopover = document.getElementById('profileDropdownPopover');
+      const profileActionItems = document.querySelectorAll('[data-profile-action]');
+
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Profile Dropdown Popover
+      function toggleProfileMenu(forceClose = false) {
+        if (!profileMenuTrigger || !profileDropdownPopover) return;
+        const isCurrentlyOpen = profileDropdownPopover.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        profileDropdownPopover.classList.toggle('is-open', shouldOpen);
+        profileMenuTrigger.setAttribute('aria-expanded', String(shouldOpen));
+
+        if (shouldOpen) {
+          toggleMobileMenu(true);
+        }
+      }
+
+      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      function toggleMobileMenu(forceClose = false) {
+        const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        mobileNavDrawer.classList.toggle('is-open', shouldOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+
+        if (shouldOpen) {
+          toggleProfileMenu(true);
+        }
+      }
+
+      if (profileMenuTrigger) {
+        profileMenuTrigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleProfileMenu();
+        });
+      }
+
+      profileActionItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          toggleProfileMenu(true);
+        });
+      });
+
+      mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+
+      // Sync Active Link State Across Desktop & Mobile Navigation
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          const targetHref = link.getAttribute('href');
+
+          navLinks.forEach((item) => {
+            item.classList.toggle('active', item.getAttribute('href') === targetHref);
+          });
+
+          // Close mobile menu after selecting an item
+          toggleMobileMenu(true);
+        });
+      });
+
+      // Close profile popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
+          toggleProfileMenu(true);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+        }
+      });
+
+      // Automatically close mobile drawer if resized above mobile breakpoint
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileNavDrawer.classList.contains('is-open')) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         Product Category Tabs Selection & Hook for Upcoming Products Table
+         ---------------------------------------------------------------------- */
+      const categoryTabButtons = document.querySelectorAll('[data-category-tab]');
+      const productsTableSlot = document.getElementById('productsTableSlot');
+
+      function setActiveCategory(categorySlug, updateHash = true) {
+        let matchedTab = null;
+
+        categoryTabButtons.forEach((btn) => {
+          const isMatch = btn.dataset.categoryTab === categorySlug;
+          btn.classList.toggle('is-active', isMatch);
+          btn.setAttribute('aria-selected', String(isMatch));
+          if (isMatch) matchedTab = btn;
+        });
+
+        if (!matchedTab && categoryTabButtons.length > 0) {
+          matchedTab = categoryTabButtons[0];
+          matchedTab.classList.add('is-active');
+          matchedTab.setAttribute('aria-selected', 'true');
+          categorySlug = matchedTab.dataset.categoryTab;
+        }
+
+        if (productsTableSlot) {
+          productsTableSlot.dataset.activeCategory = categorySlug;
+        }
+
+        if (updateHash && categorySlug) {
+          history.replaceState(null, '', `#${categorySlug}`);
+        }
+
+        document.dispatchEvent(
+          new CustomEvent('productCategoryChanged', {
+            detail: {
+              category: categorySlug,
+              label: matchedTab ? matchedTab.dataset.categoryLabel : ''
+            }
+          })
+        );
+      }
+
+      categoryTabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setActiveCategory(btn.dataset.categoryTab, true);
+        });
+      });
+
+      // Support URL hash (e.g., Products.html#branded-furniture) on page load
+      const initialHashCategory = window.location.hash.replace(/^#/, '');
+      if (initialHashCategory) {
+        const hasMatchingTab = Array.from(categoryTabButtons).some(
+          (btn) => btn.dataset.categoryTab === initialHashCategory
+        );
+        if (hasMatchingTab) {
+          setActiveCategory(initialHashCategory, false);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         Products Catalog Table: Select All / Row Checkboxes, Qty +/- & Auto Totals
+         ---------------------------------------------------------------------- */
+      const TAX_RATE = 0.10;
+
+      const productsCatalogByCategory = {
+        'outdoor-signs': {
+          label: 'Outdoor Signs',
+          uniqueCount: 17,
+          items: [
+            { id: 'os-1', name: 'Crowd Control Barrier Covers', image: 'images/CrowdControlBarrierCovers.png', variant: 'The Gymnast', price: 120, quantity: 0, selected: false },
+            { id: 'os-2', name: 'Crowd Control Barrier Covers', image: 'images/CrowdControlBarrierCovers.png', variant: 'The Sprinter', price: 75, quantity: 0, selected: false },
+            { id: 'os-3', name: 'Polyester Mesh Scrim', image: 'images/PolyesterMeshScrim.png', variant: 'Polyester Mesh Scrim', price: 75, quantity: 0, selected: false },
+            { id: 'os-4', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 75, quantity: 0, selected: false },
+            { id: 'os-5', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Plain Coloured Bin Covers', price: 75, quantity: 0, selected: false },
+            { id: 'os-6', name: 'Rectangle Flags', image: 'images/RectangleFlags.png', variant: 'I don’t know yet', price: 65, quantity: 0, selected: false },
+            { id: 'os-7', name: 'Feather Flags', image: 'images/FeatherFlags.png', variant: 'I don’t know yet', price: 70, quantity: 0, selected: false },
+            { id: 'os-8', name: 'Teardrop Flags', image: 'images/TeardropFlags.png', variant: 'I don’t know yet', price: 68, quantity: 0, selected: false },
+            { id: 'os-9', name: 'Vinyl Banner Mesh', image: 'images/VinylBannerMesh.png', variant: 'I don’t know yet', price: 85, quantity: 0, selected: false },
+            { id: 'os-10', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 320, quantity: 0, selected: false },
+            { id: 'os-11', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 95, quantity: 0, selected: false },
+            { id: 'os-12', name: 'Mesh Banners', image: 'images/MeshBanners.png', variant: 'I don’t know yet', price: 80, quantity: 0, selected: false },
+            { id: 'os-13', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 45, quantity: 0, selected: false },
+            { id: 'os-14', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Small (1200 x 650mm)', price: 20, quantity: 0, selected: false },
+            { id: 'os-15', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Medium (1800 x 400mm)', price: 30, quantity: 0, selected: false },
+            { id: 'os-16', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Large (2400 x 400mm)', price: 40, quantity: 0, selected: false },
+            { id: 'os-17', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 145, quantity: 0, selected: false },
+            { id: 'os-18', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 55, quantity: 0, selected: false },
+            { id: 'os-19', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 110, quantity: 0, selected: false },
+            { id: 'os-20', name: 'Metal Frame Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 450, quantity: 0, selected: false },
+            { id: 'os-21', name: 'Custom Marquee Gable', image: 'images/CustomMarqueeGable.png', variant: 'I don’t know yet', price: 185, quantity: 0, selected: false }
+          ]
+        },
+        'branded-furniture': {
+          label: 'Branded Furniture',
+          uniqueCount: 2,
+          items: [
+            { id: 'bf-1', name: 'Seat Covers', image: 'images/SeatCovers.png', variant: 'Stadium & Outdoor Arena', price: 15, quantity: 0, selected: false },
+            { id: 'bf-2', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 145, quantity: 0, selected: false }
+          ]
+        },
+        'inflatable-signs-and-tents': {
+          label: 'Inflatable Signs and Tents',
+          uniqueCount: 2,
+          items: [
+            { id: 'ist-1', name: 'Inflatable Pillars', image: 'images/InflatablePillars.png', variant: 'I don’t know yet', price: 210, quantity: 0, selected: false },
+            { id: 'ist-2', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 320, quantity: 0, selected: false }
+          ]
+        },
+        'indoor-signs': {
+          label: 'Indoor Signs',
+          uniqueCount: 2,
+          items: [
+            { id: 'is-1', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 110, quantity: 0, selected: false },
+            { id: 'is-2', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 45, quantity: 0, selected: false }
+          ]
+        },
+        'signboards': {
+          label: 'Signboards',
+          uniqueCount: 5,
+          items: [
+            { id: 'sb-1', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 95, quantity: 0, selected: false },
+            { id: 'sb-2', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Small (1200 x 650mm)', price: 20, quantity: 0, selected: false },
+            { id: 'sb-3', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Medium (1800 x 400mm)', price: 30, quantity: 0, selected: false },
+            { id: 'sb-4', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Large (2400 x 400mm)', price: 40, quantity: 0, selected: false },
+            { id: 'sb-5', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 55, quantity: 0, selected: false }
+          ]
+        },
+        'accessories': {
+          label: 'Accessories',
+          uniqueCount: 2,
+          items: [
+            { id: 'ac-1', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 75, quantity: 0, selected: false },
+            { id: 'ac-2', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Plain Coloured Bin Covers', price: 75, quantity: 0, selected: false }
+          ]
+        }
+      };
+
+      const productsCategoryHeading = document.getElementById('productsCategoryHeading');
+      const productsCategoryCountBadge = document.getElementById('productsCategoryCountBadge');
+      const selectAllProductsCheckbox = document.getElementById('selectAllProductsCheckbox');
+      const productsItemsTableBody = document.getElementById('productsItemsTableBody');
+      const productsSummarizedTotal = document.getElementById('productsSummarizedTotal');
+
+      const checkIconSvg = '<svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const indeterminateIconSvg = '<svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const minusIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const plusIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216M128 40V216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function formatProductCurrency(amount, includeSymbol = true) {
+        const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
+        const formattedNumber = Number.isInteger(rounded)
+          ? rounded.toLocaleString('en-AU')
+          : rounded.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return includeSymbol ? '$' + formattedNumber : formattedNumber;
+      }
+
+      function getCurrentCategoryData() {
+        const activeSlug = productsTableSlot ? productsTableSlot.dataset.activeCategory : 'outdoor-signs';
+        return productsCatalogByCategory[activeSlug] || productsCatalogByCategory['outdoor-signs'];
+      }
+
+      function calculateRowAmounts(item) {
+        const subtotal = item.price * item.quantity;
+        const taxAmount = subtotal * TAX_RATE;
+        const total = subtotal + taxAmount;
+        return { subtotal, taxAmount, total };
+      }
+
+      function syncSelectAllAndSummary() {
+        const categoryData = getCurrentCategoryData();
+        const items = categoryData.items;
+
+        if (selectAllProductsCheckbox) {
+          const selectedCount = items.filter((item) => item.selected).length;
+          if (items.length > 0 && selectedCount === items.length) {
+            selectAllProductsCheckbox.setAttribute('aria-checked', 'true');
+            selectAllProductsCheckbox.innerHTML = checkIconSvg;
+          } else if (selectedCount > 0) {
+            selectAllProductsCheckbox.setAttribute('aria-checked', 'mixed');
+            selectAllProductsCheckbox.innerHTML = indeterminateIconSvg;
+          } else {
+            selectAllProductsCheckbox.setAttribute('aria-checked', 'false');
+            selectAllProductsCheckbox.innerHTML = checkIconSvg;
+          }
+        }
+
+        // Summarizes the total across all rows in the current category (auto-updates as quantities change)
+        const summarizedTotal = items.reduce((sum, item) => sum + calculateRowAmounts(item).total, 0);
+        if (productsSummarizedTotal) {
+          productsSummarizedTotal.textContent = formatProductCurrency(summarizedTotal, false);
+        }
+      }
+
+      function renderProductsTable() {
+        const categoryData = getCurrentCategoryData();
+        const items = categoryData.items;
+        const displayCount = typeof categoryData.uniqueCount === 'number' ? categoryData.uniqueCount : items.length;
+
+        if (productsCategoryHeading) {
+          productsCategoryHeading.textContent = categoryData.label;
+        }
+        if (productsCategoryCountBadge) {
+          productsCategoryCountBadge.textContent = `${displayCount} ${displayCount === 1 ? 'product' : 'products'}`;
+        }
+
+        if (!productsItemsTableBody) return;
+
+        if (items.length === 0) {
+          productsItemsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="products-table-empty">No products available in this category yet.</td>
+            </tr>
+          `;
+          syncSelectAllAndSummary();
+          return;
+        }
+
+        productsItemsTableBody.innerHTML = items
+          .map((item) => {
+            const { subtotal, total } = calculateRowAmounts(item);
+            return `
+              <tr class="${item.selected ? 'is-selected' : ''}" data-product-row-id="${item.id}">
+                <td>
+                  <div class="products-item-cell">
+                    <button
+                      type="button"
+                      class="product-checkbox"
+                      role="checkbox"
+                      aria-checked="${item.selected ? 'true' : 'false'}"
+                      aria-label="Select ${item.name} (${item.variant})"
+                      data-toggle-product-id="${item.id}"
+                    >
+                      ${checkIconSvg}
+                    </button>
+                    <div class="products-item-thumb">
+                      <img src="${item.image}" alt="${item.name}" />
+                    </div>
+                    <div class="products-item-info">
+                      <span class="products-item-name">${item.name}</span>
+                      <a href="#product-details-${item.id}" class="products-item-details-link">View details</a>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="products-variant-text">${item.variant}</div>
+                </td>
+                <td class="is-center">
+                  <div class="product-qty-stepper" role="group" aria-label="Quantity for ${item.name} (${item.variant})">
+                    <button
+                      type="button"
+                      class="product-qty-btn"
+                      aria-label="Decrease quantity of ${item.name}"
+                      data-qty-action="minus"
+                      data-product-id="${item.id}"
+                      ${item.quantity <= 0 ? 'disabled' : ''}
+                    >
+                      ${minusIconSvg}
+                    </button>
+                    <span class="product-qty-value ${item.quantity > 0 ? 'has-qty' : ''}" data-qty-display="${item.id}">${item.quantity}</span>
+                    <button
+                      type="button"
+                      class="product-qty-btn"
+                      aria-label="Increase quantity of ${item.name}"
+                      data-qty-action="plus"
+                      data-product-id="${item.id}"
+                    >
+                      ${plusIconSvg}
+                    </button>
+                  </div>
+                </td>
+                <td>${formatProductCurrency(item.price, true)}</td>
+                <td data-subtotal-display="${item.id}">${formatProductCurrency(subtotal, true)}</td>
+                <td>10%</td>
+                <td data-total-display="${item.id}">${formatProductCurrency(total, true)}</td>
+              </tr>
+            `;
+          })
+          .join('');
+
+        syncSelectAllAndSummary();
+      }
+
+      if (selectAllProductsCheckbox) {
+        selectAllProductsCheckbox.addEventListener('click', () => {
+          const categoryData = getCurrentCategoryData();
+          const items = categoryData.items;
+          if (!items.length) return;
+
+          const allSelected = items.every((item) => item.selected);
+          const nextState = !allSelected;
+          items.forEach((item) => {
+            item.selected = nextState;
+          });
+          renderProductsTable();
+        });
+      }
+
+      if (productsItemsTableBody) {
+        productsItemsTableBody.addEventListener('click', (event) => {
+          const toggleBtn = event.target.closest('[data-toggle-product-id]');
+          if (toggleBtn) {
+            const productId = toggleBtn.dataset.toggleProductId;
+            const categoryData = getCurrentCategoryData();
+            const targetItem = categoryData.items.find((item) => item.id === productId);
+            if (!targetItem) return;
+
+            targetItem.selected = !targetItem.selected;
+            toggleBtn.setAttribute('aria-checked', String(targetItem.selected));
+            const rowEl = toggleBtn.closest('tr');
+            if (rowEl) {
+              rowEl.classList.toggle('is-selected', targetItem.selected);
+            }
+            syncSelectAllAndSummary();
+            return;
+          }
+
+          const qtyBtn = event.target.closest('[data-qty-action]');
+          if (qtyBtn) {
+            const action = qtyBtn.dataset.qtyAction;
+            const productId = qtyBtn.dataset.productId;
+            const categoryData = getCurrentCategoryData();
+            const targetItem = categoryData.items.find((item) => item.id === productId);
+            if (!targetItem) return;
+
+            if (action === 'minus') {
+              targetItem.quantity = Math.max(0, targetItem.quantity - 1);
+            } else if (action === 'plus') {
+              targetItem.quantity += 1;
+            }
+
+            const rowEl = qtyBtn.closest('tr');
+            if (rowEl) {
+              const minusBtn = rowEl.querySelector('[data-qty-action="minus"]');
+              const qtyDisplay = rowEl.querySelector(`[data-qty-display="${productId}"]`);
+              const subtotalDisplay = rowEl.querySelector(`[data-subtotal-display="${productId}"]`);
+              const totalDisplay = rowEl.querySelector(`[data-total-display="${productId}"]`);
+
+              if (minusBtn) minusBtn.disabled = targetItem.quantity <= 0;
+              if (qtyDisplay) {
+                qtyDisplay.textContent = String(targetItem.quantity);
+                qtyDisplay.classList.toggle('has-qty', targetItem.quantity > 0);
+              }
+              const { subtotal, total } = calculateRowAmounts(targetItem);
+              if (subtotalDisplay) subtotalDisplay.textContent = formatProductCurrency(subtotal, true);
+              if (totalDisplay) totalDisplay.textContent = formatProductCurrency(total, true);
+            }
+
+            syncSelectAllAndSummary();
+          }
+        });
+      }
+
+      document.addEventListener('productCategoryChanged', () => {
+        renderProductsTable();
+      });
+
+      renderProductsTable();
+
+      /* ----------------------------------------------------------------------
+         Request a Product & Confirmation Modals (Reusable Client Portal Flow)
+         ---------------------------------------------------------------------- */
+      const requestProductModal = document.getElementById('requestProductModal');
+      const requestSubmittedModal = document.getElementById('requestSubmittedModal');
+      const requestProductTrigger = document.getElementById('requestProductTrigger');
+      const requestProductForm = document.getElementById('requestProductForm');
+      const requestProductNameInput = document.getElementById('requestProductNameInput');
+      const cancelRequestProductBtn = document.getElementById('cancelRequestProductBtn');
+      const backToProductsBtn = document.getElementById('backToProductsBtn');
+
+      let lastFocusedRequestTrigger = null;
+
+      function syncBodyModalState() {
+        const hasOpenModal = [requestProductModal, requestSubmittedModal].some(
+          (modalEl) => modalEl && modalEl.classList.contains('is-open')
+        );
+        document.body.classList.toggle('is-modal-open', hasOpenModal);
+      }
+
+      function openRequestProductModal(triggerEl = null) {
+        if (!requestProductModal) return;
+        lastFocusedRequestTrigger = triggerEl || requestProductTrigger;
+
+        requestProductModal.classList.add('is-open');
+        requestProductModal.setAttribute('aria-hidden', 'false');
+        if (requestProductTrigger) {
+          requestProductTrigger.setAttribute('aria-expanded', 'true');
+        }
+        syncBodyModalState();
+
+        if (requestProductNameInput) {
+          requestProductNameInput.focus();
+        }
+      }
+
+      function closeRequestProductModal(resetForm = false) {
+        if (!requestProductModal || !requestProductModal.classList.contains('is-open')) return;
+        requestProductModal.classList.remove('is-open');
+        requestProductModal.setAttribute('aria-hidden', 'true');
+        if (requestProductTrigger) {
+          requestProductTrigger.setAttribute('aria-expanded', 'false');
+        }
+        if (resetForm && requestProductForm) {
+          requestProductForm.reset();
+        }
+        syncBodyModalState();
+
+        if (lastFocusedRequestTrigger && typeof lastFocusedRequestTrigger.focus === 'function') {
+          lastFocusedRequestTrigger.focus();
+        }
+        lastFocusedRequestTrigger = null;
+      }
+
+      function openRequestSubmittedModal() {
+        if (!requestSubmittedModal) return;
+        requestSubmittedModal.classList.add('is-open');
+        requestSubmittedModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (backToProductsBtn) {
+          backToProductsBtn.focus();
+        }
+      }
+
+      function closeRequestSubmittedModal() {
+        if (!requestSubmittedModal || !requestSubmittedModal.classList.contains('is-open')) return;
+        requestSubmittedModal.classList.remove('is-open');
+        requestSubmittedModal.setAttribute('aria-hidden', 'true');
+        syncBodyModalState();
+      }
+
+      if (requestProductTrigger) {
+        requestProductTrigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          openRequestProductModal(requestProductTrigger);
+        });
+      }
+
+      if (cancelRequestProductBtn) {
+        cancelRequestProductBtn.addEventListener('click', () => {
+          closeRequestProductModal(true);
+        });
+      }
+
+      if (requestProductModal) {
+        requestProductModal.addEventListener('click', (event) => {
+          if (event.target === requestProductModal) {
+            closeRequestProductModal(false);
+          }
+        });
+      }
+
+      if (requestProductForm) {
+        requestProductForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!requestProductForm.checkValidity()) {
+            requestProductForm.reportValidity();
+            return;
+          }
+
+          const formData = new FormData(requestProductForm);
+          const submittedPayload = {
+            productName: String(formData.get('productName') || '').trim(),
+            referenceFileLink: String(formData.get('referenceFileLink') || '').trim(),
+            referenceWebsiteUrl: String(formData.get('referenceWebsiteUrl') || '').trim(),
+            productDetails: String(formData.get('productDetails') || '').trim()
+          };
+
+          closeRequestProductModal(true);
+          openRequestSubmittedModal();
+
+          document.dispatchEvent(
+            new CustomEvent('requestProductSubmitted', { detail: submittedPayload })
+          );
+        });
+      }
+
+      if (backToProductsBtn) {
+        backToProductsBtn.addEventListener('click', (event) => {
+          event.preventDefault();
+          closeRequestSubmittedModal();
+        });
+      }
+
+      if (requestSubmittedModal) {
+        requestSubmittedModal.addEventListener('click', (event) => {
+          if (event.target === requestSubmittedModal) {
+            closeRequestSubmittedModal();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (requestSubmittedModal && requestSubmittedModal.classList.contains('is-open')) {
+            closeRequestSubmittedModal();
+            return;
+          }
+          if (requestProductModal && requestProductModal.classList.contains('is-open')) {
+            closeRequestProductModal(false);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

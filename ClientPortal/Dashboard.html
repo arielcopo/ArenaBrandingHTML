@@ -211,6 +211,12 @@
       position: relative;
     }
 
+    .profile-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
     .profile-avatar-btn {
       width: 40px;
       height: 40px;
@@ -222,10 +228,12 @@
       justify-content: center;
       border: 1px solid transparent;
       transition: border-color var(--transition-fast);
+      flex-shrink: 0;
     }
 
     .profile-avatar-btn:hover,
-    .profile-avatar-btn:focus-visible {
+    .profile-avatar-btn:focus-visible,
+    .profile-avatar-btn[aria-expanded="true"] {
       border-color: var(--color-navy);
       outline: none;
     }
@@ -235,6 +243,116 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    /* Profile Popover Menu */
+    .profile-dropdown-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 1100;
+    }
+
+    .profile-dropdown-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-dropdown-header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-dropdown-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-dropdown-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-online-dot {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--color-trend-up-stroke);
+      border: 1.5px solid var(--color-white);
+    }
+
+    .profile-dropdown-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    .profile-dropdown-divider-soft {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .profile-dropdown-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .profile-dropdown-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover,
+    .profile-dropdown-item:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
     }
 
     /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
@@ -345,6 +463,10 @@
       /* Show burger button */
       .mobile-menu-toggle {
         display: inline-flex;
+      }
+
+      .profile-dropdown-popover {
+        right: -56px;
       }
     }
 
@@ -2021,7 +2143,7 @@
     <nav class="portal-nav-container" aria-label="Client Portal Primary Navigation">
 
       <!-- Arena Branding Logo -->
-      <a href="#dashboard" class="brand-logo-link" aria-label="Arena Branding Home">
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
         <img
           src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
           alt="Arena Branding"
@@ -2032,22 +2154,22 @@
       <!-- Center Navigation Links (Desktop & Tablet) -->
       <ul class="nav-links-list">
         <li>
-          <a href="#dashboard" class="nav-link-item active" data-nav-link>
+          <a href="Dashboard.html" class="nav-link-item active" data-nav-link>
             <span class="nav-link-text">Dashboard</span>
           </a>
         </li>
         <li>
-          <a href="#products" class="nav-link-item" data-nav-link>
+          <a href="Products.html" class="nav-link-item" data-nav-link>
             <span class="nav-link-text">Products</span>
           </a>
         </li>
         <li>
-          <a href="#favorites" class="nav-link-item" data-nav-link>
+          <a href="Favorites.html" class="nav-link-item" data-nav-link>
             <span class="nav-link-text">My Favorites</span>
           </a>
         </li>
         <li>
-          <a href="#cart" class="nav-link-item" data-nav-link>
+          <a href="Cart.html" class="nav-link-item" data-nav-link>
             <span class="nav-link-text">Cart Items</span>
             <span class="cart-count-badge">(7)</span>
           </a>
@@ -2056,25 +2178,60 @@
 
       <!-- Right Controls: Profile Circle & Mobile Burger Trigger -->
       <div class="nav-actions">
-        <!-- Profile Avatar Button (Placeholder ready for Profile Dropdown UI) -->
-        <button
-          type="button"
-          class="profile-avatar-btn"
-          id="profileMenuTrigger"
-          aria-label="Open user profile menu"
-          aria-expanded="false"
-        >
-          <!-- Replace src with dynamic user avatar URL; falls back cleanly to #A6A6A6 -->
-          <img
-            src=""
-            alt="User profile"
-            class="profile-avatar-img"
-            onerror="this.style.display='none'"
-          />
-        </button>
+        <!-- Profile Avatar Button & Popover Menu -->
+        <div class="profile-menu-wrapper" id="profileMenuWrapper">
+          <button
+            type="button"
+            class="profile-avatar-btn"
+            id="profileMenuTrigger"
+            aria-label="Open user profile menu"
+            aria-expanded="false"
+            aria-controls="profileDropdownPopover"
+          >
+            <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
+            <img
+              src=""
+              alt="Jemma Emma"
+              class="profile-avatar-img"
+              style="display: none;"
+              onerror="this.style.display='none'"
+            />
+          </button>
 
-        <!-- Placeholder for Future Profile Dropdown Menu -->
-        <!-- [INSERT PROFILE DROPDOWN UI HERE] -->
+          <!-- Profile Dropdown Popover -->
+          <div
+            class="profile-dropdown-popover"
+            id="profileDropdownPopover"
+            role="menu"
+            aria-label="User profile options"
+          >
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar-wrap">
+                <img
+                  src=""
+                  alt="Jemma Emma"
+                  class="profile-dropdown-avatar-img"
+                  style="display: none;"
+                  onerror="this.style.display='none'"
+                />
+                <span class="profile-online-dot" aria-hidden="true"></span>
+              </div>
+              <span class="profile-dropdown-name">Jemma Emma</span>
+            </div>
+
+            <div class="profile-dropdown-divider-soft"></div>
+
+            <div class="profile-dropdown-actions">
+              <a href="Profile.html" class="profile-dropdown-item" role="menuitem" data-profile-action="view-profile">
+                View profile
+              </a>
+              <div class="profile-dropdown-divider"></div>
+              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
 
         <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
         <button
@@ -2096,22 +2253,22 @@
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
       <ul class="mobile-nav-list">
         <li>
-          <a href="#dashboard" class="mobile-nav-link active" data-nav-link>
+          <a href="Dashboard.html" class="mobile-nav-link active" data-nav-link>
             <span class="nav-link-text">Dashboard</span>
           </a>
         </li>
         <li>
-          <a href="#products" class="mobile-nav-link" data-nav-link>
+          <a href="Products.html" class="mobile-nav-link" data-nav-link>
             <span class="nav-link-text">Products</span>
           </a>
         </li>
         <li>
-          <a href="#favorites" class="mobile-nav-link" data-nav-link>
+          <a href="Favorites.html" class="mobile-nav-link" data-nav-link>
             <span class="nav-link-text">My Favorites</span>
           </a>
         </li>
         <li>
-          <a href="#cart" class="mobile-nav-link" data-nav-link>
+          <a href="Cart.html" class="mobile-nav-link" data-nav-link>
             <span class="nav-link-text">Cart Items</span>
             <span class="cart-count-badge">(7)</span>
           </a>
@@ -2142,7 +2299,7 @@
 
         <div class="dashboard-actions-block">
           <!-- Navigates to #products for now; wire to Products page route later -->
-          <a href="#products" class="btn-new-quote" id="newQuoteBtn">New Quote</a>
+          <a href="Products.html" class="btn-new-quote" id="newQuoteBtn">New Quote</a>
 
           <div class="dashboard-request-row">
             <span>Can't find what you're looking for?</span>
@@ -2807,8 +2964,27 @@
       const mobileNavDrawer = document.getElementById('mobileNavDrawer');
       const navLinks = document.querySelectorAll('[data-nav-link]');
 
+      const profileMenuWrapper = document.getElementById('profileMenuWrapper');
+      const profileMenuTrigger = document.getElementById('profileMenuTrigger');
+      const profileDropdownPopover = document.getElementById('profileDropdownPopover');
+      const profileActionItems = document.querySelectorAll('[data-profile-action]');
+
       const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
       const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Profile Dropdown Popover
+      function toggleProfileMenu(forceClose = false) {
+        if (!profileMenuTrigger || !profileDropdownPopover) return;
+        const isCurrentlyOpen = profileDropdownPopover.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        profileDropdownPopover.classList.toggle('is-open', shouldOpen);
+        profileMenuTrigger.setAttribute('aria-expanded', String(shouldOpen));
+
+        if (shouldOpen) {
+          toggleMobileMenu(true);
+        }
+      }
 
       // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
       function toggleMobileMenu(forceClose = false) {
@@ -2818,7 +2994,24 @@
         mobileNavDrawer.classList.toggle('is-open', shouldOpen);
         mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
         mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+
+        if (shouldOpen) {
+          toggleProfileMenu(true);
+        }
       }
+
+      if (profileMenuTrigger) {
+        profileMenuTrigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleProfileMenu();
+        });
+      }
+
+      profileActionItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          toggleProfileMenu(true);
+        });
+      });
 
       mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
 
@@ -2834,6 +3027,20 @@
           // Close mobile menu after selecting an item
           toggleMobileMenu(true);
         });
+      });
+
+      // Close profile popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
+          toggleProfileMenu(true);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+        }
       });
 
       // Automatically close mobile drawer if resized above mobile breakpoint
@@ -3715,15 +3922,15 @@
                 </td>
                 <td>
                   <div class="quote-actions-cell">
-                    <button
-                      type="button"
+                    <a
+                      href="viewQuotation.html?id=${encodeURIComponent(row.id)}"
                       class="quote-action-btn"
                       aria-label="View ${row.eventName} ${row.quoteType}"
                       data-action="view"
                       data-quote-id="${row.id}"
                     >
                       ${eyeSvg}
-                    </button>
+                    </a>
                     <button
                       type="button"
                       class="quote-action-btn"
