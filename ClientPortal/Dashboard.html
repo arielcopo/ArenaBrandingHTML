@@ -13,9 +13,6 @@
     rel="stylesheet"
   />
 
-  <!-- Phosphor Icons (Via CDN) -->
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
   <style>
     /* ==========================================================================
        1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
@@ -24,10 +21,29 @@
       --color-navy: #292562;
       --color-navy-hover: #1e1b4b;
       --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
       --color-white: #FFFFFF;
       --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
       --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
       --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
 
       --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
@@ -58,16 +74,45 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
     a {
       text-decoration: none;
       color: inherit;
     }
 
-    button {
+    button,
+    input,
+    textarea {
       font-family: inherit;
+    }
+
+    button {
       background: none;
       border: none;
       cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
     }
 
     /* ==========================================================================
@@ -262,9 +307,9 @@
         gap: 16px;
       }
 
-      .brand-logo-svg {
-        width: 156px;
+      .brand-logo-img {
         height: 36px;
+        max-width: 156px;
       }
 
       .nav-links-list {
@@ -287,9 +332,9 @@
         padding: 0 20px;
       }
 
-      .brand-logo-svg {
-        width: 148px;
+      .brand-logo-img {
         height: 34px;
+        max-width: 148px;
       }
 
       /* Hide inline desktop nav links */
@@ -304,31 +349,1664 @@
     }
 
     /* ==========================================================================
-       4. MAIN CONTENT & FOOTER LAYOUT PLACEHOLDERS
+       4. MAIN CONTENT & DASHBOARD SECTIONS
        ========================================================================== */
     .portal-main {
       flex: 1;
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 40px var(--nav-gutter-desktop);
+      padding: 96px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
     }
 
+    .dashboard-overview-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    /* Top Welcome Row: Left Greeting + Right CTA & Request Link */
+    .dashboard-hero-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .dashboard-welcome-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .dashboard-welcome-title {
+      color: var(--color-text-primary);
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 38px;
+    }
+
+    .dashboard-welcome-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .dashboard-actions-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-new-quote {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background-color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-new-quote:hover {
+      background-color: var(--color-orange-hover);
+    }
+
+    .dashboard-request-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--color-text-secondary);
+    }
+
+    .request-product-link {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color var(--transition-fast);
+    }
+
+    .request-product-link:hover {
+      color: var(--color-text-primary);
+    }
+
+    /* Three Metric Cards Grid */
+    .dashboard-metrics-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 27px;
+    }
+
+    .metric-card {
+      width: 100%;
+      padding: 24px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .metric-card.is-menu-open {
+      z-index: 30;
+    }
+
+    .metric-card-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .metric-card-title {
+      color: var(--color-card-label);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+    }
+
+    /* Three-Dot Filter Trigger & Date Range Radio Popover */
+    .metric-filter-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .metric-filter-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .metric-filter-btn:hover,
+    .metric-filter-btn:focus-visible,
+    .metric-filter-btn[aria-expanded="true"] {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .date-range-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .date-range-popover.is-open {
+      display: block;
+    }
+
+    .date-range-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+    }
+
+    .date-range-option {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      transition: background-color var(--transition-fast);
+      user-select: none;
+    }
+
+    .date-range-option:first-child {
+      padding-top: 20px;
+    }
+
+    .date-range-option:last-child {
+      padding-bottom: 20px;
+    }
+
+    .date-range-option:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .date-range-radio-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .date-range-radio-circle {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color var(--transition-fast);
+    }
+
+    .date-range-radio-circle::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--color-orange);
+      transform: scale(0);
+      transition: transform var(--transition-fast);
+    }
+
+    .date-range-radio-input:checked + .date-range-radio-circle {
+      border-color: var(--color-orange);
+    }
+
+    .date-range-radio-input:checked + .date-range-radio-circle::after {
+      transform: scale(1);
+    }
+
+    .date-range-radio-input:focus-visible + .date-range-radio-circle {
+      outline: 2px solid var(--color-navy);
+      outline-offset: 2px;
+    }
+
+    .metric-card-body {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .metric-stats-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .metric-value {
+      color: var(--color-text-primary);
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 44px;
+    }
+
+    .metric-trend-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .metric-trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .metric-trend-indicator.is-up {
+      color: var(--color-trend-up-text);
+      stroke: var(--color-trend-up-stroke);
+    }
+
+    .metric-trend-indicator.is-down {
+      color: var(--color-trend-down-text);
+      stroke: var(--color-trend-down-stroke);
+    }
+
+    .metric-trend-period {
+      color: var(--color-card-label);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .metric-sparkline {
+      width: 96px;
+      height: 48px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    /* ==========================================================================
+       4B. DASHBOARD SECTION 2: FILTERS, SEARCH & QUOTES TABLE
+       ========================================================================== */
+    .dashboard-table-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 24px;
+      position: relative;
+      z-index: 0;
+    }
+
+    /* Toolbar: Left Filters & Active Chips + Right Search */
+    .table-toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .table-filters-left {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: relative;
+    }
+
+    .filter-control-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-more-filters {
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-input-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-more-filters {
+      stroke: var(--color-text-button);
+    }
+
+    .btn-more-filters:hover,
+    .btn-more-filters:focus-visible,
+    .btn-more-filters[aria-expanded="true"] {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    /* More Filters Checkbox Popover */
+    .more-filters-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 60;
+    }
+
+    .more-filters-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .more-filters-header {
+      padding: 12px 16px;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .more-filters-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .more-filters-section-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .more-filters-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .more-filters-option {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      transition: background-color var(--transition-fast);
+      user-select: none;
+    }
+
+    .more-filters-option:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .more-filters-checkbox-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .more-filters-checkbox-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      color: var(--color-orange);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .more-filters-checkbox-box svg {
+      display: none;
+    }
+
+    .more-filters-checkbox-input:checked + .more-filters-checkbox-box {
+      border-color: var(--color-orange);
+      background-color: var(--color-white);
+    }
+
+    .more-filters-checkbox-input:checked + .more-filters-checkbox-box svg {
+      display: block;
+    }
+
+    .more-filters-checkbox-input:focus-visible + .more-filters-checkbox-box {
+      outline: 2px solid var(--color-navy);
+      outline-offset: 2px;
+    }
+
+    .more-filters-option-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .more-filters-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .more-filters-pill.is-pending {
+      background-color: var(--color-badge-pending-bg);
+      color: var(--color-badge-pending-text);
+    }
+
+    .more-filters-pill.is-approved {
+      background-color: var(--color-badge-approved-bg);
+      color: var(--color-badge-approved-text);
+    }
+
+    .filter-chips-container {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-chip {
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-input-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .filter-chip-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-button);
+      stroke: var(--color-text-button);
+      line-height: 1;
+      border-radius: 4px;
+    }
+
+    .filter-chip-remove:hover,
+    .filter-chip-remove:focus-visible {
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Right Search Bar (36px Height) */
+    .table-search-box {
+      width: 320px;
+      max-width: 100%;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: border-color var(--transition-fast);
+    }
+
+    .table-search-box:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .table-search-icon {
+      color: var(--color-text-muted);
+      stroke: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .table-search-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .table-search-input::-webkit-search-cancel-button,
+    .table-search-input::-webkit-search-decoration,
+    .table-search-input::-webkit-search-results-button,
+    .table-search-input::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+      display: none;
+    }
+
+    .table-search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .table-search-clear-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .table-search-clear-btn.is-visible {
+      display: inline-flex;
+    }
+
+    .table-search-clear-btn:hover,
+    .table-search-clear-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Table Card Wrapper */
+    .quotes-table-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    .quotes-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quotes-table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .quotes-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .table-sort-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      padding: 2px 0;
+      transition: color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .table-sort-btn:hover,
+    .table-sort-btn:focus-visible,
+    .table-sort-btn.is-active {
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .table-sort-btn svg {
+      transition: transform var(--transition-fast);
+    }
+
+    .table-sort-btn[data-sort-dir="asc"] svg {
+      transform: rotate(180deg);
+    }
+
+    .quotes-table tbody tr {
+      height: 72px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .quotes-table tbody tr:nth-child(odd) {
+      background-color: var(--color-footer-bg);
+    }
+
+    .quotes-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .quotes-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .quote-event-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .quote-event-name {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .quote-event-code {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .status-badge.is-pending {
+      background-color: var(--color-badge-pending-bg);
+      color: var(--color-badge-pending-text);
+    }
+
+    .status-badge.is-approved {
+      background-color: var(--color-badge-approved-bg);
+      color: var(--color-badge-approved-text);
+    }
+
+    .status-badge.is-rejected {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-badge-rejected-text);
+    }
+
+    /* Row Action Icons */
+    .quote-actions-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quote-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .quote-action-btn:hover,
+    .quote-action-btn:focus-visible {
+      background-color: var(--color-border);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .table-empty-cell {
+      text-align: center !important;
+      padding: 40px 24px !important;
+      color: var(--color-text-muted) !important;
+      font-size: 14px !important;
+    }
+
+    /* Table Pagination Footer */
+    .quotes-table-footer {
+      width: 100%;
+      padding: 12px 24px 16px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .pagination-btns {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pagination-btn {
+      padding: 8px 14px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-input-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .pagination-btn:disabled {
+      color: var(--color-input-border);
+      border-color: var(--color-border);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .pagination-info {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       4C. SHAREABLE LINK FULL-SCREEN MODAL
+       ========================================================================== */
+    .share-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .share-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .share-modal-card {
+      width: 100%;
+      max-width: 618px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .share-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 8px solid var(--color-footer-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .share-modal-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .share-modal-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .share-link-field {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 46px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    .share-link-protocol {
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      border-right: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .share-link-value-wrap {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 0 12px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background-color: var(--color-white);
+    }
+
+    .share-link-input {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+      text-overflow: ellipsis;
+    }
+
+    .share-copy-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-copy-btn:hover,
+    .share-copy-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .share-copy-btn.is-copied {
+      color: var(--color-trend-up-text);
+      stroke: var(--color-trend-up-stroke);
+    }
+
+    .share-modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-modal-close-btn:hover,
+    .share-modal-close-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .share-modal-feedback {
+      min-height: 18px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       4D. REQUEST A PRODUCT FULL-SCREEN MODAL
+       ========================================================================== */
+    .request-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .request-modal-header {
+      width: 100%;
+      max-width: 486px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .request-modal-heading-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .request-modal-subtitle {
+      max-width: 340px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .request-modal-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .request-modal-fields {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .request-field-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .request-field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .request-field-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .request-required-star {
+      color: var(--color-trend-down-text);
+      font-weight: 500;
+    }
+
+    .request-text-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .request-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .request-text-input:focus {
+      border-color: var(--color-navy);
+    }
+
+    .request-textarea {
+      width: 100%;
+      min-height: 154px;
+      padding: 10px 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .request-textarea::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .request-textarea:focus {
+      border-color: var(--color-navy);
+    }
+
+    .request-modal-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .btn-request-cancel {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-request-cancel:hover,
+    .btn-request-cancel:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    .btn-request-submit {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-request-submit:hover,
+    .btn-request-submit:focus-visible {
+      background-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    /* Dashboard Responsive Breakpoints (Matches Navigation & Footer Gutters) */
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 32px 48px;
+        padding: 96px 48px 80px;
+      }
+
+      .dashboard-metrics-grid {
+        gap: 20px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 28px 32px;
+        padding: 96px 32px 64px;
+        gap: 64px;
+      }
+
+      .dashboard-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
       }
     }
 
     @media (max-width: 768px) {
       .portal-main {
+        padding: 96px 20px 56px;
+        gap: 64px;
+      }
+
+      .dashboard-hero-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .dashboard-actions-block {
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      .dashboard-request-row {
+        justify-content: flex-start;
+      }
+
+      .dashboard-welcome-title {
+        font-size: 24px;
+        line-height: 32px;
+      }
+
+      .metric-card {
+        padding: 20px;
+      }
+
+      .metric-value {
+        font-size: 32px;
+        line-height: 40px;
+      }
+
+      .metric-sparkline {
+        width: 84px;
+        height: 42px;
+      }
+
+      .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .table-search-box {
+        width: 100%;
+      }
+
+      .quotes-table thead th,
+      .quotes-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .quotes-table-footer {
+        padding: 12px 16px 16px;
+        flex-wrap: wrap;
+      }
+
+      .share-modal-card {
+        padding: 24px 16px;
+      }
+
+      .share-link-protocol,
+      .share-link-input {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .share-link-protocol {
+        padding: 0 10px;
+      }
+
+      .request-modal-card {
+        padding: 24px 16px;
+        gap: 24px;
+      }
+
+      .request-modal-form {
+        gap: 28px;
+      }
+
+      .request-field-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .request-modal-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       4E. PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ========================================================================== */
+    .success-modal-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 34px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      margin: auto;
+    }
+
+    .success-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #DCFCE7;
+      outline: 8px solid var(--color-badge-approved-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #16A34A;
+      stroke: #16A34A;
+      flex-shrink: 0;
+    }
+
+    .success-modal-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .success-modal-copy {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .success-modal-description {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .btn-success-primary {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #16A34A;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-success-primary:hover,
+    .btn-success-primary:focus-visible {
+      background-color: var(--color-trend-up-text);
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .success-modal-card {
         padding: 24px 20px;
+      }
+
+      .success-modal-content {
+        gap: 24px;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: CLIENT PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Top Row: Logo Left + 4 Link Columns Right */
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Bottom Row: Divider + Tagline & Copyright */
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    /* Footer Responsive Breakpoints (Matches Navigation Gutters) */
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
       }
     }
   </style>
@@ -342,7 +2020,7 @@
   <header class="portal-header" id="clientPortalHeader">
     <nav class="portal-nav-container" aria-label="Client Portal Primary Navigation">
 
-      <!-- Arena Branding Logo (Exact Figma Vector Geometry) -->
+      <!-- Arena Branding Logo -->
       <a href="#dashboard" class="brand-logo-link" aria-label="Arena Branding Home">
         <img
           src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
@@ -398,7 +2076,7 @@
         <!-- Placeholder for Future Profile Dropdown Menu -->
         <!-- [INSERT PROFILE DROPDOWN UI HERE] -->
 
-        <!-- Mobile Burger Menu Button (Phosphor Icons) -->
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
         <button
           type="button"
           class="mobile-menu-toggle"
@@ -407,7 +2085,9 @@
           aria-expanded="false"
           aria-controls="mobileNavDrawer"
         >
-          <i class="ph ph-list" id="mobileMenuIcon" aria-hidden="true"></i>
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
       </div>
     </nav>
@@ -446,10 +2126,368 @@
 
   <!-- ========================================================================
        START SLOT: MAIN PAGE BODY CONTENT
-       Insert Dashboard, Products, Favorites, or Cart views inside <main>.
+       Dashboard Section 1 (Hero & Metric Cards) + Section 2 (Filters & Table)
        ======================================================================== -->
   <main class="portal-main" id="mainContent">
-    <!-- Page body components will go here -->
+
+    <!-- Section 1: Hero & Metric Cards -->
+    <section class="dashboard-overview-section" aria-label="Dashboard Overview">
+
+      <!-- Top Row: Welcome Heading & Action Controls -->
+      <div class="dashboard-hero-row">
+        <div class="dashboard-welcome-block">
+          <h1 class="dashboard-welcome-title">Welcome back, Jemma</h1>
+          <p class="dashboard-welcome-subtitle">Track, and manage your orders and quotations.</p>
+        </div>
+
+        <div class="dashboard-actions-block">
+          <!-- Navigates to #products for now; wire to Products page route later -->
+          <a href="#products" class="btn-new-quote" id="newQuoteBtn">New Quote</a>
+
+          <div class="dashboard-request-row">
+            <span>Can't find what you're looking for?</span>
+            <button
+              type="button"
+              class="request-product-link"
+              id="requestProductTrigger"
+              aria-haspopup="dialog"
+              aria-controls="requestProductModal"
+              aria-expanded="false"
+            >
+              Request a Product
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Three Metric Cards Row -->
+      <div class="dashboard-metrics-grid">
+
+        <!-- Card 1: Live Quotes -->
+        <article class="metric-card" data-metric-card="live-quotes">
+          <div class="metric-card-header">
+            <h2 class="metric-card-title">LIVE QUOTES</h2>
+            <div class="metric-filter-wrapper">
+              <button
+                type="button"
+                class="metric-filter-btn"
+                aria-label="Filter Live Quotes date range"
+                aria-expanded="false"
+                aria-controls="popover-live-quotes"
+                data-card-filter="live-quotes"
+              >
+                <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="128" cy="128" r="10"/>
+                  <circle cx="128" cy="60" r="10"/>
+                  <circle cx="128" cy="196" r="10"/>
+                </svg>
+              </button>
+              <div class="date-range-popover" id="popover-live-quotes" data-date-popover="live-quotes" role="dialog" aria-label="Live Quotes date range options">
+                <!-- Populated dynamically via script -->
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card-body">
+            <div class="metric-stats-col">
+              <p class="metric-value" data-metric-value>2</p>
+              <div class="metric-trend-row">
+                <span class="metric-trend-indicator is-up" data-metric-trend>
+                  <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span data-metric-percent>40%</span>
+                </span>
+                <span class="metric-trend-period" data-metric-period>vs last month</span>
+              </div>
+            </div>
+
+            <svg class="metric-sparkline" data-metric-sparkline width="96" height="48" viewBox="0 0 96 48" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path class="sparkline-area" d="M96 0C80.4031 1.29974 79.4372 32.4164 64 36C51.2702 38.9551 44.8241 22.1804 32 24C18.0903 25.9737 13.6391 43.4536 0 48H96V0Z" fill="#F0FDF4"/>
+              <path class="sparkline-fade" d="M96 0C80.4031 1.29974 79.4372 32.4164 64 36C51.2702 38.9551 44.8241 22.1804 32 24C18.0903 25.9737 13.6391 43.4536 0 48H96V0Z" fill="url(#sparkline_fade_1)"/>
+              <path class="sparkline-line" d="M0.75 47.25C14.3891 42.7037 18.8403 25.2237 32.75 23.25C45.5741 21.4304 52.0202 38.2052 64.75 35.25C80.1872 31.6664 81.1531 0.5498 95.25 0.75" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="sparkline_fade_1" x1="48" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop offset="0.641167" stop-color="white" stop-opacity="0"/>
+                  <stop offset="1" stop-color="white"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Card 2: Number of Quotes -->
+        <article class="metric-card" data-metric-card="number-of-quotes">
+          <div class="metric-card-header">
+            <h2 class="metric-card-title">NUMBER OF QUOTES</h2>
+            <div class="metric-filter-wrapper">
+              <button
+                type="button"
+                class="metric-filter-btn"
+                aria-label="Filter Number of Quotes date range"
+                aria-expanded="false"
+                aria-controls="popover-number-of-quotes"
+                data-card-filter="number-of-quotes"
+              >
+                <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="128" cy="128" r="10"/>
+                  <circle cx="128" cy="60" r="10"/>
+                  <circle cx="128" cy="196" r="10"/>
+                </svg>
+              </button>
+              <div class="date-range-popover" id="popover-number-of-quotes" data-date-popover="number-of-quotes" role="dialog" aria-label="Number of Quotes date range options">
+                <!-- Populated dynamically via script -->
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card-body">
+            <div class="metric-stats-col">
+              <p class="metric-value" data-metric-value>50</p>
+              <div class="metric-trend-row">
+                <span class="metric-trend-indicator is-down" data-metric-trend>
+                  <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M128 40V216M56 144L128 216L200 144" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span data-metric-percent>10%</span>
+                </span>
+                <span class="metric-trend-period" data-metric-period>vs last month</span>
+              </div>
+            </div>
+
+            <svg class="metric-sparkline" data-metric-sparkline width="96" height="48" viewBox="0 0 96 48" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path class="sparkline-area" d="M0 0C15.5969 1.29974 16.5628 32.4164 32 36C44.7298 38.9551 51.1759 22.1804 64 24C77.9097 25.9737 82.3609 43.4536 96 48H0V0Z" fill="#FEF2F2"/>
+              <path class="sparkline-fade" d="M0 0C15.5969 1.29974 16.5628 32.4164 32 36C44.7298 38.9551 51.1759 22.1804 64 24C77.9097 25.9737 82.3609 43.4536 96 48H0V0Z" fill="url(#sparkline_fade_2)"/>
+              <path class="sparkline-line" d="M95.25 47.25C81.6109 42.7037 77.1597 25.2237 63.25 23.25C50.4259 21.4304 43.9798 38.2052 31.25 35.25C15.8128 31.6664 14.8469 0.5498 0.75 0.75" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="sparkline_fade_2" x1="48" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop offset="0.641167" stop-color="white" stop-opacity="0"/>
+                  <stop offset="1" stop-color="white"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Card 3: Approved Quotes -->
+        <article class="metric-card" data-metric-card="approved-quotes">
+          <div class="metric-card-header">
+            <h2 class="metric-card-title">APPROVED QUOTES</h2>
+            <div class="metric-filter-wrapper">
+              <button
+                type="button"
+                class="metric-filter-btn"
+                aria-label="Filter Approved Quotes date range"
+                aria-expanded="false"
+                aria-controls="popover-approved-quotes"
+                data-card-filter="approved-quotes"
+              >
+                <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="128" cy="128" r="10"/>
+                  <circle cx="128" cy="60" r="10"/>
+                  <circle cx="128" cy="196" r="10"/>
+                </svg>
+              </button>
+              <div class="date-range-popover" id="popover-approved-quotes" data-date-popover="approved-quotes" role="dialog" aria-label="Approved Quotes date range options">
+                <!-- Populated dynamically via script -->
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card-body">
+            <div class="metric-stats-col">
+              <p class="metric-value" data-metric-value>24</p>
+              <div class="metric-trend-row">
+                <span class="metric-trend-indicator is-up" data-metric-trend>
+                  <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span data-metric-percent>20%</span>
+                </span>
+                <span class="metric-trend-period" data-metric-period>vs last month</span>
+              </div>
+            </div>
+
+            <svg class="metric-sparkline" data-metric-sparkline width="96" height="48" viewBox="0 0 96 48" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path class="sparkline-area" d="M96 0C80.4031 1.29974 79.4372 32.4164 64 36C51.2702 38.9551 44.8241 22.1804 32 24C18.0903 25.9737 13.6391 43.4536 0 48H96V0Z" fill="#F0FDF4"/>
+              <path class="sparkline-fade" d="M96 0C80.4031 1.29974 79.4372 32.4164 64 36C51.2702 38.9551 44.8241 22.1804 32 24C18.0903 25.9737 13.6391 43.4536 0 48H96V0Z" fill="url(#sparkline_fade_3)"/>
+              <path class="sparkline-line" d="M0.75 47.25C14.3891 42.7037 18.8403 25.2237 32.75 23.25C45.5741 21.4304 52.0202 38.2052 64.75 35.25C80.1872 31.6664 81.1531 0.5498 95.25 0.75" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="sparkline_fade_3" x1="48" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop offset="0.641167" stop-color="white" stop-opacity="0"/>
+                  <stop offset="1" stop-color="white"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Filters, Search & Quotations Table -->
+    <section class="dashboard-table-section" aria-label="Quotations List and Filters">
+
+      <!-- Toolbar: Left Filters + Right Search -->
+      <div class="table-toolbar">
+        <div class="table-filters-left" id="tableFiltersLeft">
+          <div class="filter-control-wrapper" id="moreFiltersWrapper">
+            <button
+              type="button"
+              class="btn-more-filters"
+              id="moreFiltersBtn"
+              aria-expanded="false"
+              aria-controls="moreFiltersPopover"
+            >
+              <svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M40 80H216M72 128H184M104 176H152" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>More filters</span>
+            </button>
+
+            <div
+              class="more-filters-popover"
+              id="moreFiltersPopover"
+              role="dialog"
+              aria-label="Filter quotes by event, type, and status"
+            >
+              <div class="more-filters-header">Filter by</div>
+              <div class="more-filters-divider"></div>
+
+              <!-- Event Group -->
+              <div class="more-filters-group" id="moreFiltersEventsGroup"></div>
+              <div class="more-filters-section-divider"></div>
+
+              <!-- Quote Type Group (CAPEX, OPEX, ZAPEX) -->
+              <div class="more-filters-group" id="moreFiltersTypesGroup"></div>
+              <div class="more-filters-section-divider"></div>
+
+              <!-- Status Group (Pending, Approved) -->
+              <div class="more-filters-group" id="moreFiltersStatusGroup"></div>
+            </div>
+          </div>
+
+          <div class="filter-chips-container" id="activeFilterChips" aria-live="polite">
+            <!-- Populated dynamically from selected filter checkboxes -->
+          </div>
+        </div>
+
+        <div class="table-search-box">
+          <svg class="ph-icon-15 table-search-icon" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="116" cy="116" r="80"/>
+            <path d="M172.568 172.568L216 216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <input
+            type="search"
+            id="quotesSearchInput"
+            class="table-search-input"
+            placeholder="Search"
+            aria-label="Search quotes"
+          />
+          <button
+            type="button"
+            class="table-search-clear-btn"
+            id="clearQuotesSearchBtn"
+            aria-label="Clear search"
+          >
+            <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="quotes-table-card">
+        <div class="quotes-table-scroll">
+          <table class="quotes-table" id="quotesTable">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="table-sort-btn is-active"
+                    data-sort-key="eventName"
+                    data-sort-dir="desc"
+                  >
+                    <span>Event &amp; Quote Name</span>
+                    <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 40V216M56 144L128 216L200 144" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="table-sort-btn"
+                    data-sort-key="total"
+                    data-sort-dir="desc"
+                  >
+                    <span>Total (AUD)</span>
+                    <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="table-sort-btn"
+                    data-sort-key="shortCode"
+                    data-sort-dir="asc"
+                  >
+                    <span>Event Short Code</span>
+                    <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="table-sort-btn"
+                    data-sort-key="eventDate"
+                    data-sort-dir="desc"
+                  >
+                    <span>Event Date</span>
+                    <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="table-sort-btn"
+                    data-sort-key="status"
+                    data-sort-dir="asc"
+                  >
+                    <span>Status</span>
+                    <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 40V216M56 144L128 216L200 144" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col" aria-label="Row actions"></th>
+              </tr>
+            </thead>
+            <tbody id="quotesTableBody">
+              <!-- Populated dynamically via script for interactive sorting -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="quotes-table-footer">
+          <div class="pagination-btns">
+            <button type="button" class="pagination-btn" id="prevPageBtn" disabled>Previous</button>
+            <button type="button" class="pagination-btn" id="nextPageBtn">Next</button>
+          </div>
+          <p class="pagination-info" id="paginationInfo">Page 1 of 10</p>
+        </div>
+      </div>
+
+    </section>
+
   </main>
   <!-- ========================================================================
        END SLOT: MAIN PAGE BODY CONTENT
@@ -457,11 +2495,302 @@
 
 
   <!-- ========================================================================
-       START COMPONENT: CLIENT PORTAL FOOTER
-       Insert Footer HTML here when ready.
+       START COMPONENT: SHAREABLE LINK FULL-SCREEN MODAL
        ======================================================================== -->
-  <footer id="clientPortalFooter">
-    <!-- Footer component will go here -->
+  <div
+    class="share-modal-backdrop"
+    id="shareLinkModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="shareLinkModalTitle"
+    aria-hidden="true"
+  >
+    <div class="share-modal-card" id="shareLinkModalCard">
+      <div class="share-modal-icon-badge" aria-hidden="true">
+        <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M176 152L224 104L176 56" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M192 208H40V88" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M72 176C77.3227 155.385 89.3477 137.127 106.183 124.091C123.019 111.057 143.709 103.989 165 104H224" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h2 class="share-modal-title" id="shareLinkModalTitle">Here's the shareable link</h2>
+
+      <div class="share-modal-row">
+        <div class="share-link-field">
+          <span class="share-link-protocol" id="shareLinkProtocol">http://</span>
+          <div class="share-link-value-wrap">
+            <input
+              type="text"
+              id="shareLinkInput"
+              class="share-link-input"
+              value="www.arenabranding.com.au/134"
+              readonly
+              aria-label="Shareable quotation link"
+            />
+            <button
+              type="button"
+              class="share-copy-btn"
+              id="copyShareLinkBtn"
+              aria-label="Copy shareable link"
+            >
+              <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="40" y="88" width="128" height="128" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="share-modal-close-btn"
+          id="closeShareLinkModalBtn"
+          aria-label="Close shareable link modal"
+        >
+          <svg class="ph-icon-15" width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="128" cy="128" r="96"/>
+            <path d="M160 96L96 160M96 96L160 160" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="share-modal-feedback" id="shareLinkFeedback" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: SHAREABLE LINK FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: REQUEST A PRODUCT FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="share-modal-backdrop"
+    id="requestProductModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="requestProductModalTitle"
+    aria-hidden="true"
+  >
+    <div class="request-modal-card" id="requestProductModalCard">
+      <div class="request-modal-header">
+        <div class="share-modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M224 177.321V78.6789C224 75.8644 223.271 73.0977 221.884 70.649C220.497 68.2003 218.499 66.1539 216.086 64.7107L136.086 16.8678C133.638 15.4041 130.844 14.6309 128 14.6309C125.156 14.6309 122.362 15.4041 119.914 16.8678L39.9143 64.7107C37.5011 66.1539 35.5028 68.2003 34.1158 70.649C32.7289 73.0977 32 75.8644 32 78.6789V177.321C32 180.136 32.7289 182.902 34.1158 185.351C35.5028 187.8 37.5011 189.846 39.9143 191.289L119.914 239.132C122.362 240.596 125.156 241.369 128 241.369C130.844 241.369 133.638 240.596 136.086 239.132L216.086 191.289C218.499 189.846 220.497 187.8 221.884 185.351C223.271 182.902 224 180.136 224 177.321Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M177.024 152.51V100.58L80 42.8101" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M222.897 74.6199L128.949 128L33.103 74.6199" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128.949 128L128 241.37" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="request-modal-heading-group">
+          <h2 class="share-modal-title" id="requestProductModalTitle">Request a Product</h2>
+          <p class="request-modal-subtitle">
+            Share the item details below and our team will review availability and follow up via email.
+          </p>
+        </div>
+      </div>
+
+      <form class="request-modal-form" id="requestProductForm">
+        <div class="request-modal-fields">
+          <div class="request-field-group">
+            <label class="request-field-label" for="requestProductNameInput">
+              Product Name <span class="request-required-star" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="requestProductNameInput"
+              name="productName"
+              class="request-text-input"
+              placeholder="e.g., Custom Event Signage, Pop-Up Banner, Hanging Banner"
+              required
+            />
+          </div>
+
+          <div class="request-field-row">
+            <div class="request-field-group">
+              <label class="request-field-label" for="requestReferenceFileInput">
+                Reference Image or File Link
+              </label>
+              <input
+                type="url"
+                id="requestReferenceFileInput"
+                name="referenceFileLink"
+                class="request-text-input"
+                placeholder="drive.google.com or dropbox link"
+              />
+            </div>
+
+            <div class="request-field-group">
+              <label class="request-field-label" for="requestReferenceUrlInput">
+                Reference Website URL
+              </label>
+              <input
+                type="url"
+                id="requestReferenceUrlInput"
+                name="referenceWebsiteUrl"
+                class="request-text-input"
+                placeholder="https://example.com/product-page"
+              />
+            </div>
+          </div>
+
+          <div class="request-field-group">
+            <label class="request-field-label" for="requestProductDetailsInput">
+              Product Specifications &amp; Details
+            </label>
+            <textarea
+              id="requestProductDetailsInput"
+              name="productDetails"
+              class="request-textarea"
+              placeholder="Describe the item you need (dimensions, material, estimated quantity, or event requirements). You can also paste additional reference links here."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="request-modal-actions">
+          <button
+            type="button"
+            class="btn-request-cancel"
+            id="cancelRequestProductBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-request-submit"
+            id="submitRequestProductBtn"
+          >
+            Submit Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: REQUEST A PRODUCT FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ======================================================================== -->
+  <div
+    class="share-modal-backdrop"
+    id="requestSubmittedModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="requestSubmittedModalTitle"
+    aria-hidden="true"
+  >
+    <div class="success-modal-card" id="requestSubmittedModalCard">
+      <div class="success-modal-icon-badge" aria-hidden="true">
+        <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="success-modal-content">
+        <div class="success-modal-copy">
+          <h2 class="share-modal-title" id="requestSubmittedModalTitle">Product Request Submitted</h2>
+          <p class="success-modal-description" id="requestSubmittedModalMessage">
+            We’ve received your product request. Our team will review the details and reach out to you via email shortly.
+          </p>
+        </div>
+
+        <a
+          href="#products"
+          class="btn-success-primary"
+          id="backToProductsBtn"
+        >
+          Back to Products
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="clientPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="#dashboard" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
   </footer>
   <!-- ========================================================================
        END COMPONENT: CLIENT PORTAL FOOTER
@@ -469,7 +2798,7 @@
 
 
   <!-- ========================================================================
-       COMPONENT SCRIPTS: NAVIGATION INTERACTIVITY
+       COMPONENT SCRIPTS: NAVIGATION, METRIC FILTERS, MORE FILTERS, TABLE & MODALS
        ======================================================================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -478,21 +2807,17 @@
       const mobileNavDrawer = document.getElementById('mobileNavDrawer');
       const navLinks = document.querySelectorAll('[data-nav-link]');
 
-      // Toggle Mobile Drawer & Swap Phosphor Burger / Close Icon
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
       function toggleMobileMenu(forceClose = false) {
         const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
         const shouldOpen = forceClose ? false : !isCurrentlyOpen;
 
         mobileNavDrawer.classList.toggle('is-open', shouldOpen);
         mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
-
-        if (shouldOpen) {
-          mobileMenuIcon.classList.remove('ph-list');
-          mobileMenuIcon.classList.add('ph-x');
-        } else {
-          mobileMenuIcon.classList.remove('ph-x');
-          mobileMenuIcon.classList.add('ph-list');
-        }
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
       }
 
       mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
@@ -517,6 +2842,969 @@
           toggleMobileMenu(true);
         }
       });
+
+      /* ----------------------------------------------------------------------
+         Metric Cards Date Range Filter Popover & Dummy Dataset
+         ---------------------------------------------------------------------- */
+      const dateRangeOptions = [
+        { id: 'last-7-days', label: 'Last 7 Days', comparison: 'vs last 7 days' },
+        { id: 'last-month', label: 'Last Month', comparison: 'vs last month' },
+        { id: 'last-6-months', label: 'Last 6 Months', comparison: 'vs last 6 months' },
+        { id: 'last-year', label: 'Last Year', comparison: 'vs last year' },
+        { id: 'last-2-years', label: 'Last 2 Years', comparison: 'vs last 2 years' },
+        { id: 'last-5-years', label: 'Last 5 Years', comparison: 'vs last 5 years' },
+        { id: 'all-time', label: 'All Time', comparison: 'vs previous period' }
+      ];
+
+      const sparklineShapes = {
+        up: {
+          areaFill: '#F0FDF4',
+          stroke: '#22C55E',
+          areaD: 'M96 0C80.4031 1.29974 79.4372 32.4164 64 36C51.2702 38.9551 44.8241 22.1804 32 24C18.0903 25.9737 13.6391 43.4536 0 48H96V0Z',
+          lineD: 'M0.75 47.25C14.3891 42.7037 18.8403 25.2237 32.75 23.25C45.5741 21.4304 52.0202 38.2052 64.75 35.25C80.1872 31.6664 81.1531 0.5498 95.25 0.75'
+        },
+        down: {
+          areaFill: '#FEF2F2',
+          stroke: '#EF4444',
+          areaD: 'M0 0C15.5969 1.29974 16.5628 32.4164 32 36C44.7298 38.9551 51.1759 22.1804 64 24C77.9097 25.9737 82.3609 43.4536 96 48H0V0Z',
+          lineD: 'M95.25 47.25C81.6109 42.7037 77.1597 25.2237 63.25 23.25C50.4259 21.4304 43.9798 38.2052 31.25 35.25C15.8128 31.6664 14.8469 0.5498 0.75 0.75'
+        }
+      };
+
+      const upArrowSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M128 216V40M56 112L128 40L200 112" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const downArrowSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M128 40V216M56 144L128 216L200 144" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      const metricCardsData = {
+        'live-quotes': {
+          defaultRange: 'last-month',
+          ranges: {
+            'last-7-days': { value: '1', trend: 'up', percent: '25%' },
+            'last-month': { value: '2', trend: 'up', percent: '40%' },
+            'last-6-months': { value: '8', trend: 'up', percent: '33%' },
+            'last-year': { value: '14', trend: 'down', percent: '8%' },
+            'last-2-years': { value: '26', trend: 'up', percent: '18%' },
+            'last-5-years': { value: '42', trend: 'up', percent: '52%' },
+            'all-time': { value: '68', trend: 'up', percent: '64%' }
+          }
+        },
+        'number-of-quotes': {
+          defaultRange: 'last-month',
+          ranges: {
+            'last-7-days': { value: '12', trend: 'up', percent: '15%' },
+            'last-month': { value: '50', trend: 'down', percent: '10%' },
+            'last-6-months': { value: '214', trend: 'up', percent: '22%' },
+            'last-year': { value: '438', trend: 'up', percent: '14%' },
+            'last-2-years': { value: '812', trend: 'down', percent: '5%' },
+            'last-5-years': { value: '1,690', trend: 'up', percent: '38%' },
+            'all-time': { value: '2,450', trend: 'up', percent: '46%' }
+          }
+        },
+        'approved-quotes': {
+          defaultRange: 'last-month',
+          ranges: {
+            'last-7-days': { value: '6', trend: 'up', percent: '20%' },
+            'last-month': { value: '24', trend: 'up', percent: '20%' },
+            'last-6-months': { value: '108', trend: 'up', percent: '16%' },
+            'last-year': { value: '226', trend: 'down', percent: '6%' },
+            'last-2-years': { value: '415', trend: 'up', percent: '12%' },
+            'last-5-years': { value: '890', trend: 'up', percent: '29%' },
+            'all-time': { value: '1,320', trend: 'up', percent: '35%' }
+          }
+        }
+      };
+
+      function updateMetricCardView(cardKey, rangeId) {
+        const cardEl = document.querySelector(`[data-metric-card="${cardKey}"]`);
+        const dataset = metricCardsData[cardKey];
+        if (!cardEl || !dataset) return;
+
+        const rangeMeta = dateRangeOptions.find((opt) => opt.id === rangeId) || dateRangeOptions[1];
+        const entry = dataset.ranges[rangeMeta.id] || dataset.ranges[dataset.defaultRange];
+        const isUp = entry.trend === 'up';
+        const shape = isUp ? sparklineShapes.up : sparklineShapes.down;
+
+        const valueEl = cardEl.querySelector('[data-metric-value]');
+        const trendEl = cardEl.querySelector('[data-metric-trend]');
+        const periodEl = cardEl.querySelector('[data-metric-period]');
+        const sparklineEl = cardEl.querySelector('[data-metric-sparkline]');
+
+        if (valueEl) valueEl.textContent = entry.value;
+        if (periodEl) periodEl.textContent = rangeMeta.comparison;
+
+        if (trendEl) {
+          trendEl.classList.toggle('is-up', isUp);
+          trendEl.classList.toggle('is-down', !isUp);
+          trendEl.innerHTML = `${isUp ? upArrowSvg : downArrowSvg}<span>${entry.percent}</span>`;
+        }
+
+        if (sparklineEl) {
+          const areaPath = sparklineEl.querySelector('.sparkline-area');
+          const fadePath = sparklineEl.querySelector('.sparkline-fade');
+          const linePath = sparklineEl.querySelector('.sparkline-line');
+          if (areaPath) {
+            areaPath.setAttribute('d', shape.areaD);
+            areaPath.setAttribute('fill', shape.areaFill);
+          }
+          if (fadePath) fadePath.setAttribute('d', shape.areaD);
+          if (linePath) {
+            linePath.setAttribute('d', shape.lineD);
+            linePath.setAttribute('stroke', shape.stroke);
+          }
+        }
+      }
+
+      function closeAllDatePopovers() {
+        document.querySelectorAll('[data-date-popover]').forEach((popover) => {
+          popover.classList.remove('is-open');
+        });
+        document.querySelectorAll('[data-card-filter]').forEach((btn) => {
+          btn.setAttribute('aria-expanded', 'false');
+        });
+        document.querySelectorAll('[data-metric-card]').forEach((card) => {
+          card.classList.remove('is-menu-open');
+        });
+      }
+
+      // Render radio options inside each metric card's three-dot popover
+      Object.keys(metricCardsData).forEach((cardKey) => {
+        const popoverEl = document.querySelector(`[data-date-popover="${cardKey}"]`);
+        const defaultRangeId = metricCardsData[cardKey].defaultRange;
+        if (!popoverEl) return;
+
+        const listEl = document.createElement('div');
+        listEl.className = 'date-range-list';
+        listEl.setAttribute('role', 'radiogroup');
+
+        dateRangeOptions.forEach((opt) => {
+          const inputId = `radio-${cardKey}-${opt.id}`;
+          const labelEl = document.createElement('label');
+          labelEl.className = 'date-range-option';
+          labelEl.setAttribute('for', inputId);
+
+          const radioEl = document.createElement('input');
+          radioEl.type = 'radio';
+          radioEl.name = `date-range-${cardKey}`;
+          radioEl.id = inputId;
+          radioEl.value = opt.id;
+          radioEl.className = 'date-range-radio-input';
+          radioEl.checked = opt.id === defaultRangeId;
+
+          const circleEl = document.createElement('span');
+          circleEl.className = 'date-range-radio-circle';
+          circleEl.setAttribute('aria-hidden', 'true');
+
+          const textEl = document.createElement('span');
+          textEl.textContent = opt.label;
+
+          radioEl.addEventListener('change', () => {
+            if (radioEl.checked) {
+              updateMetricCardView(cardKey, opt.id);
+              closeAllDatePopovers();
+            }
+          });
+
+          labelEl.appendChild(radioEl);
+          labelEl.appendChild(circleEl);
+          labelEl.appendChild(textEl);
+          listEl.appendChild(labelEl);
+        });
+
+        popoverEl.appendChild(listEl);
+        updateMetricCardView(cardKey, defaultRangeId);
+      });
+
+      // Toggle three-dot menu on click
+      document.querySelectorAll('[data-card-filter]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const cardKey = btn.dataset.cardFilter;
+          const popoverEl = document.querySelector(`[data-date-popover="${cardKey}"]`);
+          const cardEl = document.querySelector(`[data-metric-card="${cardKey}"]`);
+          const isAlreadyOpen = popoverEl && popoverEl.classList.contains('is-open');
+
+          closeAllDatePopovers();
+
+          if (!isAlreadyOpen && popoverEl) {
+            popoverEl.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+            if (cardEl) cardEl.classList.add('is-menu-open');
+          }
+        });
+      });
+
+      /* ----------------------------------------------------------------------
+         More Filters Checkbox Popover & Active Filter Chips
+         ---------------------------------------------------------------------- */
+      const moreFiltersBtn = document.getElementById('moreFiltersBtn');
+      const moreFiltersPopover = document.getElementById('moreFiltersPopover');
+      const moreFiltersEventsGroup = document.getElementById('moreFiltersEventsGroup');
+      const moreFiltersTypesGroup = document.getElementById('moreFiltersTypesGroup');
+      const moreFiltersStatusGroup = document.getElementById('moreFiltersStatusGroup');
+      const activeFilterChipsContainer = document.getElementById('activeFilterChips');
+      const quotesSearchInput = document.getElementById('quotesSearchInput');
+      const clearQuotesSearchBtn = document.getElementById('clearQuotesSearchBtn');
+
+      const filterGroupsConfig = [
+        {
+          container: moreFiltersEventsGroup,
+          category: 'eventName',
+          items: [
+            { value: 'Auckland Marathon 2026', label: 'Auckland Marathon 2026', checked: false },
+            { value: 'Queenstown', label: 'Queenstown', checked: false },
+            { value: 'IM Event 2026', label: 'IM Event 2026', checked: false }
+          ]
+        },
+        {
+          container: moreFiltersTypesGroup,
+          category: 'quoteType',
+          items: [
+            { value: 'CAPEX', label: 'CAPEX', checked: true },
+            { value: 'OPEX', label: 'OPEX', checked: true },
+            { value: 'ZAPEX', label: 'ZAPEX', checked: true }
+          ]
+        },
+        {
+          container: moreFiltersStatusGroup,
+          category: 'status',
+          items: [
+            { value: 'Pending', label: 'Pending', pillClass: 'more-filters-pill is-pending', checked: false },
+            { value: 'Approved', label: 'Approved', pillClass: 'more-filters-pill is-approved', checked: false }
+          ]
+        }
+      ];
+
+      const checkIconSvg = '<svg class="ph-icon-15" width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M208 68L96 180L48 132" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const chipCloseSvg = '<svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      const filterInputsByKey = new Map();
+
+      function getFilterKey(category, value) {
+        return `${category}::${value}`;
+      }
+
+      function getSelectedFilters() {
+        const selected = {
+          eventName: new Set(),
+          quoteType: new Set(),
+          status: new Set()
+        };
+
+        filterInputsByKey.forEach((inputEl) => {
+          if (inputEl.checked) {
+            const { filterCategory, filterValue } = inputEl.dataset;
+            if (selected[filterCategory]) {
+              selected[filterCategory].add(filterValue);
+            }
+          }
+        });
+
+        return selected;
+      }
+
+      function renderActiveFilterChips() {
+        const chips = [];
+
+        filterInputsByKey.forEach((inputEl) => {
+          if (inputEl.checked) {
+            const { filterCategory, filterValue, filterLabel } = inputEl.dataset;
+            chips.push(`
+              <span
+                class="filter-chip"
+                data-filter-chip="${filterValue}"
+                data-filter-category="${filterCategory}"
+              >
+                <span>${filterLabel}</span>
+                <button
+                  type="button"
+                  class="filter-chip-remove"
+                  aria-label="Remove ${filterLabel} filter"
+                  data-remove-category="${filterCategory}"
+                  data-remove-value="${filterValue}"
+                >
+                  ${chipCloseSvg}
+                </button>
+              </span>
+            `);
+          }
+        });
+
+        activeFilterChipsContainer.innerHTML = chips.join('');
+
+        activeFilterChipsContainer.querySelectorAll('.filter-chip-remove').forEach((removeBtn) => {
+          removeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const key = getFilterKey(removeBtn.dataset.removeCategory, removeBtn.dataset.removeValue);
+            const checkboxEl = filterInputsByKey.get(key);
+            if (checkboxEl) {
+              checkboxEl.checked = false;
+              checkboxEl.dispatchEvent(new Event('change'));
+            }
+          });
+        });
+      }
+
+      // Build checkbox rows inside More Filters popover
+      filterGroupsConfig.forEach((group) => {
+        group.items.forEach((item) => {
+          const filterKey = getFilterKey(group.category, item.value);
+          const inputId = `more-filter-${group.category}-${item.value.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+          const labelEl = document.createElement('label');
+          labelEl.className = 'more-filters-option';
+          labelEl.setAttribute('for', inputId);
+
+          const checkboxEl = document.createElement('input');
+          checkboxEl.type = 'checkbox';
+          checkboxEl.id = inputId;
+          checkboxEl.value = item.value;
+          checkboxEl.checked = Boolean(item.checked);
+          checkboxEl.className = 'more-filters-checkbox-input';
+          checkboxEl.dataset.filterCategory = group.category;
+          checkboxEl.dataset.filterValue = item.value;
+          checkboxEl.dataset.filterLabel = item.label;
+
+          const boxEl = document.createElement('span');
+          boxEl.className = 'more-filters-checkbox-box';
+          boxEl.setAttribute('aria-hidden', 'true');
+          boxEl.innerHTML = checkIconSvg;
+
+          const textEl = document.createElement('span');
+          if (item.pillClass) {
+            textEl.className = item.pillClass;
+          } else {
+            textEl.className = 'more-filters-option-label';
+          }
+          textEl.textContent = item.label;
+
+          checkboxEl.addEventListener('change', () => {
+            renderActiveFilterChips();
+            renderQuotesTable();
+          });
+
+          filterInputsByKey.set(filterKey, checkboxEl);
+
+          labelEl.appendChild(checkboxEl);
+          labelEl.appendChild(boxEl);
+          labelEl.appendChild(textEl);
+          group.container.appendChild(labelEl);
+        });
+      });
+
+      function closeMoreFiltersPopover() {
+        if (!moreFiltersPopover || !moreFiltersBtn) return;
+        moreFiltersPopover.classList.remove('is-open');
+        moreFiltersBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      if (moreFiltersBtn && moreFiltersPopover) {
+        moreFiltersBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          closeAllDatePopovers();
+          const willOpen = !moreFiltersPopover.classList.contains('is-open');
+          moreFiltersPopover.classList.toggle('is-open', willOpen);
+          moreFiltersBtn.setAttribute('aria-expanded', String(willOpen));
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Modal Body Scroll Lock Helper
+         ---------------------------------------------------------------------- */
+      const shareLinkModal = document.getElementById('shareLinkModal');
+      const requestProductModal = document.getElementById('requestProductModal');
+      const requestSubmittedModal = document.getElementById('requestSubmittedModal');
+
+      function syncBodyModalState() {
+        const hasOpenModal = [shareLinkModal, requestProductModal, requestSubmittedModal].some(
+          (modalEl) => modalEl && modalEl.classList.contains('is-open')
+        );
+        document.body.classList.toggle('is-modal-open', hasOpenModal);
+      }
+
+      /* ----------------------------------------------------------------------
+         Shareable Link Modal Logic
+         ---------------------------------------------------------------------- */
+      const shareLinkProtocol = document.getElementById('shareLinkProtocol');
+      const shareLinkInput = document.getElementById('shareLinkInput');
+      const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+      const closeShareLinkModalBtn = document.getElementById('closeShareLinkModalBtn');
+      const shareLinkFeedback = document.getElementById('shareLinkFeedback');
+
+      let lastFocusedShareTrigger = null;
+
+      function getShareUrlParts(quoteRow) {
+        const basePath = quoteRow && quoteRow.sharePath ? quoteRow.sharePath : 'www.arenabranding.com.au/134';
+        return {
+          protocol: 'http://',
+          path: basePath,
+          fullUrl: `http://${basePath}`
+        };
+      }
+
+      function openShareLinkModal(quoteRow, triggerEl = null) {
+        if (!shareLinkModal) return;
+        lastFocusedShareTrigger = triggerEl;
+
+        const parts = getShareUrlParts(quoteRow);
+        if (shareLinkProtocol) shareLinkProtocol.textContent = parts.protocol;
+        if (shareLinkInput) {
+          shareLinkInput.value = parts.path;
+          shareLinkInput.dataset.fullUrl = parts.fullUrl;
+        }
+        if (shareLinkFeedback) shareLinkFeedback.textContent = '';
+        if (copyShareLinkBtn) copyShareLinkBtn.classList.remove('is-copied');
+
+        shareLinkModal.classList.add('is-open');
+        shareLinkModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (closeShareLinkModalBtn) {
+          closeShareLinkModalBtn.focus();
+        }
+      }
+
+      function closeShareLinkModal() {
+        if (!shareLinkModal || !shareLinkModal.classList.contains('is-open')) return;
+        shareLinkModal.classList.remove('is-open');
+        shareLinkModal.setAttribute('aria-hidden', 'true');
+        syncBodyModalState();
+
+        if (lastFocusedShareTrigger && typeof lastFocusedShareTrigger.focus === 'function') {
+          lastFocusedShareTrigger.focus();
+        }
+        lastFocusedShareTrigger = null;
+      }
+
+      async function copyCurrentShareLink() {
+        const textToCopy = (shareLinkInput && (shareLinkInput.dataset.fullUrl || shareLinkInput.value)) || 'http://www.arenabranding.com.au/134';
+        let copied = false;
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            copied = true;
+          } catch (_) {
+            copied = false;
+          }
+        }
+
+        if (!copied && shareLinkInput) {
+          const tempInput = document.createElement('input');
+          tempInput.value = textToCopy;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          try {
+            copied = document.execCommand('copy');
+          } catch (_) {
+            copied = false;
+          }
+          document.body.removeChild(tempInput);
+        }
+
+        if (shareLinkInput) {
+          shareLinkInput.select();
+        }
+
+        if (copyShareLinkBtn) {
+          copyShareLinkBtn.classList.toggle('is-copied', copied);
+        }
+
+        if (shareLinkFeedback) {
+          shareLinkFeedback.textContent = copied
+            ? `Copied ${textToCopy} to clipboard.`
+            : 'Select and copy the link manually.';
+        }
+      }
+
+      if (copyShareLinkBtn) {
+        copyShareLinkBtn.addEventListener('click', copyCurrentShareLink);
+      }
+
+      if (closeShareLinkModalBtn) {
+        closeShareLinkModalBtn.addEventListener('click', closeShareLinkModal);
+      }
+
+      if (shareLinkModal) {
+        shareLinkModal.addEventListener('click', (event) => {
+          if (event.target === shareLinkModal) {
+            closeShareLinkModal();
+          }
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Request a Product Modal Logic
+         ---------------------------------------------------------------------- */
+      const requestProductTrigger = document.getElementById('requestProductTrigger');
+      const requestProductForm = document.getElementById('requestProductForm');
+      const requestProductNameInput = document.getElementById('requestProductNameInput');
+      const cancelRequestProductBtn = document.getElementById('cancelRequestProductBtn');
+
+      let lastFocusedRequestTrigger = null;
+
+      function openRequestProductModal(triggerEl = null) {
+        if (!requestProductModal) return;
+        lastFocusedRequestTrigger = triggerEl || requestProductTrigger;
+
+        closeAllDatePopovers();
+        closeMoreFiltersPopover();
+
+        requestProductModal.classList.add('is-open');
+        requestProductModal.setAttribute('aria-hidden', 'false');
+        if (requestProductTrigger) {
+          requestProductTrigger.setAttribute('aria-expanded', 'true');
+        }
+        syncBodyModalState();
+
+        if (requestProductNameInput) {
+          requestProductNameInput.focus();
+        }
+      }
+
+      function closeRequestProductModal(resetForm = false) {
+        if (!requestProductModal || !requestProductModal.classList.contains('is-open')) return;
+        requestProductModal.classList.remove('is-open');
+        requestProductModal.setAttribute('aria-hidden', 'true');
+        if (requestProductTrigger) {
+          requestProductTrigger.setAttribute('aria-expanded', 'false');
+        }
+        if (resetForm && requestProductForm) {
+          requestProductForm.reset();
+        }
+        syncBodyModalState();
+
+        if (lastFocusedRequestTrigger && typeof lastFocusedRequestTrigger.focus === 'function') {
+          lastFocusedRequestTrigger.focus();
+        }
+        lastFocusedRequestTrigger = null;
+      }
+
+      if (requestProductTrigger) {
+        requestProductTrigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          openRequestProductModal(requestProductTrigger);
+        });
+      }
+
+      if (cancelRequestProductBtn) {
+        cancelRequestProductBtn.addEventListener('click', () => {
+          closeRequestProductModal(true);
+        });
+      }
+
+      if (requestProductModal) {
+        requestProductModal.addEventListener('click', (event) => {
+          if (event.target === requestProductModal) {
+            closeRequestProductModal(false);
+          }
+        });
+      }
+
+      if (requestProductForm) {
+        requestProductForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!requestProductForm.checkValidity()) {
+            requestProductForm.reportValidity();
+            return;
+          }
+
+          const formData = new FormData(requestProductForm);
+          const submittedPayload = {
+            productName: String(formData.get('productName') || '').trim(),
+            referenceFileLink: String(formData.get('referenceFileLink') || '').trim(),
+            referenceWebsiteUrl: String(formData.get('referenceWebsiteUrl') || '').trim(),
+            productDetails: String(formData.get('productDetails') || '').trim()
+          };
+
+          closeRequestProductModal(true);
+          openRequestSubmittedModal(submittedPayload);
+
+          document.dispatchEvent(
+            new CustomEvent('requestProductSubmitted', { detail: submittedPayload })
+          );
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Product Request Submitted Success Modal Logic (Reusable)
+         ---------------------------------------------------------------------- */
+      const requestSubmittedModalTitle = document.getElementById('requestSubmittedModalTitle');
+      const requestSubmittedModalMessage = document.getElementById('requestSubmittedModalMessage');
+      const backToProductsBtn = document.getElementById('backToProductsBtn');
+
+      function openRequestSubmittedModal(options = {}) {
+        if (!requestSubmittedModal) return;
+
+        if (requestSubmittedModalTitle) {
+          requestSubmittedModalTitle.textContent = options.title || 'Product Request Submitted';
+        }
+        if (requestSubmittedModalMessage) {
+          requestSubmittedModalMessage.textContent =
+            options.message ||
+            'We’ve received your product request. Our team will review the details and reach out to you via email shortly.';
+        }
+        if (backToProductsBtn) {
+          backToProductsBtn.textContent = options.buttonText || 'Back to Products';
+          backToProductsBtn.setAttribute('href', options.buttonHref || '#products');
+        }
+
+        requestSubmittedModal.classList.add('is-open');
+        requestSubmittedModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (backToProductsBtn) {
+          backToProductsBtn.focus();
+        }
+      }
+
+      function closeRequestSubmittedModal() {
+        if (!requestSubmittedModal || !requestSubmittedModal.classList.contains('is-open')) return;
+        requestSubmittedModal.classList.remove('is-open');
+        requestSubmittedModal.setAttribute('aria-hidden', 'true');
+        syncBodyModalState();
+      }
+
+      window.openPortalSuccessModal = openRequestSubmittedModal;
+      window.closePortalSuccessModal = closeRequestSubmittedModal;
+
+      if (backToProductsBtn) {
+        backToProductsBtn.addEventListener('click', () => {
+          const targetHref = backToProductsBtn.getAttribute('href');
+          if (targetHref) {
+            navLinks.forEach((item) => {
+              item.classList.toggle('active', item.getAttribute('href') === targetHref);
+            });
+          }
+          closeRequestSubmittedModal();
+        });
+      }
+
+      if (requestSubmittedModal) {
+        requestSubmittedModal.addEventListener('click', (event) => {
+          if (event.target === requestSubmittedModal) {
+            closeRequestSubmittedModal();
+          }
+        });
+      }
+
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.metric-filter-wrapper')) {
+          closeAllDatePopovers();
+        }
+        if (!event.target.closest('#moreFiltersWrapper')) {
+          closeMoreFiltersPopover();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (requestSubmittedModal && requestSubmittedModal.classList.contains('is-open')) {
+            closeRequestSubmittedModal();
+            return;
+          }
+          if (requestProductModal && requestProductModal.classList.contains('is-open')) {
+            closeRequestProductModal(false);
+            return;
+          }
+          if (shareLinkModal && shareLinkModal.classList.contains('is-open')) {
+            closeShareLinkModal();
+            return;
+          }
+          closeAllDatePopovers();
+          closeMoreFiltersPopover();
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         Quotes Table Data, Filtering, Search & Column Sorting
+         ---------------------------------------------------------------------- */
+      const quotesData = [
+        {
+          id: 1,
+          eventName: 'Auckland Marathon 2026',
+          quoteType: 'CAPEX',
+          total: 20701.25,
+          totalDisplay: '$20,701.25',
+          shortCode: 'AM26',
+          eventDate: 'Oct. 20, 2026',
+          timestamp: Date.parse('Oct 20, 2026'),
+          status: 'Pending',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 2,
+          eventName: 'Auckland Marathon 2026',
+          quoteType: 'OPEX',
+          total: 10500,
+          totalDisplay: '$10,500',
+          shortCode: 'AM26',
+          eventDate: 'Oct. 18, 2026',
+          timestamp: Date.parse('Oct 18, 2026'),
+          status: 'Pending',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 3,
+          eventName: 'Auckland Marathon 2026',
+          quoteType: 'ZAPEX',
+          total: 7001.50,
+          totalDisplay: '$7,001.50',
+          shortCode: 'AM26',
+          eventDate: 'Oct. 10, 2026',
+          timestamp: Date.parse('Oct 10, 2026'),
+          status: 'Approved',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 4,
+          eventName: 'Queenstown',
+          quoteType: 'CAPEX',
+          total: 6500.75,
+          totalDisplay: '$6,500.75',
+          shortCode: 'QT',
+          eventDate: 'Oct. 8, 2026',
+          timestamp: Date.parse('Oct 8, 2026'),
+          status: 'Approved',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 5,
+          eventName: 'Queenstown',
+          quoteType: 'CAPEX',
+          total: 6000,
+          totalDisplay: '$6,000',
+          shortCode: 'QT',
+          eventDate: 'Oct. 7, 2026',
+          timestamp: Date.parse('Oct 7, 2026'),
+          status: 'Approved',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 6,
+          eventName: 'Queenstown',
+          quoteType: 'OPEX',
+          total: 5000,
+          totalDisplay: '$5,000',
+          shortCode: 'QT',
+          eventDate: 'Oct. 6, 2026',
+          timestamp: Date.parse('Oct 6, 2026'),
+          status: 'Approved',
+          sharePath: 'www.arenabranding.com.au/134'
+        },
+        {
+          id: 7,
+          eventName: 'IM Event 2026',
+          quoteType: 'OPEX',
+          total: 3000,
+          totalDisplay: '$3,000',
+          shortCode: 'IME26',
+          eventDate: 'Oct. 2, 2026',
+          timestamp: Date.parse('Oct 2, 2026'),
+          status: 'Approved',
+          sharePath: 'www.arenabranding.com.au/134'
+        }
+      ];
+
+      const quotesTableBody = document.getElementById('quotesTableBody');
+      const sortButtons = document.querySelectorAll('.table-sort-btn');
+
+      // Default sort keeps initial row order; clicking a header toggles asc / desc
+      let currentSort = { key: null, dir: 'asc' };
+
+      const statusOrder = {
+        Pending: 1,
+        Approved: 2,
+        Rejected: 3
+      };
+
+      const eyeSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M128 56C48 56 16 128 16 128C16 128 48 200 128 200C208 200 240 128 240 128C240 128 208 56 128 56Z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="128" cy="128" r="32"/></svg>';
+      const shareArrowSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M176 152L224 104L176 56" stroke-linecap="round" stroke-linejoin="round"/><path d="M192 208H40V88" stroke-linecap="round" stroke-linejoin="round"/><path d="M72 176C77.3227 155.385 89.3477 137.127 106.183 124.091C123.019 111.057 143.709 103.989 165 104H224" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function getStatusBadgeClass(status) {
+        if (status === 'Pending') return 'status-badge is-pending';
+        if (status === 'Rejected') return 'status-badge is-rejected';
+        return 'status-badge is-approved';
+      }
+
+      function filterRows(rows) {
+        const selected = getSelectedFilters();
+        const searchTerm = (quotesSearchInput ? quotesSearchInput.value : '').trim().toLowerCase();
+
+        return rows.filter((row) => {
+          if (selected.eventName.size > 0 && !selected.eventName.has(row.eventName)) {
+            return false;
+          }
+          if (selected.quoteType.size > 0 && !selected.quoteType.has(row.quoteType)) {
+            return false;
+          }
+          if (selected.status.size > 0 && !selected.status.has(row.status)) {
+            return false;
+          }
+          if (searchTerm) {
+            const haystack = `${row.eventName} ${row.quoteType} ${row.totalDisplay} ${row.shortCode} ${row.eventDate} ${row.status}`.toLowerCase();
+            if (!haystack.includes(searchTerm)) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+
+      function sortRows(rows, key, dir) {
+        if (!key) return [...rows];
+        const multiplier = dir === 'asc' ? 1 : -1;
+
+        return [...rows].sort((a, b) => {
+          if (key === 'eventName') {
+            const cmp = a.eventName.localeCompare(b.eventName);
+            if (cmp !== 0) return cmp * multiplier;
+            return a.quoteType.localeCompare(b.quoteType) * multiplier;
+          }
+
+          if (key === 'total') {
+            return (a.total - b.total) * multiplier;
+          }
+
+          if (key === 'shortCode') {
+            return a.shortCode.localeCompare(b.shortCode) * multiplier;
+          }
+
+          if (key === 'eventDate') {
+            // 'desc' = latest to oldest; 'asc' = oldest to latest
+            const dateDir = dir === 'desc' ? -1 : 1;
+            return (a.timestamp - b.timestamp) * dateDir;
+          }
+
+          if (key === 'status') {
+            const rankA = statusOrder[a.status] ?? 99;
+            const rankB = statusOrder[b.status] ?? 99;
+            return (rankA - rankB) * multiplier;
+          }
+
+          return 0;
+        });
+      }
+
+      function renderQuotesTable() {
+        const filteredRows = filterRows(quotesData);
+        const sortedRows = sortRows(filteredRows, currentSort.key, currentSort.dir);
+
+        if (!sortedRows.length) {
+          quotesTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="table-empty-cell">No quotations match the selected filters.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        quotesTableBody.innerHTML = sortedRows
+          .map(
+            (row) => `
+              <tr>
+                <td>
+                  <div class="quote-event-cell">
+                    <span class="quote-event-name">${row.eventName}</span>
+                    <span class="quote-event-code">${row.quoteType}</span>
+                  </div>
+                </td>
+                <td>${row.totalDisplay}</td>
+                <td>${row.shortCode}</td>
+                <td>${row.eventDate}</td>
+                <td>
+                  <span class="${getStatusBadgeClass(row.status)}">${row.status}</span>
+                </td>
+                <td>
+                  <div class="quote-actions-cell">
+                    <button
+                      type="button"
+                      class="quote-action-btn"
+                      aria-label="View ${row.eventName} ${row.quoteType}"
+                      data-action="view"
+                      data-quote-id="${row.id}"
+                    >
+                      ${eyeSvg}
+                    </button>
+                    <button
+                      type="button"
+                      class="quote-action-btn"
+                      aria-label="Share ${row.eventName} ${row.quoteType}"
+                      data-action="share"
+                      data-quote-id="${row.id}"
+                    >
+                      ${shareArrowSvg}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `
+          )
+          .join('');
+      }
+
+      if (quotesTableBody) {
+        quotesTableBody.addEventListener('click', (event) => {
+          const actionBtn = event.target.closest('[data-action="share"]');
+          if (!actionBtn) return;
+
+          const quoteId = Number(actionBtn.dataset.quoteId);
+          const matchingQuote = quotesData.find((item) => item.id === quoteId) || null;
+          openShareLinkModal(matchingQuote, actionBtn);
+        });
+      }
+
+      function syncSearchClearButton() {
+        if (!clearQuotesSearchBtn || !quotesSearchInput) return;
+        clearQuotesSearchBtn.classList.toggle('is-visible', quotesSearchInput.value.length > 0);
+      }
+
+      if (quotesSearchInput) {
+        quotesSearchInput.addEventListener('input', () => {
+          syncSearchClearButton();
+          renderQuotesTable();
+        });
+      }
+
+      if (clearQuotesSearchBtn && quotesSearchInput) {
+        clearQuotesSearchBtn.addEventListener('click', () => {
+          quotesSearchInput.value = '';
+          syncSearchClearButton();
+          quotesSearchInput.focus();
+          renderQuotesTable();
+        });
+      }
+
+      sortButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.sortKey;
+
+          if (currentSort.key === key) {
+            currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+          } else {
+            // Default first-click direction per column type
+            if (key === 'total' || key === 'eventDate') {
+              currentSort.dir = 'desc'; // High-to-low / Latest-to-old
+            } else {
+              currentSort.dir = 'asc'; // A-to-Z / Pending-to-Approved-to-Rejected
+            }
+            currentSort.key = key;
+          }
+
+          sortButtons.forEach((otherBtn) => {
+            const isTarget = otherBtn === btn;
+            otherBtn.classList.toggle('is-active', isTarget);
+
+            if (isTarget) {
+              otherBtn.dataset.sortDir = currentSort.dir;
+            }
+          });
+
+          renderQuotesTable();
+        });
+      });
+
+      syncSearchClearButton();
+      renderActiveFilterChips();
+      renderQuotesTable();
     });
   </script>
 </body>
