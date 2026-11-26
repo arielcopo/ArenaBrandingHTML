@@ -360,44 +360,54 @@
     }
 
     /* ==========================================================================
-       4. MAIN PAGE BODY: REGISTER COMPANY SPLIT LAYOUT (Zero Left Edge, 112px Right Gutter)
+       4. MAIN PAGE BODY: FULL-BLEED LEFT IMAGE & REGISTER COMPANY SPLIT LAYOUT
        ========================================================================== */
     .portal-main {
       flex: 1;
       width: 100%;
-      max-width: var(--nav-max-width);
-      margin: 0 auto;
-      padding: 64px var(--nav-gutter-desktop) 96px 0;
+      max-width: none;
+      margin: 0;
+      padding: 0;
       display: grid;
-      grid-template-columns: minmax(0, 860px) minmax(0, 1fr);
-      align-items: center;
-      gap: 0 112px;
+      grid-template-columns: minmax(0, 1.35fr) minmax(440px, 1fr);
+      align-items: stretch;
     }
 
     .register-media-panel {
       width: 100%;
       height: 100%;
-      min-height: 820px;
+      min-height: 780px;
+      margin: 0;
+      padding: 0;
       overflow: hidden;
       background-color: var(--color-bg-subtle);
+      position: relative;
     }
 
     .register-hero-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: right;
       display: block;
     }
 
     .register-form-column {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 64px max(var(--nav-gutter-desktop), calc((100vw - var(--nav-max-width)) / 2 + var(--nav-gutter-desktop))) 64px 72px;
+    }
+
+    .register-form-inner {
+      width: 100%;
       max-width: 360px;
-      justify-self: end;
       display: flex;
       flex-direction: column;
       align-items: stretch;
       gap: 40px;
-      padding: 24px 0;
     }
 
     .register-form-top {
@@ -601,49 +611,48 @@
 
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 64px 48px 80px 0;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-        gap: 0 64px;
+        grid-template-columns: minmax(0, 1.2fr) minmax(400px, 1fr);
       }
 
       .register-media-panel {
-        min-height: 760px;
+        min-height: 740px;
       }
 
       .register-form-column {
-        justify-self: center;
+        padding: 56px 48px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 64px 32px 64px 0;
-        grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
-        gap: 0 40px;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
       }
 
       .register-media-panel {
-        min-height: 700px;
+        min-height: 680px;
+      }
+
+      .register-form-column {
+        padding: 48px 32px;
       }
     }
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 32px 20px 56px;
         grid-template-columns: 1fr;
-        gap: 32px;
       }
 
       .register-media-panel {
         min-height: 240px;
-        max-height: 280px;
-        border-radius: 12px;
+        max-height: 300px;
       }
 
       .register-form-column {
+        padding: 36px 20px 56px;
+      }
+
+      .register-form-inner {
         max-width: 100%;
-        justify-self: stretch;
-        padding: 0;
         gap: 32px;
       }
     }
@@ -954,10 +963,10 @@
        START SLOT: MAIN PAGE BODY CONTENT (REGISTER COMPANY)
        ======================================================================== -->
   <main class="portal-main" id="mainContent">
-    <!-- Left Media Panel (Zero Left Margin / Flush to Left Viewport Edge) -->
+    <!-- Left Full-Bleed Media Panel (Zero Top, Bottom & Left Margins) -->
     <div class="register-media-panel">
       <img
-        src="images/Register.png"
+        src="images/Register1.png"
         alt="Arena Branding event signage, arches, and tents inside a stadium"
         class="register-hero-img"
       />
@@ -965,161 +974,163 @@
 
     <!-- Right Registration Form Column -->
     <section class="register-form-column" aria-labelledby="registerHeading">
-      <div class="register-form-top">
-        <header class="register-header">
-          <h1 class="register-title" id="registerHeading">Register Company</h1>
-          <p class="register-subtitle">Create account.</p>
-        </header>
+      <div class="register-form-inner">
+        <div class="register-form-top">
+          <header class="register-header">
+            <h1 class="register-title" id="registerHeading">Register Company</h1>
+            <p class="register-subtitle">Create account.</p>
+          </header>
 
-        <form class="register-form" id="registerCompanyForm" novalidate>
-          <div class="register-fields-stack">
-            <!-- Company Name -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regCompanyName">
-                Company Name <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="companyNameWrap">
-                <input
-                  type="text"
-                  id="regCompanyName"
-                  name="companyName"
-                  class="register-text-input"
-                  placeholder="Enter your name"
-                  value="Arena Events Group"
-                  autocomplete="organization"
-                  required
-                />
+          <form class="register-form" id="registerCompanyForm" novalidate>
+            <div class="register-fields-stack">
+              <!-- Company Name -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regCompanyName">
+                  Company Name <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="companyNameWrap">
+                  <input
+                    type="text"
+                    id="regCompanyName"
+                    name="companyName"
+                    class="register-text-input"
+                    placeholder="Enter your name"
+                    value="Arena Events Group"
+                    autocomplete="organization"
+                    required
+                  />
+                </div>
+                <p class="register-field-error" id="companyNameError" role="alert">Please enter your company name.</p>
               </div>
-              <p class="register-field-error" id="companyNameError" role="alert">Please enter your company name.</p>
+
+              <!-- Full Name -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regFullName">
+                  Full Name <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="fullNameWrap">
+                  <input
+                    type="text"
+                    id="regFullName"
+                    name="fullName"
+                    class="register-text-input"
+                    placeholder="Enter your name"
+                    value="John Doe"
+                    autocomplete="name"
+                    required
+                  />
+                </div>
+                <p class="register-field-error" id="fullNameError" role="alert">Please enter your full name.</p>
+              </div>
+
+              <!-- Contact Number -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regContactNumber">
+                  Contact Number <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="contactNumberWrap">
+                  <input
+                    type="tel"
+                    id="regContactNumber"
+                    name="contactNumber"
+                    class="register-text-input"
+                    placeholder="Enter your contact number"
+                    value="0412 345 678"
+                    autocomplete="tel"
+                    required
+                  />
+                </div>
+                <p class="register-field-error" id="contactNumberError" role="alert">Please enter your contact number.</p>
+              </div>
+
+              <!-- Company Email -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regCompanyEmail">
+                  Company Email <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="companyEmailWrap">
+                  <input
+                    type="email"
+                    id="regCompanyEmail"
+                    name="companyEmail"
+                    class="register-text-input"
+                    placeholder="Enter your company email"
+                    value="johndoe@gmail.com"
+                    autocomplete="email"
+                    required
+                  />
+                </div>
+                <p class="register-field-error" id="companyEmailError" role="alert">Please enter a valid company email.</p>
+              </div>
+
+              <!-- Number of annual events (approx.) -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regAnnualEvents">
+                  Number of annual events (approx.) <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="annualEventsWrap">
+                  <input
+                    type="number"
+                    id="regAnnualEvents"
+                    name="annualEvents"
+                    class="register-text-input"
+                    placeholder="5 or 8"
+                    value="8"
+                    min="1"
+                    step="1"
+                    required
+                  />
+                </div>
+                <p class="register-field-error" id="annualEventsError" role="alert">Please enter your approximate annual events.</p>
+              </div>
+
+              <!-- Password (At least 4 letters or numbers) -->
+              <div class="register-field-group">
+                <label class="register-field-label" for="regPassword">
+                  Password <span class="register-required-star" aria-hidden="true">*</span>
+                </label>
+                <div class="register-input-control" id="passwordWrap">
+                  <input
+                    type="password"
+                    id="regPassword"
+                    name="password"
+                    class="register-text-input"
+                    placeholder="Create a password"
+                    value="1234"
+                    minlength="4"
+                    autocomplete="new-password"
+                    aria-describedby="passwordHint passwordError"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="register-password-toggle"
+                    id="toggleRegPasswordBtn"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                  >
+                    <!-- Phosphor Eye 1.5px stroke -->
+                    <svg id="toggleRegPasswordIcon" class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 56C48 56 16 128 16 128C16 128 48 200 128 200C208 200 240 128 240 128C240 128 208 56 128 56Z" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="128" cy="128" r="40" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <p class="register-field-hint" id="passwordHint">Must be at least 4 letters or numbers</p>
+                <p class="register-field-error" id="passwordError" role="alert">Password must be at least 4 letters or numbers.</p>
+              </div>
             </div>
 
-            <!-- Full Name -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regFullName">
-                Full Name <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="fullNameWrap">
-                <input
-                  type="text"
-                  id="regFullName"
-                  name="fullName"
-                  class="register-text-input"
-                  placeholder="Enter your name"
-                  value="John Doe"
-                  autocomplete="name"
-                  required
-                />
-              </div>
-              <p class="register-field-error" id="fullNameError" role="alert">Please enter your full name.</p>
-            </div>
+            <button type="submit" class="btn-register-submit" id="registerSubmitBtn">
+              Register
+            </button>
+          </form>
+        </div>
 
-            <!-- Contact Number -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regContactNumber">
-                Contact Number <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="contactNumberWrap">
-                <input
-                  type="tel"
-                  id="regContactNumber"
-                  name="contactNumber"
-                  class="register-text-input"
-                  placeholder="Enter your contact number"
-                  value="0412 345 678"
-                  autocomplete="tel"
-                  required
-                />
-              </div>
-              <p class="register-field-error" id="contactNumberError" role="alert">Please enter your contact number.</p>
-            </div>
-
-            <!-- Company Email -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regCompanyEmail">
-                Company Email <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="companyEmailWrap">
-                <input
-                  type="email"
-                  id="regCompanyEmail"
-                  name="companyEmail"
-                  class="register-text-input"
-                  placeholder="Enter your company email"
-                  value="johndoe@gmail.com"
-                  autocomplete="email"
-                  required
-                />
-              </div>
-              <p class="register-field-error" id="companyEmailError" role="alert">Please enter a valid company email.</p>
-            </div>
-
-            <!-- Number of annual events (approx.) -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regAnnualEvents">
-                Number of annual events (approx.) <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="annualEventsWrap">
-                <input
-                  type="number"
-                  id="regAnnualEvents"
-                  name="annualEvents"
-                  class="register-text-input"
-                  placeholder="5 or 8"
-                  value="8"
-                  min="1"
-                  step="1"
-                  required
-                />
-              </div>
-              <p class="register-field-error" id="annualEventsError" role="alert">Please enter your approximate annual events.</p>
-            </div>
-
-            <!-- Password (At least 4 letters or numbers) -->
-            <div class="register-field-group">
-              <label class="register-field-label" for="regPassword">
-                Password <span class="register-required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="register-input-control" id="passwordWrap">
-                <input
-                  type="password"
-                  id="regPassword"
-                  name="password"
-                  class="register-text-input"
-                  placeholder="Create a password"
-                  value="1234"
-                  minlength="4"
-                  autocomplete="new-password"
-                  aria-describedby="passwordHint passwordError"
-                  required
-                />
-                <button
-                  type="button"
-                  class="register-password-toggle"
-                  id="toggleRegPasswordBtn"
-                  aria-label="Show password"
-                  aria-pressed="false"
-                >
-                  <!-- Phosphor Eye 1.5px stroke -->
-                  <svg id="toggleRegPasswordIcon" class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M128 56C48 56 16 128 16 128C16 128 48 200 128 200C208 200 240 128 240 128C240 128 208 56 128 56Z" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="128" cy="128" r="40" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-              <p class="register-field-hint" id="passwordHint">Must be at least 4 letters or numbers</p>
-              <p class="register-field-error" id="passwordError" role="alert">Password must be at least 4 letters or numbers.</p>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-register-submit" id="registerSubmitBtn">
-            Register
-          </button>
-        </form>
-      </div>
-
-      <div class="register-switch-row">
-        <span class="register-switch-text">Already have an account?</span>
-        <a href="Login.html" class="register-switch-link">Log in</a>
+        <div class="register-switch-row">
+          <span class="register-switch-text">Already have an account?</span>
+          <a href="Login.html" class="register-switch-link">Log in</a>
+        </div>
       </div>
     </section>
   </main>
