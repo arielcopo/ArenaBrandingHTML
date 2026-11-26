@@ -478,7 +478,7 @@
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 96px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 96px;
       display: flex;
       flex-direction: column;
       gap: 64px;
@@ -1499,6 +1499,27 @@
       stroke: var(--color-trend-up-stroke);
     }
 
+    .share-modal-open-link-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-modal-open-link-btn:hover,
+    .share-modal-open-link-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
     .share-modal-close-btn {
       width: 32px;
       height: 32px;
@@ -1721,7 +1742,7 @@
     /* Dashboard Responsive Breakpoints (Matches Navigation & Footer Gutters) */
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 96px 48px 80px;
+        padding: 64px 48px 80px;
       }
 
       .dashboard-metrics-grid {
@@ -1731,7 +1752,7 @@
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 96px 32px 64px;
+        padding: 64px 32px 64px;
         gap: 64px;
       }
 
@@ -1743,7 +1764,7 @@
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 96px 20px 56px;
+        padding: 32px 20px 56px;
         gap: 64px;
       }
 
@@ -2226,9 +2247,9 @@
                 View profile
               </a>
               <div class="profile-dropdown-divider"></div>
-              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
                 Log out
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -2698,6 +2719,17 @@
             </button>
           </div>
         </div>
+
+        <a
+          href="ShareableLink.html"
+          class="share-modal-open-link-btn"
+          id="openShareableLinkPageBtn"
+          aria-label="Open shareable link page"
+        >
+          <svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M72 184L184 72M96 72H184V160" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
 
         <button
           type="button"
@@ -3433,6 +3465,7 @@
       const shareLinkProtocol = document.getElementById('shareLinkProtocol');
       const shareLinkInput = document.getElementById('shareLinkInput');
       const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+      const openShareableLinkPageBtn = document.getElementById('openShareableLinkPageBtn');
       const closeShareLinkModalBtn = document.getElementById('closeShareLinkModalBtn');
       const shareLinkFeedback = document.getElementById('shareLinkFeedback');
 
@@ -3456,6 +3489,12 @@
         if (shareLinkInput) {
           shareLinkInput.value = parts.path;
           shareLinkInput.dataset.fullUrl = parts.fullUrl;
+        }
+        if (openShareableLinkPageBtn) {
+          const targetHref = quoteRow && quoteRow.id
+            ? `ShareableLink.html?id=${encodeURIComponent(quoteRow.id)}`
+            : 'ShareableLink.html';
+          openShareableLinkPageBtn.setAttribute('href', targetHref);
         }
         if (shareLinkFeedback) shareLinkFeedback.textContent = '';
         if (copyShareLinkBtn) copyShareLinkBtn.classList.remove('is-copied');

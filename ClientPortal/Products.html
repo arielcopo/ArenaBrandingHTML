@@ -478,7 +478,7 @@
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 96px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 96px;
       display: flex;
       flex-direction: column;
       gap: 32px;
@@ -495,17 +495,9 @@
     .products-header-main {
       width: 100%;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 24px;
-    }
-
-    .products-categories-block {
-      display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 20px;
-      min-width: 0;
     }
 
     .products-title-row {
@@ -529,10 +521,19 @@
       line-height: 18px;
     }
 
+    .products-controls-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
     /* Segmented Category Tabs Bar */
     .category-tabs-bar {
       display: inline-flex;
       align-items: stretch;
+      min-width: 0;
       max-width: 100%;
       background-color: var(--color-white);
       border: 1px solid var(--color-input-border);
@@ -579,19 +580,12 @@
       color: var(--color-text-button);
     }
 
-    /* Right Action Buttons & Request a Product Link */
-    .products-actions-col {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 14px;
-      flex-shrink: 0;
-    }
-
+    /* Right Action Buttons (Aligned Horizontally with Category Tabs Bar) */
     .products-cta-group {
       display: inline-flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
     }
 
     .btn-secondary-outline {
@@ -989,20 +983,120 @@
       outline: none;
     }
 
+    /* ==========================================================================
+       4B-2. CREATE QUOTE FULL-SCREEN MODAL
+       ========================================================================== */
+    .create-quote-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin: auto;
+    }
+
+    .create-quote-modal-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .create-quote-summary-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .create-quote-badges-list {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quote-category-badge {
+      padding: 4px 4px 4px 12px;
+      background-color: var(--color-footer-bg);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quote-category-badge-name {
+      color: var(--color-text-button);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .quote-category-badge-count {
+      padding: 2px 8px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      color: var(--color-text-button);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .quote-category-empty-note {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    /* ==========================================================================
+       4B-3. ADD PRODUCTS TO FAVORITES FULL-SCREEN MODAL
+       ========================================================================== */
+    .add-favorites-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .add-favorites-modal-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
     /* Products Responsive Breakpoints (Matches Navigation & Footer Gutters) */
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 96px 48px 80px;
+        padding: 64px 48px 80px;
       }
+    }
 
-      .products-header-main {
+    @media (max-width: 1180px) {
+      .products-controls-row {
         flex-direction: column;
-        align-items: stretch;
-        gap: 20px;
-      }
-
-      .products-actions-col {
         align-items: flex-start;
+        gap: 16px;
       }
 
       .products-request-row {
@@ -1012,13 +1106,13 @@
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 96px 32px 64px;
+        padding: 64px 32px 64px;
       }
     }
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 96px 20px 56px;
+        padding: 32px 20px 56px;
       }
 
       .products-title-row {
@@ -1032,9 +1126,15 @@
         flex-wrap: wrap;
       }
 
-      .request-modal-card {
+      .request-modal-card,
+      .create-quote-modal-card,
+      .add-favorites-modal-card {
         padding: 24px 16px;
         gap: 24px;
+      }
+
+      .add-favorites-modal-body {
+        gap: 28px;
       }
 
       .request-modal-form {
@@ -1154,7 +1254,7 @@
     }
 
     .products-items-table tbody tr.is-selected {
-      background-color: rgba(240, 84, 43, 0.02);
+      background-color: var(--color-bg-subtle);
     }
 
     .products-items-table tbody td {
@@ -1172,7 +1272,7 @@
       gap: 12px;
     }
 
-    /* Custom Accessible Checkbox (20x20px, 6px radius, #D4D4D4 unchecked, #F0542B checked) */
+    /* Custom Accessible Checkbox (20x20px, 6px radius, 1px outline stroke, 2px check stroke) */
     .product-checkbox {
       width: 20px;
       height: 20px;
@@ -1189,24 +1289,31 @@
 
     .product-checkbox:hover,
     .product-checkbox:focus-visible {
-      border-color: var(--color-orange);
+      border: 1px solid var(--color-orange);
       outline: none;
     }
 
     .product-checkbox[aria-checked="true"],
     .product-checkbox[aria-checked="mixed"] {
-      border-color: var(--color-orange);
+      border: 1px solid var(--color-orange);
       background-color: var(--color-white);
       color: var(--color-orange);
     }
 
     .product-checkbox-icon {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       display: block;
       stroke: currentColor;
-      stroke-width: 2px;
+      stroke-width: 4px;
       vector-effect: non-scaling-stroke;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .product-checkbox[aria-checked="true"] .product-checkbox-icon,
+    .product-checkbox[aria-checked="mixed"] .product-checkbox-icon {
+      opacity: 1;
     }
 
     .products-item-cell {
@@ -1311,19 +1418,49 @@
       cursor: not-allowed;
     }
 
-    .product-qty-value {
+    .product-qty-stepper:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .product-qty-input {
+      width: 44px;
       min-width: 40px;
+      height: 20px;
+      padding: 0 2px;
+      border: none;
+      background: transparent;
       text-align: center;
       color: var(--color-text-muted);
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
       font-variant-numeric: tabular-nums;
+      outline: none;
+      -moz-appearance: textfield;
     }
 
-    .product-qty-value.has-qty {
+    .product-qty-input::-webkit-outer-spin-button,
+    .product-qty-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .product-qty-input.has-qty,
+    .product-qty-input:focus {
       color: var(--color-text-primary);
       font-weight: 500;
+    }
+
+    /* Fixed width for Subtotal & Total columns (fits up to $99,999.99 without horizontal wobble) */
+    .products-items-table th.col-subtotal,
+    .products-items-table td.col-subtotal,
+    .products-items-table th.col-total,
+    .products-items-table td.col-total {
+      width: 132px;
+      min-width: 132px;
+      max-width: 132px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .products-table-empty {
@@ -1360,12 +1497,19 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       gap: 8px;
       color: var(--color-text-button);
       font-size: 14px;
       font-weight: 600;
       line-height: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #productsSummarizedTotal {
+      display: inline-block;
+      min-width: 78px;
+      text-align: right;
       font-variant-numeric: tabular-nums;
     }
 
@@ -1691,9 +1835,9 @@
                 View profile
               </a>
               <div class="profile-dropdown-divider"></div>
-              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
                 Log out
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -1754,13 +1898,14 @@
     <!-- Section 1: Product Categories Header, Tabs & Actions -->
     <section class="products-header-section" aria-label="Product Categories and Actions">
       <div class="products-header-main">
-        <!-- Left: Heading, Subtitle & Clickable Category Tabs -->
-        <div class="products-categories-block">
-          <div class="products-title-row">
-            <h1 class="products-page-title">Product Categories</h1>
-            <p class="products-page-subtitle">Select products to add to your quote or save to your favorites.</p>
-          </div>
+        <!-- Heading & Subtitle -->
+        <div class="products-title-row">
+          <h1 class="products-page-title">Product Categories</h1>
+          <p class="products-page-subtitle">Select products to add to your quote or save to your favorites.</p>
+        </div>
 
+        <!-- Category Tabs Bar & Action Buttons Aligned Horizontally -->
+        <div class="products-controls-row">
           <div class="category-tabs-bar" role="tablist" aria-label="Product categories">
             <button
               type="button"
@@ -1823,15 +1968,16 @@
               Accessories
             </button>
           </div>
-        </div>
 
-        <!-- Right: Add to Favorites, Create Quote & Request a Product Link -->
-        <div class="products-actions-col">
+          <!-- Right: Add to Favorites & Create Quote Aligned Horizontally with Category Tabs -->
           <div class="products-cta-group">
             <button
               type="button"
               class="btn-secondary-outline"
               id="addToFavoritesBtn"
+              aria-haspopup="dialog"
+              aria-controls="addFavoritesModal"
+              aria-expanded="false"
             >
               Add to Favorites
             </button>
@@ -1839,25 +1985,29 @@
               type="button"
               class="btn-primary-orange"
               id="createQuoteBtn"
+              aria-haspopup="dialog"
+              aria-controls="createQuoteModal"
+              aria-expanded="false"
             >
               Create Quote
             </button>
           </div>
-
-          <div class="products-request-row">
-            <span>Can't find what you're looking for?</span>
-            <button
-              type="button"
-              class="request-product-link"
-              id="requestProductTrigger"
-              aria-haspopup="dialog"
-              aria-controls="requestProductModal"
-              aria-expanded="false"
-            >
-              Request a Product
-            </button>
-          </div>
         </div>
+      </div>
+
+      <!-- Request a Product Helper Row -->
+      <div class="products-request-row">
+        <span>Can't find what you're looking for?</span>
+        <button
+          type="button"
+          class="request-product-link"
+          id="requestProductTrigger"
+          aria-haspopup="dialog"
+          aria-controls="requestProductModal"
+          aria-expanded="false"
+        >
+          Request a Product
+        </button>
       </div>
     </section>
 
@@ -1887,8 +2037,8 @@
                       aria-checked="false"
                       aria-label="Select all products in current category"
                     >
-                      <svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/>
+                      <svg class="product-checkbox-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </button>
                     <span>Products</span>
@@ -1897,9 +2047,9 @@
                 <th scope="col">Variant</th>
                 <th scope="col" class="is-center">Quantity</th>
                 <th scope="col">Price</th>
-                <th scope="col">Subtotal</th>
+                <th scope="col" class="col-subtotal">Subtotal</th>
                 <th scope="col">Tax %</th>
-                <th scope="col">Total</th>
+                <th scope="col" class="col-total">Total</th>
               </tr>
             </thead>
             <tbody id="productsItemsTableBody">
@@ -1915,13 +2065,16 @@
               type="button"
               class="btn-secondary-outline"
               id="tableAddToFavoritesBtn"
+              aria-haspopup="dialog"
+              aria-controls="addFavoritesModal"
+              aria-expanded="false"
             >
               Add to Favorites
             </button>
             <button
               type="button"
               class="btn-primary-orange"
-              id="tableCreateQuoteBtn"
+              id="tableCreateQuoteBtn" aria-haspopup="dialog" aria-controls="createQuoteModal" aria-expanded="false"
             >
               Create Quote
             </button>
@@ -2093,6 +2246,180 @@
   </div>
   <!-- ========================================================================
        END COMPONENT: PRODUCT REQUEST SUBMITTED SUCCESS MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CREATE QUOTE FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="createQuoteModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="createQuoteModalTitle"
+    aria-hidden="true"
+  >
+    <div class="create-quote-modal-card" id="createQuoteModalCard">
+      <div class="create-quote-modal-header">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 128H216" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128 64H216" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 64L56 80L88 48" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 128L56 144L88 112" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 192L56 208L88 176" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="modal-title" id="createQuoteModalTitle">Create Quote</h2>
+      </div>
+
+      <form class="request-modal-form" id="createQuoteForm">
+        <div class="request-modal-fields">
+          <div class="create-quote-summary-block">
+            <span class="request-field-label">Selected products by category</span>
+            <div class="create-quote-badges-list" id="createQuoteCategorySummary" aria-live="polite">
+              <span class="quote-category-empty-note">0 products selected</span>
+            </div>
+          </div>
+
+          <div class="request-field-group">
+            <label class="request-field-label" for="quoteEventNameInput">
+              Event Name
+            </label>
+            <input
+              type="text"
+              id="quoteEventNameInput"
+              name="eventName"
+              class="request-text-input"
+              placeholder="Auckland Marathon 2026"
+              required
+            />
+          </div>
+
+          <div class="request-field-row">
+            <div class="request-field-group">
+              <label class="request-field-label" for="quoteEventShortCodeInput">
+                Event Short Code
+              </label>
+              <input
+                type="text"
+                id="quoteEventShortCodeInput"
+                name="eventShortCode"
+                class="request-text-input"
+                placeholder="AM26"
+                required
+              />
+            </div>
+
+            <div class="request-field-group">
+              <label class="request-field-label" for="quoteNameInput">
+                Quote Name
+              </label>
+              <input
+                type="text"
+                id="quoteNameInput"
+                name="quoteName"
+                class="request-text-input"
+                placeholder="CAPEX"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="request-field-group">
+            <label class="request-field-label" for="quoteEventDateInput">
+              Event Date
+            </label>
+            <input
+              type="text"
+              id="quoteEventDateInput"
+              name="eventDate"
+              class="request-text-input"
+              placeholder="November 20, 2026"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="request-modal-actions">
+          <button
+            type="button"
+            class="btn-request-cancel"
+            id="cancelCreateQuoteBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-request-submit"
+            id="submitCreateQuoteBtn"
+          >
+            Create Quote
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: CREATE QUOTE FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: ADD PRODUCTS TO FAVORITES FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="addFavoritesModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="addFavoritesModalTitle"
+    aria-hidden="true"
+  >
+    <div class="add-favorites-modal-card" id="addFavoritesModalCard">
+      <div class="create-quote-modal-header">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M224 177.321V78.6789C224 75.8644 223.271 73.0977 221.884 70.649C220.497 68.2003 218.499 66.1539 216.086 64.7107L136.086 16.8678C133.638 15.4041 130.844 14.6309 128 14.6309C125.156 14.6309 122.362 15.4041 119.914 16.8678L39.9143 64.7107C37.5011 66.1539 35.5028 68.2003 34.1158 70.649C32.7289 73.0977 32 75.8644 32 78.6789V177.321C32 180.136 32.7289 182.902 34.1158 185.351C35.5028 187.8 37.5011 189.846 39.9143 191.289L119.914 239.132C122.362 240.596 125.156 241.369 128 241.369C130.844 241.369 133.638 240.596 136.086 239.132L216.086 191.289C218.499 189.846 220.497 187.8 221.884 185.351C223.271 182.902 224 180.136 224 177.321Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M177.024 152.51V100.58L80 42.8101" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M222.897 74.6199L128.949 128L33.103 74.6199" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128.949 128L128 241.37" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="modal-title" id="addFavoritesModalTitle">Add Products to Favorites</h2>
+      </div>
+
+      <div class="add-favorites-modal-body">
+        <div class="create-quote-summary-block">
+          <span class="request-field-label">Selected products by category</span>
+          <div class="create-quote-badges-list" id="addFavoritesCategorySummary" aria-live="polite">
+            <span class="quote-category-empty-note">0 products selected</span>
+          </div>
+        </div>
+
+        <div class="request-modal-actions">
+          <button
+            type="button"
+            class="btn-request-cancel"
+            id="cancelAddFavoritesBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn-request-submit"
+            id="confirmAddFavoritesBtn"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: ADD PRODUCTS TO FAVORITES FULL-SCREEN MODAL
        ======================================================================== -->
 
 
@@ -2347,65 +2674,79 @@
             { id: 'os-3', name: 'Polyester Mesh Scrim', image: 'images/PolyesterMeshScrim.png', variant: 'Polyester Mesh Scrim', price: 75, quantity: 0, selected: false },
             { id: 'os-4', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 75, quantity: 0, selected: false },
             { id: 'os-5', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Plain Coloured Bin Covers', price: 75, quantity: 0, selected: false },
-            { id: 'os-6', name: 'Rectangle Flags', image: 'images/RectangleFlags.png', variant: 'I don’t know yet', price: 65, quantity: 0, selected: false },
-            { id: 'os-7', name: 'Feather Flags', image: 'images/FeatherFlags.png', variant: 'I don’t know yet', price: 70, quantity: 0, selected: false },
-            { id: 'os-8', name: 'Teardrop Flags', image: 'images/TeardropFlags.png', variant: 'I don’t know yet', price: 68, quantity: 0, selected: false },
-            { id: 'os-9', name: 'Vinyl Banner Mesh', image: 'images/VinylBannerMesh.png', variant: 'I don’t know yet', price: 85, quantity: 0, selected: false },
-            { id: 'os-10', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 320, quantity: 0, selected: false },
-            { id: 'os-11', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 95, quantity: 0, selected: false },
-            { id: 'os-12', name: 'Mesh Banners', image: 'images/MeshBanners.png', variant: 'I don’t know yet', price: 80, quantity: 0, selected: false },
-            { id: 'os-13', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 45, quantity: 0, selected: false },
+            { id: 'os-6', name: 'Rectangle Flags', image: 'images/RectangleFlags.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-7', name: 'Feather Flags', image: 'images/FeatherFlags.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-8', name: 'Teardrop Flags', image: 'images/TeardropFlags.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-9', name: 'Vinyl Banner Mesh', image: 'images/VinylBannerMesh.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-10', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-11', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-12', name: 'Mesh Banners', image: 'images/MeshBanners.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-13', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
             { id: 'os-14', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Small (1200 x 650mm)', price: 20, quantity: 0, selected: false },
             { id: 'os-15', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Medium (1800 x 400mm)', price: 30, quantity: 0, selected: false },
             { id: 'os-16', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Large (2400 x 400mm)', price: 40, quantity: 0, selected: false },
-            { id: 'os-17', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 145, quantity: 0, selected: false },
-            { id: 'os-18', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 55, quantity: 0, selected: false },
-            { id: 'os-19', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 110, quantity: 0, selected: false },
-            { id: 'os-20', name: 'Metal Frame Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 450, quantity: 0, selected: false },
-            { id: 'os-21', name: 'Custom Marquee Gable', image: 'images/CustomMarqueeGable.png', variant: 'I don’t know yet', price: 185, quantity: 0, selected: false }
+            { id: 'os-17', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-18', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-19', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-20', name: 'Metal Frame Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'os-21', name: 'Custom Marquee Gable', image: 'images/CustomMarqueeGable.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         },
         'branded-furniture': {
           label: 'Branded Furniture',
-          uniqueCount: 2,
+          uniqueCount: 7,
           items: [
             { id: 'bf-1', name: 'Seat Covers', image: 'images/SeatCovers.png', variant: 'Stadium & Outdoor Arena', price: 15, quantity: 0, selected: false },
-            { id: 'bf-2', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 145, quantity: 0, selected: false }
+            { id: 'bf-2', name: 'Seat Covers', image: 'images/SeatCovers.png', variant: 'Theatre, Cinema & VIP Lounge', price: 25, quantity: 0, selected: false },
+            { id: 'bf-3', name: 'Deck Chair', image: 'images/DeckChair.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'bf-4', name: 'Directors Chair', image: 'images/DirectorsChair.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'bf-5', name: 'Inflatable Furniture', image: 'images/InflatableFurniture.png', variant: 'I don’t know yet', price: 20, quantity: 0, selected: false },
+            { id: 'bf-6', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 40, quantity: 0, selected: false },
+            { id: 'bf-7', name: 'Table Cloth', image: 'images/TableCloth.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         },
         'inflatable-signs-and-tents': {
           label: 'Inflatable Signs and Tents',
-          uniqueCount: 2,
+          uniqueCount: 8,
           items: [
-            { id: 'ist-1', name: 'Inflatable Pillars', image: 'images/InflatablePillars.png', variant: 'I don’t know yet', price: 210, quantity: 0, selected: false },
-            { id: 'ist-2', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 320, quantity: 0, selected: false }
+            { id: 'ist-1', name: 'Giant Inflatable Flags', image: 'images/GiantInflatableFlags.png', variant: 'I don’t know yet', price: 120, quantity: 0, selected: false },
+            { id: 'ist-2', name: 'Inflatable Arch', image: 'images/InflatableArch.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'ist-3', name: 'Inflatable Dome Tent', image: 'images/InflatableDomeTent.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'ist-4', name: 'Inflatable Pillars', image: 'images/InflatablePillars.png', variant: 'Need to Discuss for variants', price: 20, quantity: 0, selected: false },
+            { id: 'ist-5', name: 'Inflatable Tunnel', image: 'images/InflatableTunnel.png', variant: 'I don’t know yet', price: 40, quantity: 0, selected: false },
+            { id: 'ist-6', name: 'Victor Inflatable Tent', image: 'images/VictorInflatableTent.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'ist-7', name: 'Inflatable Furniture', image: 'images/InflatableFurniture.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'ist-8', name: 'Inflatable Race Bouoys', image: 'images/InflatableRaceBouoys.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         },
         'indoor-signs': {
           label: 'Indoor Signs',
-          uniqueCount: 2,
+          uniqueCount: 8,
           items: [
-            { id: 'is-1', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 110, quantity: 0, selected: false },
-            { id: 'is-2', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 45, quantity: 0, selected: false }
+            { id: 'is-1', name: 'Deck Chairs', image: 'images/DeckChair.png', variant: 'I don’t know yet', price: 120, quantity: 0, selected: false },
+            { id: 'is-2', name: 'Floor Decals', image: 'images/FloorDecals.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'is-3', name: 'Media Walls', image: 'images/MediaWalls.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'is-4', name: 'Table Cloth', image: 'images/TableCloth.png', variant: 'I don’t know yet', price: 20, quantity: 0, selected: false },
+            { id: 'is-5', name: 'Pull Up Banners', image: 'images/PullUpBanners.png', variant: 'I don’t know yet', price: 40, quantity: 0, selected: false },
+            { id: 'is-6', name: 'Metal Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'is-7', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false },
+            { id: 'is-8', name: 'Custom Stage Backdrops', image: 'images/CustomStageBackdrops.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         },
         'signboards': {
           label: 'Signboards',
-          uniqueCount: 5,
+          uniqueCount: 2,
           items: [
-            { id: 'sb-1', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 95, quantity: 0, selected: false },
-            { id: 'sb-2', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Small (1200 x 650mm)', price: 20, quantity: 0, selected: false },
-            { id: 'sb-3', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Medium (1800 x 400mm)', price: 30, quantity: 0, selected: false },
-            { id: 'sb-4', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Large (2400 x 400mm)', price: 40, quantity: 0, selected: false },
-            { id: 'sb-5', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 55, quantity: 0, selected: false }
+            { id: 'sb-1', name: 'Aluminum Composite Panel', image: 'images/AluminumCompositePanel.png', variant: 'I don’t know yet', price: 120, quantity: 0, selected: false },
+            { id: 'sb-2', name: 'Corflute Signs', image: 'images/CorfluteSigns.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         },
         'accessories': {
           label: 'Accessories',
           uniqueCount: 2,
           items: [
-            { id: 'ac-1', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 75, quantity: 0, selected: false },
-            { id: 'ac-2', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Plain Coloured Bin Covers', price: 75, quantity: 0, selected: false }
+            { id: 'ac-1', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'I don’t know yet', price: 120, quantity: 0, selected: false },
+            { id: 'ac-2', name: 'Toggle Ties', image: 'images/ToggleTies.png', variant: 'I don’t know yet', price: 75, quantity: 0, selected: false }
           ]
         }
       };
@@ -2416,8 +2757,8 @@
       const productsItemsTableBody = document.getElementById('productsItemsTableBody');
       const productsSummarizedTotal = document.getElementById('productsSummarizedTotal');
 
-      const checkIconSvg = '<svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      const indeterminateIconSvg = '<svg class="product-checkbox-icon" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const checkIconSvg = '<svg class="product-checkbox-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const indeterminateIconSvg = '<svg class="product-checkbox-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       const minusIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       const plusIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 128H216M128 40V216" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -2531,7 +2872,15 @@
                     >
                       ${minusIconSvg}
                     </button>
-                    <span class="product-qty-value ${item.quantity > 0 ? 'has-qty' : ''}" data-qty-display="${item.id}">${item.quantity}</span>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      class="product-qty-input ${item.quantity > 0 ? 'has-qty' : ''}"
+                      aria-label="Quantity of ${item.name} (${item.variant})"
+                      data-qty-input="${item.id}"
+                      value="${item.quantity}"
+                    />
                     <button
                       type="button"
                       class="product-qty-btn"
@@ -2544,9 +2893,9 @@
                   </div>
                 </td>
                 <td>${formatProductCurrency(item.price, true)}</td>
-                <td data-subtotal-display="${item.id}">${formatProductCurrency(subtotal, true)}</td>
+                <td class="col-subtotal" data-subtotal-display="${item.id}">${formatProductCurrency(subtotal, true)}</td>
                 <td>10%</td>
-                <td data-total-display="${item.id}">${formatProductCurrency(total, true)}</td>
+                <td class="col-total" data-total-display="${item.id}">${formatProductCurrency(total, true)}</td>
               </tr>
             `;
           })
@@ -2603,26 +2952,86 @@
               targetItem.quantity += 1;
             }
 
-            const rowEl = qtyBtn.closest('tr');
-            if (rowEl) {
-              const minusBtn = rowEl.querySelector('[data-qty-action="minus"]');
-              const qtyDisplay = rowEl.querySelector(`[data-qty-display="${productId}"]`);
-              const subtotalDisplay = rowEl.querySelector(`[data-subtotal-display="${productId}"]`);
-              const totalDisplay = rowEl.querySelector(`[data-total-display="${productId}"]`);
-
-              if (minusBtn) minusBtn.disabled = targetItem.quantity <= 0;
-              if (qtyDisplay) {
-                qtyDisplay.textContent = String(targetItem.quantity);
-                qtyDisplay.classList.toggle('has-qty', targetItem.quantity > 0);
-              }
-              const { subtotal, total } = calculateRowAmounts(targetItem);
-              if (subtotalDisplay) subtotalDisplay.textContent = formatProductCurrency(subtotal, true);
-              if (totalDisplay) totalDisplay.textContent = formatProductCurrency(total, true);
-            }
-
-            syncSelectAllAndSummary();
+            updateRowQuantityUI(qtyBtn.closest('tr'), targetItem);
           }
         });
+
+        productsItemsTableBody.addEventListener('input', (event) => {
+          const qtyInput = event.target.closest('[data-qty-input]');
+          if (!qtyInput) return;
+
+          const productId = qtyInput.dataset.qtyInput;
+          const categoryData = getCurrentCategoryData();
+          const targetItem = categoryData.items.find((item) => item.id === productId);
+          if (!targetItem) return;
+
+          const digitsOnly = qtyInput.value.replace(/[^0-9]/g, '');
+          if (qtyInput.value !== digitsOnly) {
+            qtyInput.value = digitsOnly;
+          }
+
+          const parsedQty = digitsOnly === '' ? 0 : parseInt(digitsOnly, 10);
+          targetItem.quantity = Number.isNaN(parsedQty) ? 0 : Math.max(0, parsedQty);
+          updateRowQuantityUI(qtyInput.closest('tr'), targetItem, true);
+        });
+
+        productsItemsTableBody.addEventListener('blur', (event) => {
+          const qtyInput = event.target.closest('[data-qty-input]');
+          if (!qtyInput) return;
+
+          const productId = qtyInput.dataset.qtyInput;
+          const categoryData = getCurrentCategoryData();
+          const targetItem = categoryData.items.find((item) => item.id === productId);
+          if (!targetItem) return;
+
+          qtyInput.value = String(targetItem.quantity);
+          qtyInput.classList.toggle('has-qty', targetItem.quantity > 0);
+        }, true);
+
+        productsItemsTableBody.addEventListener('keydown', (event) => {
+          const qtyInput = event.target.closest('[data-qty-input]');
+          if (!qtyInput) return;
+
+          const productId = qtyInput.dataset.qtyInput;
+          const categoryData = getCurrentCategoryData();
+          const targetItem = categoryData.items.find((item) => item.id === productId);
+          if (!targetItem) return;
+
+          if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            targetItem.quantity += 1;
+            updateRowQuantityUI(qtyInput.closest('tr'), targetItem);
+          } else if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            targetItem.quantity = Math.max(0, targetItem.quantity - 1);
+            updateRowQuantityUI(qtyInput.closest('tr'), targetItem);
+          } else if (event.key === 'Enter') {
+            qtyInput.blur();
+          }
+        });
+      }
+
+      function updateRowQuantityUI(rowEl, targetItem, preserveInputText = false) {
+        if (rowEl && targetItem) {
+          const productId = targetItem.id;
+          const minusBtn = rowEl.querySelector('[data-qty-action="minus"]');
+          const qtyInput = rowEl.querySelector(`[data-qty-input="${productId}"]`);
+          const subtotalDisplay = rowEl.querySelector(`[data-subtotal-display="${productId}"]`);
+          const totalDisplay = rowEl.querySelector(`[data-total-display="${productId}"]`);
+
+          if (minusBtn) minusBtn.disabled = targetItem.quantity <= 0;
+          if (qtyInput) {
+            if (!preserveInputText) {
+              qtyInput.value = String(targetItem.quantity);
+            }
+            qtyInput.classList.toggle('has-qty', targetItem.quantity > 0);
+          }
+          const { subtotal, total } = calculateRowAmounts(targetItem);
+          if (subtotalDisplay) subtotalDisplay.textContent = formatProductCurrency(subtotal, true);
+          if (totalDisplay) totalDisplay.textContent = formatProductCurrency(total, true);
+        }
+
+        syncSelectAllAndSummary();
       }
 
       document.addEventListener('productCategoryChanged', () => {
@@ -2644,8 +3053,11 @@
 
       let lastFocusedRequestTrigger = null;
 
+      const createQuoteModal = document.getElementById('createQuoteModal');
+      const addFavoritesModal = document.getElementById('addFavoritesModal');
+
       function syncBodyModalState() {
-        const hasOpenModal = [requestProductModal, requestSubmittedModal].some(
+        const hasOpenModal = [requestProductModal, requestSubmittedModal, createQuoteModal, addFavoritesModal].some(
           (modalEl) => modalEl && modalEl.classList.contains('is-open')
         );
         document.body.classList.toggle('is-modal-open', hasOpenModal);
@@ -2764,8 +3176,266 @@
         });
       }
 
+      /* ----------------------------------------------------------------------
+         Create Quote Modal & Selected Products by Category Summary
+         ---------------------------------------------------------------------- */
+      const createQuoteTriggers = [
+        document.getElementById('createQuoteBtn'),
+        document.getElementById('tableCreateQuoteBtn')
+      ].filter(Boolean);
+      const createQuoteCategorySummary = document.getElementById('createQuoteCategorySummary');
+      const createQuoteForm = document.getElementById('createQuoteForm');
+      const quoteEventNameInput = document.getElementById('quoteEventNameInput');
+      const cancelCreateQuoteBtn = document.getElementById('cancelCreateQuoteBtn');
+
+      let lastFocusedCreateQuoteTrigger = null;
+
+      function getSelectedProductsByCategory() {
+        const summary = [];
+        Object.entries(productsCatalogByCategory).forEach(([slug, categoryData]) => {
+          const selectedItems = categoryData.items.filter((item) => item.selected);
+          if (selectedItems.length > 0) {
+            summary.push({
+              slug,
+              label: categoryData.label,
+              count: selectedItems.length,
+              items: selectedItems.map((item) => ({
+                id: item.id,
+                name: item.name,
+                variant: item.variant,
+                price: item.price,
+                quantity: item.quantity > 0 ? item.quantity : 1
+              }))
+            });
+          }
+        });
+        return summary;
+      }
+
+      function renderCreateQuoteCategorySummary() {
+        if (!createQuoteCategorySummary) return;
+        const selectedByCategory = getSelectedProductsByCategory();
+
+        if (selectedByCategory.length === 0) {
+          createQuoteCategorySummary.innerHTML =
+            '<span class="quote-category-empty-note">0 products selected</span>';
+          return;
+        }
+
+        createQuoteCategorySummary.innerHTML = selectedByCategory
+          .map(
+            (cat) => `
+              <div class="quote-category-badge">
+                <span class="quote-category-badge-name">${cat.label}</span>
+                <span class="quote-category-badge-count">${cat.count}</span>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      function openCreateQuoteModal(triggerEl = null) {
+        if (!createQuoteModal) return;
+        lastFocusedCreateQuoteTrigger = triggerEl;
+
+        renderCreateQuoteCategorySummary();
+        createQuoteModal.classList.add('is-open');
+        createQuoteModal.setAttribute('aria-hidden', 'false');
+        createQuoteTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+        syncBodyModalState();
+
+        if (quoteEventNameInput) {
+          quoteEventNameInput.focus();
+        }
+      }
+
+      function closeCreateQuoteModal(resetForm = false) {
+        if (!createQuoteModal || !createQuoteModal.classList.contains('is-open')) return;
+        createQuoteModal.classList.remove('is-open');
+        createQuoteModal.setAttribute('aria-hidden', 'true');
+        createQuoteTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+
+        if (resetForm && createQuoteForm) {
+          createQuoteForm.reset();
+        }
+        syncBodyModalState();
+
+        if (lastFocusedCreateQuoteTrigger && typeof lastFocusedCreateQuoteTrigger.focus === 'function') {
+          lastFocusedCreateQuoteTrigger.focus();
+        }
+        lastFocusedCreateQuoteTrigger = null;
+      }
+
+      createQuoteTriggers.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          openCreateQuoteModal(btn);
+        });
+      });
+
+      if (cancelCreateQuoteBtn) {
+        cancelCreateQuoteBtn.addEventListener('click', () => {
+          closeCreateQuoteModal(true);
+        });
+      }
+
+      if (createQuoteModal) {
+        createQuoteModal.addEventListener('click', (event) => {
+          if (event.target === createQuoteModal) {
+            closeCreateQuoteModal(false);
+          }
+        });
+      }
+
+      if (createQuoteForm) {
+        createQuoteForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!createQuoteForm.checkValidity()) {
+            createQuoteForm.reportValidity();
+            return;
+          }
+
+          const formData = new FormData(createQuoteForm);
+          const quotePayload = {
+            eventName: String(formData.get('eventName') || '').trim(),
+            eventShortCode: String(formData.get('eventShortCode') || '').trim(),
+            quoteName: String(formData.get('quoteName') || '').trim(),
+            eventDate: String(formData.get('eventDate') || '').trim(),
+            categories: getSelectedProductsByCategory()
+          };
+
+          try {
+            sessionStorage.setItem('arenaPendingQuoteDraft', JSON.stringify(quotePayload));
+          } catch (err) {
+            // Ignore storage restrictions on local file:// contexts
+          }
+
+          closeCreateQuoteModal(true);
+          window.location.href = 'Cart.html';
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Add Products to Favorites Modal & Category Summary -> Favorites.html
+         ---------------------------------------------------------------------- */
+      const addFavoritesTriggers = [
+        document.getElementById('addToFavoritesBtn'),
+        document.getElementById('tableAddToFavoritesBtn')
+      ].filter(Boolean);
+      const addFavoritesCategorySummary = document.getElementById('addFavoritesCategorySummary');
+      const cancelAddFavoritesBtn = document.getElementById('cancelAddFavoritesBtn');
+      const confirmAddFavoritesBtn = document.getElementById('confirmAddFavoritesBtn');
+
+      let lastFocusedAddFavoritesTrigger = null;
+
+      function renderAddFavoritesCategorySummary() {
+        if (!addFavoritesCategorySummary) return;
+        const selectedByCategory = getSelectedProductsByCategory();
+
+        if (selectedByCategory.length === 0) {
+          addFavoritesCategorySummary.innerHTML =
+            '<span class="quote-category-empty-note">0 products selected</span>';
+          return;
+        }
+
+        addFavoritesCategorySummary.innerHTML = selectedByCategory
+          .map(
+            (cat) => `
+              <div class="quote-category-badge">
+                <span class="quote-category-badge-name">${cat.label}</span>
+                <span class="quote-category-badge-count">${cat.count}</span>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      function openAddFavoritesModal(triggerEl = null) {
+        if (!addFavoritesModal) return;
+        lastFocusedAddFavoritesTrigger = triggerEl;
+
+        renderAddFavoritesCategorySummary();
+        addFavoritesModal.classList.add('is-open');
+        addFavoritesModal.setAttribute('aria-hidden', 'false');
+        addFavoritesTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+        syncBodyModalState();
+
+        if (confirmAddFavoritesBtn) {
+          confirmAddFavoritesBtn.focus();
+        }
+      }
+
+      function closeAddFavoritesModal() {
+        if (!addFavoritesModal || !addFavoritesModal.classList.contains('is-open')) return;
+        addFavoritesModal.classList.remove('is-open');
+        addFavoritesModal.setAttribute('aria-hidden', 'true');
+        addFavoritesTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+        syncBodyModalState();
+
+        if (lastFocusedAddFavoritesTrigger && typeof lastFocusedAddFavoritesTrigger.focus === 'function') {
+          lastFocusedAddFavoritesTrigger.focus();
+        }
+        lastFocusedAddFavoritesTrigger = null;
+      }
+
+      addFavoritesTriggers.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          openAddFavoritesModal(btn);
+        });
+      });
+
+      if (cancelAddFavoritesBtn) {
+        cancelAddFavoritesBtn.addEventListener('click', () => {
+          closeAddFavoritesModal();
+        });
+      }
+
+      if (addFavoritesModal) {
+        addFavoritesModal.addEventListener('click', (event) => {
+          if (event.target === addFavoritesModal) {
+            closeAddFavoritesModal();
+          }
+        });
+      }
+
+      if (confirmAddFavoritesBtn) {
+        confirmAddFavoritesBtn.addEventListener('click', () => {
+          const selectedCategories = getSelectedProductsByCategory();
+          const favoritesPayload = {
+            addedAt: new Date().toISOString(),
+            categories: selectedCategories,
+            items: selectedCategories.flatMap((cat) =>
+              cat.items.map((item) => ({
+                ...item,
+                categorySlug: cat.slug,
+                categoryLabel: cat.label
+              }))
+            )
+          };
+
+          try {
+            localStorage.setItem('arenaClientFavorites', JSON.stringify(favoritesPayload));
+            sessionStorage.setItem('arenaPendingFavoritesDraft', JSON.stringify(favoritesPayload));
+          } catch (err) {
+            // Ignore storage restrictions on local file:// contexts
+          }
+
+          closeAddFavoritesModal();
+          window.location.href = 'Favorites.html';
+        });
+      }
+
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
+          if (addFavoritesModal && addFavoritesModal.classList.contains('is-open')) {
+            closeAddFavoritesModal();
+            return;
+          }
+          if (createQuoteModal && createQuoteModal.classList.contains('is-open')) {
+            closeCreateQuoteModal(false);
+            return;
+          }
           if (requestSubmittedModal && requestSubmittedModal.classList.contains('is-open')) {
             closeRequestSubmittedModal();
             return;

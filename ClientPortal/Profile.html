@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Client Portal</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect,
+    .ph-icon-15 polyline,
+    .ph-icon-15 polygon {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: CLIENT PORTAL NAVIGATION (DO NOT MODIFY FOR PAGE CONTENT)
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* 3-Column Grid locks the center nav links to the exact horizontal center of the viewport */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Left Track) */
+    .brand-logo-link {
+      grid-column: 1;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Desktop & Tablet Navigation Links (Center Track - Horizontal Row) */
+    .nav-links-list {
+      grid-column: 2;
+      justify-self: center;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+      padding: 4px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    /* Underline strictly targets .nav-link-text so (7) is never underlined */
+    .nav-link-item:hover .nav-link-text,
+    .nav-link-item.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    .cart-count-badge {
+      color: var(--color-orange);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+      text-decoration: none;
+    }
+
+    /* Right Controls: Profile Avatar & Mobile Hamburger Trigger (Right Track) */
+    .nav-actions {
+      grid-column: 3;
+      justify-self: end;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .profile-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .profile-avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-btn:hover,
+    .profile-avatar-btn:focus-visible,
+    .profile-avatar-btn[aria-expanded="true"] {
+      border-color: var(--color-navy);
+      outline: none;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Profile Popover Menu */
+    .profile-dropdown-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 1100;
+    }
+
+    .profile-dropdown-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-dropdown-header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-dropdown-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-dropdown-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-online-dot {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--color-trend-up-stroke);
+      border: 1.5px solid var(--color-white);
+    }
+
+    .profile-dropdown-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    .profile-dropdown-divider-soft {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .profile-dropdown-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .profile-dropdown-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover,
+    .profile-dropdown-item:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--color-navy);
+      font-size: 24px;
+    }
+
+    /* Mobile Dropdown Drawer */
+    .mobile-nav-drawer {
+      display: none;
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px 24px;
+    }
+
+    .mobile-nav-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 22px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    /* Mobile Hover & Active: Clean 10px offset underline only, no background/shadow */
+    .mobile-nav-link:hover .nav-link-text,
+    .mobile-nav-link.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+
+    /* Small Desktop / Laptop (1025px – 1280px): Adjust side gutters smoothly */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    /* Tablet Breakpoint (769px – 1024px) */
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .nav-links-list {
+        gap: 16px;
+      }
+
+      .nav-link-item {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    /* Mobile Breakpoint (<= 768px): Show Burger Icon & Collapsible Menu */
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      /* Hide inline desktop nav links */
+      .nav-links-list {
+        display: none;
+      }
+
+      /* Show burger button */
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .profile-dropdown-popover {
+        right: -56px;
+      }
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTENT & PERSONAL INFO PROFILE SECTION
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile-section {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 24px;
+    }
+
+    .profile-section-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .profile-section-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+    }
+
+    .profile-section-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    /* Form Card Container */
+    .profile-form-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-form-body {
+      width: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .profile-fields-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .profile-field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .profile-field-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    /* Standard & Leading-Icon Inputs */
+    .profile-input-control {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .profile-input-control:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .profile-input-icon {
+      color: var(--color-text-muted);
+      stroke: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .profile-text-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+    }
+
+    .profile-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* Contact Number Composite Field (Country Selector + Phone Input) */
+    .profile-phone-control {
+      width: 100%;
+      height: 44px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      transition: border-color var(--transition-fast);
+    }
+
+    .profile-phone-control:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .profile-country-select-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .profile-country-select {
+      height: 100%;
+      padding: 0 32px 0 14px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .profile-country-caret {
+      position: absolute;
+      right: 10px;
+      pointer-events: none;
+      color: var(--color-text-muted);
+      stroke: var(--color-text-muted);
+    }
+
+    .profile-phone-input {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
+      padding: 0 14px 0 4px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+    }
+
+    .profile-phone-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* Website Composite Field (https:// Prefix + Domain Input) */
+    .profile-website-control {
+      width: 100%;
+      height: 44px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      transition: border-color var(--transition-fast);
+    }
+
+    .profile-website-control:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .profile-website-prefix {
+      padding: 0 12px 0 14px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      border-right: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      white-space: nowrap;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .profile-website-input {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
+      padding: 0 14px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+    }
+
+    .profile-website-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* Avatar Preview + Circular 1%-100% Progress Loader + Upload Dropzone */
+    .profile-photo-row {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .profile-avatar-preview-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: #C4C4C4;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-avatar-preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-avatar-initials {
+      color: var(--color-white);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      user-select: none;
+    }
+
+    /* Circular Upload Progress Overlay (1% to 100%) */
+    .avatar-upload-loader {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background-color: rgba(23, 23, 23, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .avatar-upload-loader.is-active {
+      display: flex;
+    }
+
+    .avatar-progress-ring {
+      width: 56px;
+      height: 56px;
+      transform: rotate(-90deg);
+      display: block;
+    }
+
+    .avatar-progress-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.25);
+      stroke-width: 3.5;
+    }
+
+    .avatar-progress-fill {
+      fill: none;
+      stroke: var(--color-orange);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-dasharray: 150.796;
+      stroke-dashoffset: 150.796;
+      transition: stroke-dashoffset 0.06s linear;
+    }
+
+    .avatar-progress-percent {
+      position: absolute;
+      color: var(--color-white);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+
+    .profile-dropzone {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 16px 24px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .profile-dropzone:hover,
+    .profile-dropzone:focus-visible,
+    .profile-dropzone.is-dragover {
+      border-color: var(--color-orange);
+      background-color: var(--color-bg-subtle);
+      outline: none;
+    }
+
+    .profile-dropzone-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 6px solid var(--color-footer-bg);
+      outline-offset: -3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .profile-dropzone-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .profile-dropzone-prompt {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--color-text-secondary);
+    }
+
+    .profile-upload-link {
+      color: var(--color-orange);
+      font-weight: 600;
+    }
+
+    .profile-dropzone:hover .profile-upload-link {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .profile-dropzone-hint {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .profile-upload-status {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      min-height: 18px;
+    }
+
+    .profile-upload-status.is-error {
+      color: var(--color-trend-down-text);
+    }
+
+    .profile-upload-status.is-success {
+      color: var(--color-trend-up-text);
+    }
+
+    .visually-hidden-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Card Footer Action Bar */
+    .profile-form-footer {
+      width: 100%;
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-profile-cancel {
+      height: 40px;
+      padding: 0 16px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-profile-cancel:hover,
+    .btn-profile-cancel:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    .btn-profile-save {
+      height: 40px;
+      padding: 0 16px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border: 1px solid var(--color-orange);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-profile-save:hover:not(.is-saved),
+    .btn-profile-save:focus-visible:not(.is-saved) {
+      background-color: var(--color-orange-hover);
+      border-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    .btn-profile-save.is-saved {
+      background-color: #16A34A;
+      border-color: #16A34A;
+      color: var(--color-white);
+    }
+
+    .btn-profile-save.is-saved:hover,
+    .btn-profile-save.is-saved:focus-visible {
+      background-color: var(--color-trend-up-text);
+      border-color: var(--color-trend-up-text);
+      outline: none;
+    }
+
+    /* Responsive Gutters & Mobile Stacking */
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 64px 48px 80px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 64px 32px 64px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 32px 20px 56px;
+      }
+
+      .profile-form-body {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+
+      .profile-fields-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .profile-photo-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .profile-avatar-preview-wrap {
+        align-self: flex-start;
+      }
+
+      .profile-dropzone {
+        padding: 16px;
+      }
+
+      .profile-form-footer {
+        padding: 16px;
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .btn-profile-cancel,
+      .btn-profile-save {
+        width: 100%;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: CLIENT PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Top Row: Logo Left + 4 Link Columns Right */
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Bottom Row: Divider + Tagline & Copyright */
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    /* Footer Responsive Breakpoints (Matches Navigation Gutters) */
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL NAVIGATION
+       Locked component — add page body and footer below without altering this block.
+       ======================================================================== -->
+  <header class="portal-header" id="clientPortalHeader">
+    <nav class="portal-nav-container" aria-label="Client Portal Primary Navigation">
+
+      <!-- Arena Branding Logo -->
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+
+      <!-- Center Navigation Links (Desktop & Tablet) -->
+      <ul class="nav-links-list">
+        <li>
+          <a href="Dashboard.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Favorites.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">My Favorites</span>
+          </a>
+        </li>
+        <li>
+          <a href="Cart.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Cart Items</span>
+            <span class="cart-count-badge">(7)</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Controls: Profile Circle & Mobile Burger Trigger -->
+      <div class="nav-actions">
+        <!-- Profile Avatar Button & Popover Menu -->
+        <div class="profile-menu-wrapper" id="profileMenuWrapper">
+          <button
+            type="button"
+            class="profile-avatar-btn"
+            id="profileMenuTrigger"
+            aria-label="Open user profile menu"
+            aria-expanded="false"
+            aria-controls="profileDropdownPopover"
+          >
+            <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
+            <img
+              src=""
+              alt="Jemma Emma"
+              class="profile-avatar-img"
+              style="display: none;"
+              onerror="this.style.display='none'"
+            />
+          </button>
+
+          <!-- Profile Dropdown Popover -->
+          <div
+            class="profile-dropdown-popover"
+            id="profileDropdownPopover"
+            role="menu"
+            aria-label="User profile options"
+          >
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar-wrap">
+                <img
+                  src=""
+                  alt="Jemma Emma"
+                  class="profile-dropdown-avatar-img"
+                  style="display: none;"
+                  onerror="this.style.display='none'"
+                />
+                <span class="profile-online-dot" aria-hidden="true"></span>
+              </div>
+              <span class="profile-dropdown-name">Jemma Emma</span>
+            </div>
+
+            <div class="profile-dropdown-divider-soft"></div>
+
+            <div class="profile-dropdown-actions">
+              <a href="Profile.html" class="profile-dropdown-item" role="menuitem" data-profile-action="view-profile">
+                View profile
+              </a>
+              <div class="profile-dropdown-divider"></div>
+              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+                Log out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileNavDrawer"
+        >
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Collapsible Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="Dashboard.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Favorites.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">My Favorites</span>
+          </a>
+        </li>
+        <li>
+          <a href="Cart.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Cart Items</span>
+            <span class="cart-count-badge">(7)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL NAVIGATION
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT
+       Personal Info & Profile Photo Upload Form
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+    <section class="profile-section" aria-labelledby="personalInfoHeading">
+      <header class="profile-section-header">
+        <h1 class="profile-section-title" id="personalInfoHeading">Personal info</h1>
+        <p class="profile-section-subtitle">Update your photo and personal details here.</p>
+      </header>
+
+      <form class="profile-form-card" id="personalInfoForm" novalidate>
+        <div class="profile-form-body">
+
+          <!-- Row 1: Full Name & Company Name -->
+          <div class="profile-fields-row">
+            <div class="profile-field-group">
+              <label class="profile-field-label" for="profileFullName">Full Name</label>
+              <div class="profile-input-control">
+                <input
+                  type="text"
+                  id="profileFullName"
+                  name="fullName"
+                  class="profile-text-input"
+                  value="Jemma"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="profile-field-group">
+              <label class="profile-field-label" for="profileCompanyName">Company Name</label>
+              <div class="profile-input-control">
+                <input
+                  type="text"
+                  id="profileCompanyName"
+                  name="companyName"
+                  class="profile-text-input"
+                  value="Emma"
+                  placeholder="Enter your company name"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Company Email (Phosphor EnvelopeSimple 1.5px stroke) -->
+          <div class="profile-field-group">
+            <label class="profile-field-label" for="profileCompanyEmail">Company Email</label>
+            <div class="profile-input-control">
+              <svg class="ph-icon-15 profile-input-icon" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 56H224V192C224 194.122 223.157 196.157 221.657 197.657C220.157 199.157 218.122 200 216 200H40C37.8783 200 35.8434 199.157 34.3431 197.657C32.8429 196.157 32 194.122 32 192V56Z" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M224 56L128 144L32 56" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input
+                type="email"
+                id="profileCompanyEmail"
+                name="companyEmail"
+                class="profile-text-input"
+                value="jemma@ironman.com.au"
+                placeholder="name@company.com"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Row 3: Number of annual events (approx.) (Phosphor Flag 1.5px stroke) -->
+          <div class="profile-field-group">
+            <label class="profile-field-label" for="profileAnnualEvents">Number of annual events (approx.)</label>
+            <div class="profile-input-control">
+              <svg class="ph-icon-15 profile-input-icon" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M40 216V48" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M40 168C104 120 152 216 216 168V48C152 96 104 0 40 48" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input
+                type="number"
+                id="profileAnnualEvents"
+                name="annualEvents"
+                class="profile-text-input"
+                value="8"
+                min="0"
+                step="1"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <!-- Row 4: Contact Number with Country Dropdown (Phosphor CaretDown 1.5px stroke) -->
+          <div class="profile-field-group">
+            <label class="profile-field-label" for="profileContactNumber">Contact number</label>
+            <div class="profile-phone-control">
+              <div class="profile-country-select-wrap">
+                <select
+                  id="profileCountryCode"
+                  name="countryCode"
+                  class="profile-country-select"
+                  aria-label="Country code"
+                >
+                  <option value="AU" data-dial="+61" selected>AU</option>
+                  <option value="NZ" data-dial="+64">NZ</option>
+                  <option value="US" data-dial="+1">US</option>
+                  <option value="UK" data-dial="+44">UK</option>
+                </select>
+                <svg class="ph-icon-15 profile-country-caret" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M208 96L128 176L48 96" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <input
+                type="tel"
+                id="profileContactNumber"
+                name="contactNumber"
+                class="profile-phone-input"
+                value="+61 412 345 678"
+                placeholder="+61 400 000 000"
+              />
+            </div>
+          </div>
+
+          <!-- Row 5: Website with https:// Prefix -->
+          <div class="profile-field-group">
+            <label class="profile-field-label" for="profileWebsite">Website</label>
+            <div class="profile-website-control">
+              <span class="profile-website-prefix">https://</span>
+              <input
+                type="text"
+                id="profileWebsite"
+                name="website"
+                class="profile-website-input"
+                value="www.ironman.com.au"
+                placeholder="www.example.com"
+              />
+            </div>
+          </div>
+
+          <!-- Row 6: Profile Photo Circle with 1%-100% Loader & Drag-and-Drop Dropzone -->
+          <div class="profile-photo-row">
+            <div class="profile-avatar-preview-wrap" id="profileAvatarPreviewWrap">
+              <span class="profile-avatar-initials" id="profileAvatarInitials">JE</span>
+              <img
+                src=""
+                alt="Jemma Emma profile preview"
+                class="profile-avatar-preview-img"
+                id="profileAvatarPreviewImg"
+                style="display: none;"
+              />
+
+              <!-- 1% to 100% Circular Upload Progress Overlay -->
+              <div
+                class="avatar-upload-loader"
+                id="avatarUploadLoader"
+                role="progressbar"
+                aria-label="Uploading profile photo"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              >
+                <svg class="avatar-progress-ring" viewBox="0 0 56 56" aria-hidden="true">
+                  <circle class="avatar-progress-track" cx="28" cy="28" r="24" />
+                  <circle class="avatar-progress-fill" id="avatarProgressCircle" cx="28" cy="28" r="24" />
+                </svg>
+                <span class="avatar-progress-percent" id="avatarProgressText">1%</span>
+              </div>
+            </div>
+
+            <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <div
+                class="profile-dropzone"
+                id="profilePhotoDropzone"
+                role="button"
+                tabindex="0"
+                aria-label="Upload profile photo. Click to browse or drag and drop PNG or JPG up to 1000 by 1000 pixels."
+              >
+                <div class="profile-dropzone-icon-badge" aria-hidden="true">
+                  <!-- Phosphor Lightning 1.5px stroke -->
+                  <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M160 16L144 96L208 120L96 240L112 160L48 136L160 16Z" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <div class="profile-dropzone-copy">
+                  <p class="profile-dropzone-prompt">
+                    <span class="profile-upload-link">Click to upload</span>
+                    <span>or drag and drop</span>
+                  </p>
+                  <p class="profile-dropzone-hint">PNG or JPG (max. 1000x1000px)</p>
+                </div>
+              </div>
+
+              <input
+                type="file"
+                id="profilePhotoInput"
+                class="visually-hidden-input"
+                accept="image/png, image/jpeg"
+              />
+              <p class="profile-upload-status" id="profileUploadStatus" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="profile-form-footer">
+          <button type="button" class="btn-profile-cancel" id="cancelProfileBtn">
+            Cancel
+          </button>
+          <button type="submit" class="btn-profile-save" id="saveProfileBtn">
+            Save changes
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="clientPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: NAVIGATION, PROFILE PHOTO LOADER & FORM SAVE STATE
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+
+      const profileMenuWrapper = document.getElementById('profileMenuWrapper');
+      const profileMenuTrigger = document.getElementById('profileMenuTrigger');
+      const profileDropdownPopover = document.getElementById('profileDropdownPopover');
+      const profileActionItems = document.querySelectorAll('[data-profile-action]');
+
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Profile Dropdown Popover
+      function toggleProfileMenu(forceClose = false) {
+        if (!profileMenuTrigger || !profileDropdownPopover) return;
+        const isCurrentlyOpen = profileDropdownPopover.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        profileDropdownPopover.classList.toggle('is-open', shouldOpen);
+        profileMenuTrigger.setAttribute('aria-expanded', String(shouldOpen));
+
+        if (shouldOpen) {
+          toggleMobileMenu(true);
+        }
+      }
+
+      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      function toggleMobileMenu(forceClose = false) {
+        const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        mobileNavDrawer.classList.toggle('is-open', shouldOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+
+        if (shouldOpen) {
+          toggleProfileMenu(true);
+        }
+      }
+
+      if (profileMenuTrigger) {
+        profileMenuTrigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleProfileMenu();
+        });
+      }
+
+      profileActionItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          toggleProfileMenu(true);
+        });
+      });
+
+      mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+
+      // Sync Active Link State Across Desktop & Mobile Navigation
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          const targetHref = link.getAttribute('href');
+
+          navLinks.forEach((item) => {
+            item.classList.toggle('active', item.getAttribute('href') === targetHref);
+          });
+
+          // Close mobile menu after selecting an item
+          toggleMobileMenu(true);
+        });
+      });
+
+      // Close profile popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
+          toggleProfileMenu(true);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+        }
+      });
+
+      // Automatically close mobile drawer if resized above mobile breakpoint
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileNavDrawer.classList.contains('is-open')) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         Profile Photo Upload with Circular 1% - 100% Progress Loader
+         ---------------------------------------------------------------------- */
+      const dropzone = document.getElementById('profilePhotoDropzone');
+      const photoInput = document.getElementById('profilePhotoInput');
+      const previewImg = document.getElementById('profileAvatarPreviewImg');
+      const previewInitials = document.getElementById('profileAvatarInitials');
+      const uploadLoader = document.getElementById('avatarUploadLoader');
+      const progressCircle = document.getElementById('avatarProgressCircle');
+      const progressText = document.getElementById('avatarProgressText');
+      const uploadStatus = document.getElementById('profileUploadStatus');
+      const navAvatarImgs = document.querySelectorAll('.profile-avatar-img, .profile-dropdown-avatar-img');
+
+      const ringCircumference = 2 * Math.PI * 24; // r = 24 -> ~150.796
+      let uploadTimerId = null;
+      let savedAvatarDataUrl = '';
+      let currentAvatarDataUrl = '';
+
+      function setRingProgress(percent) {
+        const clamped = Math.max(1, Math.min(100, percent));
+        const offset = ringCircumference * (1 - clamped / 100);
+        if (progressCircle) {
+          progressCircle.style.strokeDashoffset = String(offset);
+        }
+        if (progressText) {
+          progressText.textContent = `${clamped}%`;
+        }
+        if (uploadLoader) {
+          uploadLoader.setAttribute('aria-valuenow', String(clamped));
+        }
+      }
+
+      function applyAvatarPreview(dataUrl) {
+        if (dataUrl) {
+          previewImg.src = dataUrl;
+          previewImg.style.display = 'block';
+          previewInitials.style.display = 'none';
+        } else {
+          previewImg.removeAttribute('src');
+          previewImg.style.display = 'none';
+          previewInitials.style.display = 'block';
+        }
+      }
+
+      function syncHeaderAvatars(dataUrl) {
+        navAvatarImgs.forEach((img) => {
+          if (dataUrl) {
+            img.src = dataUrl;
+            img.style.display = 'block';
+          } else {
+            img.removeAttribute('src');
+            img.style.display = 'none';
+          }
+        });
+      }
+
+      function setUploadStatus(message, type = '') {
+        if (!uploadStatus) return;
+        uploadStatus.textContent = message;
+        uploadStatus.classList.remove('is-error', 'is-success');
+        if (type) {
+          uploadStatus.classList.add(type);
+        }
+      }
+
+      function startSimulatedUpload(dataUrl, fileName) {
+        if (uploadTimerId) {
+          clearInterval(uploadTimerId);
+          uploadTimerId = null;
+        }
+
+        let percent = 1;
+        setRingProgress(percent);
+        uploadLoader.classList.add('is-active');
+        setUploadStatus(`Uploading ${fileName}...`);
+
+        uploadTimerId = setInterval(() => {
+          percent += Math.floor(Math.random() * 7) + 4;
+          if (percent >= 100) {
+            percent = 100;
+            setRingProgress(100);
+            clearInterval(uploadTimerId);
+            uploadTimerId = null;
+
+            setTimeout(() => {
+              uploadLoader.classList.remove('is-active');
+              currentAvatarDataUrl = dataUrl;
+              applyAvatarPreview(dataUrl);
+              setUploadStatus(`Uploaded "${fileName}" — click Save changes to apply.`, 'is-success');
+              resetSaveButtonState();
+            }, 220);
+          } else {
+            setRingProgress(percent);
+          }
+        }, 45);
+      }
+
+      function handleSelectedPhotoFile(file) {
+        if (!file) return;
+
+        const validTypes = ['image/png', 'image/jpeg'];
+        if (!validTypes.includes(file.type)) {
+          setUploadStatus('Please upload a PNG or JPG image.', 'is-error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (loadEvent) => {
+          const dataUrl = String(loadEvent.target?.result || '');
+          const probeImg = new Image();
+          probeImg.onload = () => {
+            if (probeImg.width > 1000 || probeImg.height > 1000) {
+              setUploadStatus(
+                `Image is ${probeImg.width}x${probeImg.height}px. Maximum allowed size is 1000x1000px.`,
+                'is-error'
+              );
+              return;
+            }
+            startSimulatedUpload(dataUrl, file.name);
+          };
+          probeImg.onerror = () => {
+            setUploadStatus('Unable to read the selected image file.', 'is-error');
+          };
+          probeImg.src = dataUrl;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (dropzone && photoInput) {
+        dropzone.addEventListener('click', () => {
+          photoInput.click();
+        });
+
+        dropzone.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            photoInput.click();
+          }
+        });
+
+        photoInput.addEventListener('change', () => {
+          const file = photoInput.files && photoInput.files[0];
+          if (file) {
+            handleSelectedPhotoFile(file);
+          }
+          photoInput.value = '';
+        });
+
+        ['dragenter', 'dragover'].forEach((eventName) => {
+          dropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            dropzone.classList.add('is-dragover');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach((eventName) => {
+          dropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            dropzone.classList.remove('is-dragover');
+          });
+        });
+
+        dropzone.addEventListener('drop', (event) => {
+          const file = event.dataTransfer?.files && event.dataTransfer.files[0];
+          if (file) {
+            handleSelectedPhotoFile(file);
+          }
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Personal Info Form State, Country Code Prefix & Save Changes Feedback
+         ---------------------------------------------------------------------- */
+      const personalInfoForm = document.getElementById('personalInfoForm');
+      const fullNameInput = document.getElementById('profileFullName');
+      const companyNameInput = document.getElementById('profileCompanyName');
+      const companyEmailInput = document.getElementById('profileCompanyEmail');
+      const annualEventsInput = document.getElementById('profileAnnualEvents');
+      const countryCodeSelect = document.getElementById('profileCountryCode');
+      const contactNumberInput = document.getElementById('profileContactNumber');
+      const websiteInput = document.getElementById('profileWebsite');
+      const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+
+      const checkIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M40 144L96 200L224 72" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      let saveResetTimerId = null;
+
+      let savedFormSnapshot = {
+        fullName: fullNameInput.value,
+        companyName: companyNameInput.value,
+        companyEmail: companyEmailInput.value,
+        annualEvents: annualEventsInput.value,
+        countryCode: countryCodeSelect.value,
+        contactNumber: contactNumberInput.value,
+        website: websiteInput.value
+      };
+
+      function resetSaveButtonState() {
+        if (saveResetTimerId) {
+          clearTimeout(saveResetTimerId);
+          saveResetTimerId = null;
+        }
+        if (saveProfileBtn) {
+          saveProfileBtn.classList.remove('is-saved');
+          saveProfileBtn.textContent = 'Save changes';
+        }
+      }
+
+      function markSaveButtonSuccess() {
+        if (saveResetTimerId) {
+          clearTimeout(saveResetTimerId);
+        }
+        if (saveProfileBtn) {
+          saveProfileBtn.classList.add('is-saved');
+          saveProfileBtn.innerHTML = `${checkIconSvg}<span>Successfully saved</span>`;
+        }
+        saveResetTimerId = setTimeout(() => {
+          resetSaveButtonState();
+        }, 3500);
+      }
+
+      function updateInitialsFromName(name) {
+        const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) {
+          previewInitials.textContent = 'JE';
+          return;
+        }
+        const initials = parts.length === 1
+          ? parts[0].slice(0, 2).toUpperCase()
+          : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        previewInitials.textContent = initials;
+      }
+
+      // Swap dial prefix when country code changes
+      if (countryCodeSelect && contactNumberInput) {
+        countryCodeSelect.addEventListener('change', () => {
+          const selectedOpt = countryCodeSelect.options[countryCodeSelect.selectedIndex];
+          const newDial = selectedOpt?.dataset.dial || '+61';
+          const stripped = contactNumberInput.value.replace(/^\+\d+\s*/, '');
+          contactNumberInput.value = stripped ? `${newDial} ${stripped}` : `${newDial} `;
+          resetSaveButtonState();
+        });
+      }
+
+      // Strip accidental http:// or https:// prefix if user pastes a full URL
+      if (websiteInput) {
+        websiteInput.addEventListener('blur', () => {
+          websiteInput.value = websiteInput.value.replace(/^https?:\/\//i, '').trim();
+        });
+      }
+
+      // Reset green saved indicator when user starts editing any field again
+      [
+        fullNameInput,
+        companyNameInput,
+        companyEmailInput,
+        annualEventsInput,
+        contactNumberInput,
+        websiteInput
+      ].forEach((inputEl) => {
+        if (!inputEl) return;
+        inputEl.addEventListener('input', () => {
+          resetSaveButtonState();
+          if (inputEl === fullNameInput) {
+            updateInitialsFromName(fullNameInput.value);
+          }
+        });
+      });
+
+      // Cancel restores last saved snapshot
+      if (cancelProfileBtn) {
+        cancelProfileBtn.addEventListener('click', () => {
+          if (uploadTimerId) {
+            clearInterval(uploadTimerId);
+            uploadTimerId = null;
+          }
+          uploadLoader.classList.remove('is-active');
+
+          fullNameInput.value = savedFormSnapshot.fullName;
+          companyNameInput.value = savedFormSnapshot.companyName;
+          companyEmailInput.value = savedFormSnapshot.companyEmail;
+          annualEventsInput.value = savedFormSnapshot.annualEvents;
+          countryCodeSelect.value = savedFormSnapshot.countryCode;
+          contactNumberInput.value = savedFormSnapshot.contactNumber;
+          websiteInput.value = savedFormSnapshot.website;
+
+          currentAvatarDataUrl = savedAvatarDataUrl;
+          applyAvatarPreview(savedAvatarDataUrl);
+          updateInitialsFromName(savedFormSnapshot.fullName);
+          setUploadStatus('');
+          resetSaveButtonState();
+        });
+      }
+
+      // Save changes validates fields, commits snapshot, syncs header avatar & turns button green
+      if (personalInfoForm) {
+        personalInfoForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!personalInfoForm.checkValidity()) {
+            personalInfoForm.reportValidity();
+            return;
+          }
+
+          websiteInput.value = websiteInput.value.replace(/^https?:\/\//i, '').trim();
+
+          savedFormSnapshot = {
+            fullName: fullNameInput.value.trim(),
+            companyName: companyNameInput.value.trim(),
+            companyEmail: companyEmailInput.value.trim(),
+            annualEvents: annualEventsInput.value.trim(),
+            countryCode: countryCodeSelect.value,
+            contactNumber: contactNumberInput.value.trim(),
+            website: websiteInput.value
+          };
+
+          savedAvatarDataUrl = currentAvatarDataUrl;
+          syncHeaderAvatars(savedAvatarDataUrl);
+          updateInitialsFromName(savedFormSnapshot.fullName);
+          setUploadStatus('');
+          markSaveButtonSuccess();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

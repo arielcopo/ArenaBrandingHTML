@@ -474,7 +474,7 @@
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 96px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 96px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -491,13 +491,13 @@
 
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 96px 48px 80px;
+        padding: 64px 48px 80px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 96px 32px 64px;
+        padding: 64px 32px 64px;
       }
 
       .page-placeholder-heading {
@@ -507,7 +507,7 @@
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 96px 20px 56px;
+        padding: 32px 20px 56px;
       }
 
       .page-placeholder-heading {
@@ -818,9 +818,9 @@
                 View profile
               </a>
               <div class="profile-dropdown-divider"></div>
-              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
                 Log out
-              </button>
+              </a>
             </div>
           </div>
         </div>

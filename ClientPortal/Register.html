@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Client Portal</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: PUBLIC / AUTH PORTAL NAVIGATION (Desktop, Tablet & Mobile)
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* 3-Column Grid locks center links horizontally while keeping logo left and phone/CTA right */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Left Track) */
+    .brand-logo-link {
+      grid-column: 1;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Center Navigation Links (Desktop & Tablet) */
+    .nav-links-list {
+      grid-column: 2;
+      justify-self: center;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+      padding: 4px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-link-item:hover .nav-link-text,
+    .nav-link-item.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* Right Controls: Phone Number, Get a Quote CTA & Mobile Burger Trigger */
+    .nav-actions {
+      grid-column: 3;
+      justify-self: end;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .nav-phone-link {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      color: var(--color-navy);
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-phone-link:hover {
+      color: var(--color-orange);
+    }
+
+    .btn-nav-quote {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 0 18px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-orange);
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-nav-quote:hover,
+    .btn-nav-quote:focus-visible {
+      background-color: var(--color-orange-hover);
+      border-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--color-navy);
+      font-size: 24px;
+    }
+
+    /* Mobile Dropdown Drawer */
+    .mobile-nav-drawer {
+      display: none;
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px 24px;
+    }
+
+    .mobile-nav-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 22px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    .mobile-nav-link:hover .nav-link-text,
+    .mobile-nav-link.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    .mobile-nav-extra {
+      margin-top: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .mobile-nav-extra .btn-nav-quote {
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .nav-links-list {
+        gap: 16px;
+      }
+
+      .nav-link-item,
+      .nav-phone-link {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .nav-actions {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .nav-links-list,
+      .nav-actions .nav-phone-link,
+      .nav-actions .btn-nav-quote {
+        display: none;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+    }
+
+    /* ==========================================================================
+       4. MAIN PAGE BODY: REGISTER COMPANY SPLIT LAYOUT (Zero Left Edge, 112px Right Gutter)
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 96px 0;
+      display: grid;
+      grid-template-columns: minmax(0, 860px) minmax(0, 1fr);
+      align-items: center;
+      gap: 0 112px;
+    }
+
+    .register-media-panel {
+      width: 100%;
+      height: 100%;
+      min-height: 820px;
+      overflow: hidden;
+      background-color: var(--color-bg-subtle);
+    }
+
+    .register-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .register-form-column {
+      width: 100%;
+      max-width: 360px;
+      justify-self: end;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 40px;
+      padding: 24px 0;
+    }
+
+    .register-form-top {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 32px;
+    }
+
+    .register-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .register-title {
+      color: var(--color-navy);
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 38px;
+    }
+
+    .register-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .register-form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 24px;
+    }
+
+    .register-fields-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    .register-field-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .register-field-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .register-required-star {
+      color: var(--color-trend-down-text);
+    }
+
+    .register-input-control {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .register-input-control:focus-within {
+      border-color: var(--color-navy);
+    }
+
+    .register-input-control.is-invalid {
+      border-color: var(--color-trend-down-stroke);
+    }
+
+    .register-text-input {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+    }
+
+    .register-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* Hide native number spinners for clean uniform input appearance */
+    .register-text-input[type="number"]::-webkit-inner-spin-button,
+    .register-text-input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .register-text-input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .register-password-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      color: var(--color-card-label);
+      flex-shrink: 0;
+      transition: color var(--transition-fast);
+    }
+
+    .register-password-toggle:hover,
+    .register-password-toggle:focus-visible {
+      color: var(--color-text-secondary);
+      outline: none;
+    }
+
+    .register-field-hint {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .register-field-error {
+      display: none;
+      color: var(--color-trend-down-text);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .register-field-error.is-visible {
+      display: block;
+    }
+
+    .btn-register-submit {
+      width: 100%;
+      height: 40px;
+      padding: 0 16px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-orange);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-register-submit:hover,
+    .btn-register-submit:focus-visible {
+      background-color: var(--color-orange-hover);
+      border-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    .register-switch-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .register-switch-text {
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+
+    .register-switch-link {
+      color: var(--color-orange);
+      font-weight: 600;
+      transition: color var(--transition-fast);
+    }
+
+    .register-switch-link:hover,
+    .register-switch-link:focus-visible {
+      color: var(--color-orange-hover);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 64px 48px 80px 0;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        gap: 0 64px;
+      }
+
+      .register-media-panel {
+        min-height: 760px;
+      }
+
+      .register-form-column {
+        justify-self: center;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 64px 32px 64px 0;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+        gap: 0 40px;
+      }
+
+      .register-media-panel {
+        min-height: 700px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 32px 20px 56px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .register-media-panel {
+        min-height: 240px;
+        max-height: 280px;
+        border-radius: 12px;
+      }
+
+      .register-form-column {
+        max-width: 100%;
+        justify-self: stretch;
+        padding: 0;
+        gap: 32px;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: CLIENT PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Top Row: Logo Left + 4 Link Columns Right */
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Bottom Row: Divider + Tagline & Copyright */
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: PUBLIC / AUTH NAVIGATION
+       ======================================================================== -->
+  <header class="portal-header" id="clientPortalHeader">
+    <nav class="portal-nav-container" aria-label="Primary Navigation">
+
+      <!-- Arena Branding Logo -->
+      <a href="#" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+
+      <!-- Center Navigation Links (Desktop & Tablet) -->
+      <ul class="nav-links-list">
+        <li>
+          <a href="#" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Products</span>
+            <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M208 96L128 176L48 96" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">About Us</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Controls: Phone Number, Get a Quote CTA & Mobile Burger Trigger -->
+      <div class="nav-actions">
+        <a href="#" class="nav-phone-link">1300-426-573</a>
+        <a href="#" class="btn-nav-quote">Get a Quote</a>
+
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileNavDrawer"
+        >
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Collapsible Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="#" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Products</span>
+            <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M208 96L128 176L48 96" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">About Us</span>
+          </a>
+        </li>
+      </ul>
+      <div class="mobile-nav-extra">
+        <a href="#" class="nav-phone-link">1300-426-573</a>
+        <a href="#" class="btn-nav-quote">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: PUBLIC / AUTH NAVIGATION
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT (REGISTER COMPANY)
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+    <!-- Left Media Panel (Zero Left Margin / Flush to Left Viewport Edge) -->
+    <div class="register-media-panel">
+      <img
+        src="images/Register.png"
+        alt="Arena Branding event signage, arches, and tents inside a stadium"
+        class="register-hero-img"
+      />
+    </div>
+
+    <!-- Right Registration Form Column -->
+    <section class="register-form-column" aria-labelledby="registerHeading">
+      <div class="register-form-top">
+        <header class="register-header">
+          <h1 class="register-title" id="registerHeading">Register Company</h1>
+          <p class="register-subtitle">Create account.</p>
+        </header>
+
+        <form class="register-form" id="registerCompanyForm" novalidate>
+          <div class="register-fields-stack">
+            <!-- Company Name -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regCompanyName">
+                Company Name <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="companyNameWrap">
+                <input
+                  type="text"
+                  id="regCompanyName"
+                  name="companyName"
+                  class="register-text-input"
+                  placeholder="Enter your name"
+                  value="Arena Events Group"
+                  autocomplete="organization"
+                  required
+                />
+              </div>
+              <p class="register-field-error" id="companyNameError" role="alert">Please enter your company name.</p>
+            </div>
+
+            <!-- Full Name -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regFullName">
+                Full Name <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="fullNameWrap">
+                <input
+                  type="text"
+                  id="regFullName"
+                  name="fullName"
+                  class="register-text-input"
+                  placeholder="Enter your name"
+                  value="John Doe"
+                  autocomplete="name"
+                  required
+                />
+              </div>
+              <p class="register-field-error" id="fullNameError" role="alert">Please enter your full name.</p>
+            </div>
+
+            <!-- Contact Number -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regContactNumber">
+                Contact Number <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="contactNumberWrap">
+                <input
+                  type="tel"
+                  id="regContactNumber"
+                  name="contactNumber"
+                  class="register-text-input"
+                  placeholder="Enter your contact number"
+                  value="0412 345 678"
+                  autocomplete="tel"
+                  required
+                />
+              </div>
+              <p class="register-field-error" id="contactNumberError" role="alert">Please enter your contact number.</p>
+            </div>
+
+            <!-- Company Email -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regCompanyEmail">
+                Company Email <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="companyEmailWrap">
+                <input
+                  type="email"
+                  id="regCompanyEmail"
+                  name="companyEmail"
+                  class="register-text-input"
+                  placeholder="Enter your company email"
+                  value="johndoe@gmail.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <p class="register-field-error" id="companyEmailError" role="alert">Please enter a valid company email.</p>
+            </div>
+
+            <!-- Number of annual events (approx.) -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regAnnualEvents">
+                Number of annual events (approx.) <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="annualEventsWrap">
+                <input
+                  type="number"
+                  id="regAnnualEvents"
+                  name="annualEvents"
+                  class="register-text-input"
+                  placeholder="5 or 8"
+                  value="8"
+                  min="1"
+                  step="1"
+                  required
+                />
+              </div>
+              <p class="register-field-error" id="annualEventsError" role="alert">Please enter your approximate annual events.</p>
+            </div>
+
+            <!-- Password (At least 4 letters or numbers) -->
+            <div class="register-field-group">
+              <label class="register-field-label" for="regPassword">
+                Password <span class="register-required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="register-input-control" id="passwordWrap">
+                <input
+                  type="password"
+                  id="regPassword"
+                  name="password"
+                  class="register-text-input"
+                  placeholder="Create a password"
+                  value="1234"
+                  minlength="4"
+                  autocomplete="new-password"
+                  aria-describedby="passwordHint passwordError"
+                  required
+                />
+                <button
+                  type="button"
+                  class="register-password-toggle"
+                  id="toggleRegPasswordBtn"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                >
+                  <!-- Phosphor Eye 1.5px stroke -->
+                  <svg id="toggleRegPasswordIcon" class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M128 56C48 56 16 128 16 128C16 128 48 200 128 200C208 200 240 128 240 128C240 128 208 56 128 56Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="128" cy="128" r="40" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <p class="register-field-hint" id="passwordHint">Must be at least 4 letters or numbers</p>
+              <p class="register-field-error" id="passwordError" role="alert">Password must be at least 4 letters or numbers.</p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-register-submit" id="registerSubmitBtn">
+            Register
+          </button>
+        </form>
+      </div>
+
+      <div class="register-switch-row">
+        <span class="register-switch-text">Already have an account?</span>
+        <a href="Login.html" class="register-switch-link">Log in</a>
+      </div>
+    </section>
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="clientPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: MOBILE MENU, PASSWORD VISIBILITY & REGISTRATION FORM
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      function toggleMobileMenu(forceClose = false) {
+        const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        mobileNavDrawer.classList.toggle('is-open', shouldOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+      }
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+      }
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          toggleMobileMenu(true);
+        });
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleMobileMenu(true);
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileNavDrawer.classList.contains('is-open')) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      /* Show / Hide Password */
+      const passwordInput = document.getElementById('regPassword');
+      const togglePasswordBtn = document.getElementById('toggleRegPasswordBtn');
+      const togglePasswordIcon = document.getElementById('toggleRegPasswordIcon');
+
+      const eyeOpenPaths = '<path d="M128 56C48 56 16 128 16 128C16 128 48 200 128 200C208 200 240 128 240 128C240 128 208 56 128 56Z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="128" cy="128" r="40" stroke-linecap="round" stroke-linejoin="round"/>';
+      const eyeSlashPaths = '<path d="M48 40L208 216" stroke-linecap="round" stroke-linejoin="round"/><path d="M154.91 157.6C147.82 164.08 138.37 168 128 168C105.91 168 88 150.09 88 128C88 117.63 91.92 108.18 98.4 101.09" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 68.6C40.1 84.3 16 128 16 128C16 128 48 200 128 200C147.2 200 164.3 195.8 179.3 189.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M208.6 169.1C228.5 151.3 240 128 240 128C240 128 208 56 128 56C121.1 56 114.5 56.6 108.2 57.6" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', () => {
+          const isHidden = passwordInput.type === 'password';
+          passwordInput.type = isHidden ? 'text' : 'password';
+          togglePasswordBtn.setAttribute('aria-pressed', String(isHidden));
+          togglePasswordBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+          togglePasswordIcon.innerHTML = isHidden ? eyeSlashPaths : eyeOpenPaths;
+        });
+      }
+
+      /* Form Validation & Redirect to dashboard.html */
+      const registerForm = document.getElementById('registerCompanyForm');
+      const companyNameInput = document.getElementById('regCompanyName');
+      const fullNameInput = document.getElementById('regFullName');
+      const contactNumberInput = document.getElementById('regContactNumber');
+      const companyEmailInput = document.getElementById('regCompanyEmail');
+      const annualEventsInput = document.getElementById('regAnnualEvents');
+
+      const fieldsConfig = [
+        {
+          input: companyNameInput,
+          wrap: document.getElementById('companyNameWrap'),
+          error: document.getElementById('companyNameError'),
+          validate: (val) => val.trim().length > 0
+        },
+        {
+          input: fullNameInput,
+          wrap: document.getElementById('fullNameWrap'),
+          error: document.getElementById('fullNameError'),
+          validate: (val) => val.trim().length > 0
+        },
+        {
+          input: contactNumberInput,
+          wrap: document.getElementById('contactNumberWrap'),
+          error: document.getElementById('contactNumberError'),
+          validate: (val) => val.trim().length > 0
+        },
+        {
+          input: companyEmailInput,
+          wrap: document.getElementById('companyEmailWrap'),
+          error: document.getElementById('companyEmailError'),
+          validate: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())
+        },
+        {
+          input: annualEventsInput,
+          wrap: document.getElementById('annualEventsWrap'),
+          error: document.getElementById('annualEventsError'),
+          validate: (val) => Number(val) > 0
+        },
+        {
+          input: passwordInput,
+          wrap: document.getElementById('passwordWrap'),
+          error: document.getElementById('passwordError'),
+          validate: (val) => /^[A-Za-z0-9]{4,}$/.test(val.trim())
+        }
+      ];
+
+      fieldsConfig.forEach(({ input, wrap, error }) => {
+        if (!input) return;
+        input.addEventListener('input', () => {
+          if (wrap) wrap.classList.remove('is-invalid');
+          if (error) error.classList.remove('is-visible');
+        });
+      });
+
+      if (registerForm) {
+        registerForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          let allValid = true;
+
+          fieldsConfig.forEach(({ input, wrap, error, validate }) => {
+            const valid = validate(input ? input.value : '');
+            if (!valid) {
+              if (wrap) wrap.classList.add('is-invalid');
+              if (error) error.classList.add('is-visible');
+              allValid = false;
+            }
+          });
+
+          if (allValid) {
+            window.location.href = 'dashboard.html';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -474,7 +474,7 @@
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 96px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 96px;
       display: flex;
       flex-direction: column;
       align-items: stretch;
@@ -540,13 +540,13 @@
 
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 96px 48px 80px;
+        padding: 64px 48px 80px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 96px 32px 64px;
+        padding: 64px 32px 64px;
       }
 
       .quote-meta-grid {
@@ -558,7 +558,7 @@
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 96px 20px 56px;
+        padding: 32px 20px 56px;
       }
 
       .quote-meta-grid {
@@ -888,7 +888,7 @@
 
     /* Grand Total AUD Callout */
     .quote-grand-total {
-      padding: 12px 16px;
+      padding: 12px 32px;
       border-radius: 12px;
       display: inline-flex;
       align-items: center;
@@ -1240,9 +1240,9 @@
                 View profile
               </a>
               <div class="profile-dropdown-divider"></div>
-              <button type="button" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
                 Log out
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -1384,7 +1384,6 @@
                   <th scope="col">Subtotal</th>
                   <th scope="col">Tax (10%)</th>
                   <th scope="col">Total</th>
-                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody id="quoteItemsTableBody">
@@ -1409,10 +1408,7 @@
 
       <!-- Grand Total AUD -->
       <div class="quote-grand-total" aria-label="Grand Total AUD">
-        <svg class="ph-icon-15 quote-grand-total-icon" width="28" height="28" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <path d="M128 24V232" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M184 88C184 65.9086 158.928 48 128 48C97.0721 48 72 65.9086 72 88C72 110.091 97.0721 128 128 128C158.928 128 184 145.909 184 168C184 190.091 158.928 208 128 208C97.0721 208 72 190.091 72 168" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        
         <span id="quoteGrandTotalValue">$18,337.50 AUD</span>
       </div>
     </section>
@@ -1721,7 +1717,7 @@
         if (count === 0) {
           quoteItemsTableBody.innerHTML = `
             <tr>
-              <td colspan="8" class="quote-table-empty">No products remaining in this quotation.</td>
+              <td colspan="7" class="quote-table-empty">No products remaining in this quotation.</td>
             </tr>
           `;
           return;
@@ -1750,16 +1746,6 @@
                 <td>${formatCurrency(item.subtotal, true)}</td>
                 <td>${formatCurrency(item.tax, true)}</td>
                 <td>${formatCurrency(item.total, false)}</td>
-                <td>
-                  <button
-                    type="button"
-                    class="quote-delete-btn"
-                    aria-label="Delete ${item.name} (${item.variant})"
-                    data-delete-item-id="${item.id}"
-                  >
-                    ${trashIconSvg}
-                  </button>
-                </td>
               </tr>
             `
           )

@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Client Portal</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: CLIENT PORTAL NAVIGATION (CENTERED ARENA BRANDING LOGO)
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* Centered Arena Branding logo container */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Centered) */
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+
+    /* Small Desktop / Laptop (1025px – 1280px): Adjust side gutters smoothly */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    /* Tablet Breakpoint (769px – 1024px) */
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+    }
+
+    /* Mobile Breakpoint (<= 768px): Keep Arena Branding logo centered */
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+    }
+
+    /* ==========================================================================
+       4. MAIN PAGE BODY: VIEW QUOTATION DETAILS
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 64px;
+    }
+
+    .quote-overview-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 28px;
+    }
+
+    .quote-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      transition: opacity var(--transition-fast);
+    }
+
+    .quote-back-link:hover,
+    .quote-back-link:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      outline: none;
+    }
+
+    .quote-meta-grid {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .quote-meta-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .quote-meta-label {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .quote-meta-value {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 64px 48px 80px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 64px 32px 64px;
+      }
+
+      .quote-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px 32px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 32px 20px 56px;
+      }
+
+      .quote-meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px 16px;
+      }
+    }
+
+    /* ==========================================================================
+       4B. MAIN PAGE BODY: YOUR ORDERS TABLE & QUOTATION TOTALS
+       ========================================================================== */
+    .quote-orders-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 20px;
+    }
+
+    .quote-orders-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .quote-orders-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px 12px 0 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    .quote-orders-header {
+      width: 100%;
+      padding: 20px 24px 19px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .quote-orders-title-group {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quote-orders-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .quote-count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .quote-status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-badge-pending-bg);
+      color: var(--color-badge-pending-text);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .quote-share-bar {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .quote-share-label {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .quote-share-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 4px 4px 12px;
+      background-color: var(--color-footer-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      max-width: 100%;
+    }
+
+    .quote-share-url {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .quote-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .quote-copy-btn:hover,
+    .quote-copy-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-input-border);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .quote-copy-btn.is-copied {
+      border-color: var(--color-trend-up-stroke);
+      color: var(--color-trend-up-text);
+      background-color: var(--color-badge-approved-bg);
+    }
+
+    /* Responsive Table Scroll Container */
+    .quote-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quote-items-table {
+      width: 100%;
+      min-width: 960px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .quote-items-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .quote-items-table thead th.is-center,
+    .quote-items-table tbody td.is-center {
+      text-align: center;
+    }
+
+    .quote-items-table tbody tr {
+      height: 132px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .quote-items-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .quote-items-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .quote-items-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+    }
+
+    .quote-product-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+    }
+
+    .quote-product-thumb {
+      width: 100px;
+      height: 100px;
+      border-radius: 14px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-white);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quote-product-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .quote-product-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .quote-product-name {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .quote-product-details-link {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      transition: color var(--transition-fast);
+    }
+
+    .quote-product-details-link:hover,
+    .quote-product-details-link:focus-visible {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+
+    .quote-variant-text {
+      max-width: 145px;
+      white-space: normal;
+    }
+
+    .quote-delete-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-button);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .quote-delete-btn:hover,
+    .quote-delete-btn:focus-visible {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-badge-rejected-text);
+      outline: none;
+    }
+
+    .quote-table-empty {
+      text-align: center !important;
+      padding: 48px 24px !important;
+      color: var(--color-text-muted) !important;
+      font-size: 14px !important;
+    }
+
+    /* Attached Bottom-Right Subtotal & Tax Box */
+    .quote-summary-box {
+      width: 240px;
+      max-width: 100%;
+      margin-top: -1px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .quote-summary-row {
+      width: 100%;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .quote-summary-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Grand Total AUD Callout */
+    .quote-grand-total {
+      padding: 12px 32px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      color: var(--color-text-button);
+      font-size: 22.54px;
+      font-weight: 600;
+      line-height: 32px;
+    }
+
+    .quote-grand-total-icon {
+      color: #343330;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .quote-orders-header {
+        padding: 16px;
+      }
+
+      .quote-share-bar {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .quote-share-pill {
+        flex: 1;
+        min-width: 0;
+        justify-content: space-between;
+      }
+
+      .quote-items-table thead th,
+      .quote-items-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .quote-summary-box {
+        width: 100%;
+        border-radius: 0 0 12px 12px;
+      }
+
+      .quote-grand-total {
+        font-size: 20px;
+        line-height: 28px;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: CLIENT PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* Top Row: Logo Left + 4 Link Columns Right */
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Bottom Row: Divider + Tagline & Copyright */
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    /* Footer Responsive Breakpoints (Matches Navigation Gutters) */
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL HEADER (CENTERED ARENA BRANDING LOGO)
+       ======================================================================== -->
+  <header class="portal-header" id="clientPortalHeader">
+    <nav class="portal-nav-container" aria-label="Client Portal Header">
+      <!-- Centered Arena Branding Logo -->
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+    </nav>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL HEADER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+    <section class="quote-overview-section" aria-label="Quotation Summary Details">
+      
+
+      <dl class="quote-meta-grid">
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Full Name</dt>
+          <dd class="quote-meta-value">Jemma Emma</dd>
+        </div>
+
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Company Name</dt>
+          <dd class="quote-meta-value">Ironman</dd>
+        </div>
+
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Event Name</dt>
+          <dd class="quote-meta-value">Auckland Marathon 2026</dd>
+        </div>
+
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Event Date</dt>
+          <dd class="quote-meta-value">November 20, 2026</dd>
+        </div>
+
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Event Short Code</dt>
+          <dd class="quote-meta-value">AM26</dd>
+        </div>
+
+        <div class="quote-meta-item">
+          <dt class="quote-meta-label">Quote Name</dt>
+          <dd class="quote-meta-value">CAPEX</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Section 2: Your Orders Table & Totals -->
+    <section class="quote-orders-section" aria-label="Your Orders">
+      <div class="quote-orders-wrapper">
+        <div class="quote-orders-card">
+          <!-- Card Header -->
+          <div class="quote-orders-header">
+            <div class="quote-orders-title-group">
+              <h2 class="quote-orders-title">Your Orders</h2>
+              <span class="quote-count-pill" id="quoteProductCountBadge">7 products</span>
+              <span class="quote-status-pill">Pending</span>
+            </div>
+
+            <div class="quote-share-bar">
+              <span class="quote-share-label">Share Link</span>
+              <div class="quote-share-pill">
+                <span class="quote-share-url" id="quoteShareUrlText">www.arenabranding.com/134</span>
+                <button
+                  type="button"
+                  class="quote-copy-btn"
+                  id="copyQuoteLinkBtn"
+                  aria-label="Copy share link to clipboard"
+                >
+                  <span id="copyQuoteLinkLabel">Copy Link</span>
+                  <svg class="ph-icon-15" width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="40" y="88" width="128" height="128" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Responsive Quotation Items Table -->
+          <div class="quote-table-scroll">
+            <table class="quote-items-table" id="quoteItemsTable">
+              <thead>
+                <tr>
+                  <th scope="col">Products</th>
+                  <th scope="col">Variant</th>
+                  <th scope="col" class="is-center">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Subtotal</th>
+                  <th scope="col">Tax (10%)</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody id="quoteItemsTableBody">
+                <!-- Populated dynamically from quoteItemsData array -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Attached Bottom-Right Subtotal & Tax Box -->
+        <div class="quote-summary-box" aria-label="Quotation Subtotal and Tax">
+          <div class="quote-summary-row">
+            <span>Subtotal</span>
+            <span id="quoteSummarySubtotal">$16,670.45</span>
+          </div>
+          <div class="quote-summary-row">
+            <span>Total Tax (10%)</span>
+            <span id="quoteSummaryTax">$1,667.05</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grand Total AUD -->
+      <div class="quote-grand-total" aria-label="Grand Total AUD">
+        <span id="quoteGrandTotalValue">$18,337.50 AUD</span>
+      </div>
+    </section>
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="clientPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: CLIENT PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: QUOTATION ITEMS TABLE & COPY SHARE LINK
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let quoteItemsData = [
+        {
+          id: 1,
+          name: 'Crowd Control Barrier Covers',
+          image: 'images/CrowdControlBarrierCovers.png',
+          variant: 'The Gymnast',
+          quantity: 82,
+          price: 120,
+          subtotal: 9818.18,
+          tax: 981.82,
+          total: 10800
+        },
+        {
+          id: 2,
+          name: 'Polyester Mesh Scrim',
+          image: 'images/PolyesterMeshScrim.png',
+          variant: 'Polyester Mesh Scrim',
+          quantity: 41,
+          price: 75,
+          subtotal: 3068.18,
+          tax: 306.82,
+          total: 3375
+        },
+        {
+          id: 3,
+          name: 'Bin Covers',
+          image: 'images/BinCovers.png',
+          variant: 'Plain Coloured Bin Covers',
+          quantity: 41,
+          price: 75,
+          subtotal: 3068.18,
+          tax: 306.82,
+          total: 3375
+        },
+        {
+          id: 4,
+          name: 'Corflute Toblerone Sign',
+          image: 'images/CorfluteTobleroneSign.png',
+          variant: 'Small (1200 x 650mm)',
+          quantity: 8,
+          price: 20,
+          subtotal: 163.64,
+          tax: 16.36,
+          total: 180
+        },
+        {
+          id: 5,
+          name: 'Corflute Toblerone Sign',
+          image: 'images/CorfluteTobleroneSign.png',
+          variant: 'Large (2400 x 400mm)',
+          quantity: 8,
+          price: 40,
+          subtotal: 327.27,
+          tax: 32.73,
+          total: 360
+        },
+        {
+          id: 6,
+          name: 'Seat Covers',
+          image: 'images/SeatCovers.png',
+          variant: 'Stadium & Outdoor Arena',
+          quantity: 4,
+          price: 15,
+          subtotal: 61.36,
+          tax: 6.14,
+          total: 67.5
+        },
+        {
+          id: 7,
+          name: 'Inflatable Pillars',
+          image: 'images/InflatablePillars.png',
+          variant: 'Lots of Variants Need to discuss',
+          quantity: 8,
+          price: 20,
+          subtotal: 163.64,
+          tax: 16.36,
+          total: 180
+        }
+      ];
+
+      const quoteItemsTableBody = document.getElementById('quoteItemsTableBody');
+      const quoteProductCountBadge = document.getElementById('quoteProductCountBadge');
+      const quoteSummarySubtotal = document.getElementById('quoteSummarySubtotal');
+      const quoteSummaryTax = document.getElementById('quoteSummaryTax');
+      const quoteGrandTotalValue = document.getElementById('quoteGrandTotalValue');
+
+      const trashIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M216 56H40M88 24H168M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function formatCurrency(amount, forceTwoDecimals = true) {
+        const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
+        if (!forceTwoDecimals && Number.isInteger(rounded)) {
+          return '$' + rounded.toLocaleString('en-AU');
+        }
+        if (!forceTwoDecimals) {
+          return '$' + rounded.toLocaleString('en-AU', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+        }
+        return '$' + rounded.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function renderQuoteItems() {
+        const count = quoteItemsData.length;
+        if (quoteProductCountBadge) {
+          quoteProductCountBadge.textContent = `${count} ${count === 1 ? 'product' : 'products'}`;
+        }
+
+        const subtotalSum = quoteItemsData.reduce((acc, item) => acc + item.subtotal, 0);
+        const taxSum = quoteItemsData.reduce((acc, item) => acc + item.tax, 0);
+        const grandTotalSum = quoteItemsData.reduce((acc, item) => acc + item.total, 0);
+
+        if (quoteSummarySubtotal) quoteSummarySubtotal.textContent = formatCurrency(subtotalSum, true);
+        if (quoteSummaryTax) quoteSummaryTax.textContent = formatCurrency(taxSum, true);
+        if (quoteGrandTotalValue) quoteGrandTotalValue.textContent = `${formatCurrency(grandTotalSum, true)} AUD`;
+
+        if (!quoteItemsTableBody) return;
+
+        if (count === 0) {
+          quoteItemsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="quote-table-empty">No products remaining in this quotation.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        quoteItemsTableBody.innerHTML = quoteItemsData
+          .map(
+            (item) => `
+              <tr data-quote-item-id="${item.id}">
+                <td>
+                  <div class="quote-product-cell">
+                    <div class="quote-product-thumb">
+                      <img src="${item.image}" alt="${item.name}" />
+                    </div>
+                    <div class="quote-product-info">
+                      <span class="quote-product-name">${item.name}</span>
+                      <a href="#product-details-${item.id}" class="quote-product-details-link">View details</a>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="quote-variant-text">${item.variant}</div>
+                </td>
+                <td class="is-center">${item.quantity}</td>
+                <td>${formatCurrency(item.price, false)}</td>
+                <td>${formatCurrency(item.subtotal, true)}</td>
+                <td>${formatCurrency(item.tax, true)}</td>
+                <td>${formatCurrency(item.total, false)}</td>
+              </tr>
+            `
+          )
+          .join('');
+      }
+
+      if (quoteItemsTableBody) {
+        quoteItemsTableBody.addEventListener('click', (event) => {
+          const deleteBtn = event.target.closest('[data-delete-item-id]');
+          if (!deleteBtn) return;
+          const itemId = Number(deleteBtn.dataset.deleteItemId);
+          quoteItemsData = quoteItemsData.filter((item) => item.id !== itemId);
+          renderQuoteItems();
+        });
+      }
+
+      // Copy Share Link Button
+      const copyQuoteLinkBtn = document.getElementById('copyQuoteLinkBtn');
+      const copyQuoteLinkLabel = document.getElementById('copyQuoteLinkLabel');
+      const quoteShareUrlText = document.getElementById('quoteShareUrlText');
+      let copyResetTimeout = null;
+
+      if (copyQuoteLinkBtn && quoteShareUrlText) {
+        copyQuoteLinkBtn.addEventListener('click', async () => {
+          const shareUrl = quoteShareUrlText.textContent.trim();
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(shareUrl);
+            } else {
+              const tempInput = document.createElement('input');
+              tempInput.value = shareUrl;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              document.execCommand('copy');
+              document.body.removeChild(tempInput);
+            }
+          } catch (_) {
+            // Fallback visual feedback even if clipboard permissions are restricted
+          }
+
+          copyQuoteLinkBtn.classList.add('is-copied');
+          if (copyQuoteLinkLabel) copyQuoteLinkLabel.textContent = 'Copied';
+
+          if (copyResetTimeout) clearTimeout(copyResetTimeout);
+          copyResetTimeout = setTimeout(() => {
+            copyQuoteLinkBtn.classList.remove('is-copied');
+            if (copyQuoteLinkLabel) copyQuoteLinkLabel.textContent = 'Copy Link';
+          }, 2000);
+        });
+      }
+
+      renderQuoteItems();
+    });
+  </script>
+</body>
+</html>
