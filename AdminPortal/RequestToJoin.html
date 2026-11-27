@@ -13,6 +13,12 @@
     rel="stylesheet"
   />
 
+  <!-- Phosphor Icons Online Stylesheet -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
+  />
+
   <style>
     /* ==========================================================================
        1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
@@ -36,8 +42,16 @@
       --color-card-label: #A3A3A3;
       --color-trend-up-text: #15803D;
       --color-trend-up-stroke: #22C55E;
+      --color-approve-btn: #16A34A;
+      --color-approve-btn-hover: #15803D;
+      --color-approve-badge-outer: #F0FDF4;
+      --color-approve-badge-inner: #DCFCE7;
       --color-trend-down-text: #B91C1C;
       --color-trend-down-stroke: #EF4444;
+      --color-reject-btn: #DC2626;
+      --color-reject-btn-hover: #B91C1C;
+      --color-reject-badge-outer: #FEF2F2;
+      --color-reject-badge-inner: #FEE2E2;
       --color-badge-pending-bg: #FEFCE8;
       --color-badge-pending-text: #A16207;
       --color-badge-approved-bg: #F0FDF4;
@@ -74,6 +88,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
     a {
       text-decoration: none;
       color: inherit;
@@ -91,26 +109,17 @@
       cursor: pointer;
     }
 
-    /* 1.5px Screen-Pixel Stroke UI Icons */
+    /* Phosphor Icons Online (Matched to 1.5px Screen-Pixel Stroke Weight) */
     .ph-icon-15 {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
       vertical-align: middle;
       color: currentColor;
-      stroke: currentColor;
-      stroke-width: 1.5px;
-      vector-effect: non-scaling-stroke;
-    }
-
-    .ph-icon-15 path,
-    .ph-icon-15 circle,
-    .ph-icon-15 line,
-    .ph-icon-15 rect,
-    .ph-icon-15 polyline,
-    .ph-icon-15 polygon {
-      stroke: currentColor;
-      stroke-width: 1.5px;
-      vector-effect: non-scaling-stroke;
+      line-height: 1;
+      -webkit-text-stroke: 0.35px currentColor;
+      text-stroke: 0.35px currentColor;
     }
 
     /* ==========================================================================
@@ -453,51 +462,662 @@
     }
 
     /* ==========================================================================
-       4. MAIN PAGE BODY SLOT (REPLACE WITH PAGE CONTENT)
+       4. MAIN PAGE BODY SLOT: CLIENTS REQUEST TO JOIN
        ========================================================================== */
     .portal-main {
       flex: 1;
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 96px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Card Container */
+    .requests-table-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Card Top Header & Toolbar (36px uniform toolbar controls) */
+    .requests-card-header {
+      width: 100%;
+      padding: 20px 24px 19px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .requests-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .requests-card-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .requests-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .requests-toolbar-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Uniform 36px Filter Select / Chip */
+    .requests-filter-btn {
+      height: 36px;
+      padding: 0 12px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-button);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .requests-filter-btn:hover,
+    .requests-filter-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-secondary);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .requests-filter-btn.is-active {
+      border-color: var(--color-navy);
+      color: var(--color-navy);
+      background-color: var(--color-bg-subtle);
+    }
+
+    /* Uniform 36px Search Box */
+    .requests-search-wrapper {
+      position: relative;
+      width: 280px;
+      max-width: 100%;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      padding: 0 12px;
+      gap: 8px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .requests-search-wrapper:focus-within {
+      border-color: var(--color-navy);
+      box-shadow: 0 0 0 2px rgba(41, 37, 98, 0.1);
+    }
+
+    .requests-search-icon {
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .requests-search-input {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      outline: none;
+    }
+
+    .requests-search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* Render search clear icons in black (#171717) rather than default browser blue */
+    .requests-search-input::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .requests-search-clear-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      color: var(--color-text-primary);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .requests-search-clear-btn.is-visible {
+      display: inline-flex;
+    }
+
+    .requests-search-clear-btn:hover,
+    .requests-search-clear-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      outline: none;
+    }
+
+    /* Responsive Horizontal Table Wrapper */
+    .requests-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .requests-table {
+      width: 100%;
+      min-width: 1060px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .requests-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .requests-sort-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      transition: color var(--transition-fast);
+    }
+
+    .requests-sort-btn:hover,
+    .requests-sort-btn:focus-visible,
+    .requests-sort-btn.is-sorted {
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .requests-sort-arrow {
+      transition: transform var(--transition-fast);
+    }
+
+    .requests-sort-btn[data-sort-dir="asc"] .requests-sort-arrow {
+      transform: rotate(180deg);
+    }
+
+    .requests-table tbody tr {
+      height: 52px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .requests-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .requests-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .requests-company-cell {
+      color: var(--color-text-primary) !important;
+      font-weight: 500 !important;
+    }
+
+    .requests-phone-cell {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Contacted Toggle Switch (36px x 20px pill, #E5E5E5 off -> #F0542B on) */
+    .contacted-toggle-btn {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      border-radius: 10px;
+      background-color: var(--color-border);
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+      transition: background-color var(--transition-fast);
+      vertical-align: middle;
+    }
+
+    .contacted-toggle-btn:focus-visible {
+      outline: 2px solid var(--color-navy);
+      outline-offset: 2px;
+    }
+
+    .contacted-toggle-btn[aria-checked="true"] {
+      background-color: var(--color-orange);
+    }
+
+    .contacted-toggle-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--color-white);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+      transform: translateX(0);
+      transition: transform var(--transition-fast);
+      display: block;
+    }
+
+    .contacted-toggle-btn[aria-checked="true"] .contacted-toggle-thumb {
+      transform: translateX(16px);
+    }
+
+    /* Row Actions (Reject X in #B91C1C & Approve Check in #15803D) */
+    .requests-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .request-action-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .request-action-btn.is-reject {
+      color: var(--color-trend-down-text);
+    }
+
+    .request-action-btn.is-reject:hover,
+    .request-action-btn.is-reject:focus-visible {
+      background-color: var(--color-badge-rejected-bg);
+      outline: none;
+    }
+
+    .request-action-btn.is-approve {
+      color: var(--color-trend-up-text);
+    }
+
+    .request-action-btn.is-approve:hover,
+    .request-action-btn.is-approve:focus-visible {
+      background-color: var(--color-badge-approved-bg);
+      outline: none;
+    }
+
+    .requests-empty-cell {
+      text-align: center !important;
+      padding: 48px 24px !important;
+      color: var(--color-text-muted) !important;
+    }
+
+    /* Pagination Bar (Matches Visual Reference: Previous | 1 2 3 ... | Next) */
+    .requests-pagination-bar {
+      width: 100%;
+      padding: 12px 24px 16px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .requests-page-nav-btn {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .requests-page-nav-btn:hover:not(:disabled),
+    .requests-page-nav-btn:focus-visible:not(:disabled) {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-secondary);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .requests-page-nav-btn:disabled {
+      border-color: var(--color-border);
+      color: var(--color-input-border);
+      cursor: not-allowed;
+    }
+
+    .requests-page-numbers {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .requests-page-num-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .requests-page-num-btn:hover,
+    .requests-page-num-btn:focus-visible {
+      background-color: var(--color-footer-bg);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .requests-page-num-btn.is-active {
+      background-color: var(--color-footer-bg);
+      color: #0A0A0A;
+    }
+
+    /* ==========================================================================
+       4B. MODALS: REJECT MEMBERSHIP & SUCCESSFULLY APPROVED
+       ========================================================================== */
+    .request-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .request-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .request-modal-card {
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 28px 28px;
+      background-color: var(--color-white);
+      border-radius: 16px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      text-align: center;
     }
 
-    .page-placeholder-heading {
+    .modal-status-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+
+    .modal-status-badge.is-reject {
+      background-color: var(--color-reject-badge-inner);
+      box-shadow: 0 0 0 8px var(--color-reject-badge-outer);
+      color: var(--color-reject-btn);
+    }
+
+    .modal-status-badge.is-approve {
+      background-color: var(--color-approve-badge-inner);
+      box-shadow: 0 0 0 8px var(--color-approve-badge-outer);
+      color: var(--color-approve-btn);
+    }
+
+    .request-modal-title {
       color: var(--color-text-primary);
-      font-size: 64px;
-      font-weight: 700;
-      line-height: 1.1;
-      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 28px;
+      margin-bottom: 8px;
+    }
+
+    .request-modal-description {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      max-width: 400px;
+    }
+
+    .reject-reason-field {
+      width: 100%;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .reject-reason-textarea {
+      width: 100%;
+      min-height: 132px;
+      padding: 12px 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 10px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .reject-reason-textarea::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .reject-reason-textarea:focus {
+      border-color: var(--color-navy);
+      box-shadow: 0 0 0 2px rgba(41, 37, 98, 0.1);
+    }
+
+    .reject-reason-error {
+      display: none;
+      margin-top: 6px;
+      color: var(--color-reject-btn);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: left;
+    }
+
+    .reject-reason-error.is-visible {
+      display: block;
+    }
+
+    .request-modal-actions {
+      width: 100%;
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-btn-cancel {
+      flex: 1;
+      height: 44px;
+      padding: 0 18px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      color: var(--color-text-button);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .modal-btn-cancel:hover,
+    .modal-btn-cancel:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-secondary);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .modal-btn-reject {
+      flex: 1;
+      height: 44px;
+      padding: 0 18px;
+      background-color: var(--color-reject-btn);
+      border-radius: 8px;
+      color: var(--color-white);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .modal-btn-reject:hover,
+    .modal-btn-reject:focus-visible {
+      background-color: var(--color-reject-btn-hover);
+      outline: none;
+    }
+
+    .modal-btn-approve-return {
+      width: 100%;
+      height: 44px;
+      padding: 0 20px;
+      background-color: var(--color-approve-btn);
+      border-radius: 8px;
+      color: var(--color-white);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .modal-btn-approve-return:hover,
+    .modal-btn-approve-return:focus-visible {
+      background-color: var(--color-approve-btn-hover);
+      outline: none;
     }
 
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 96px 48px 80px;
+        padding: 64px 48px 80px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 96px 32px 64px;
-      }
-
-      .page-placeholder-heading {
-        font-size: 48px;
+        padding: 64px 32px 64px;
       }
     }
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 96px 20px 56px;
+        padding: 64px 20px 56px;
       }
 
-      .page-placeholder-heading {
-        font-size: 36px;
+      .requests-card-header {
+        padding: 16px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .requests-toolbar-controls {
+        width: 100%;
+      }
+
+      .requests-search-wrapper {
+        flex: 1;
+        width: 100%;
+      }
+
+      .requests-table thead th,
+      .requests-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .requests-pagination-bar {
+        padding: 12px 16px 16px;
+      }
+
+      .request-modal-card {
+        padding: 24px 20px 20px;
       }
     }
 
@@ -733,7 +1353,7 @@
           </a>
         </li>
         <li>
-          <a href="Products.html" class="nav-link-item active" data-nav-link>
+          <a href="Products.html" class="nav-link-item" data-nav-link>
             <span class="nav-link-text">Products</span>
           </a>
         </li>
@@ -748,7 +1368,7 @@
           </a>
         </li>
         <li>
-          <a href="RequestToJoin.html" class="nav-link-item" data-nav-link>
+          <a href="RequestToJoin.html" class="nav-link-item active" data-nav-link>
             <span class="nav-link-text">Request to Join</span>
           </a>
         </li>
@@ -820,9 +1440,7 @@
           aria-expanded="false"
           aria-controls="mobileNavDrawer"
         >
-          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <i id="mobileMenuIcon" class="ph ph-list ph-icon-15" style="font-size: 24px;" aria-hidden="true"></i>
         </button>
       </div>
     </nav>
@@ -836,7 +1454,7 @@
           </a>
         </li>
         <li>
-          <a href="Products.html" class="mobile-nav-link active" data-nav-link>
+          <a href="Products.html" class="mobile-nav-link" data-nav-link>
             <span class="nav-link-text">Products</span>
           </a>
         </li>
@@ -851,7 +1469,7 @@
           </a>
         </li>
         <li>
-          <a href="RequestToJoin.html" class="mobile-nav-link" data-nav-link>
+          <a href="RequestToJoin.html" class="mobile-nav-link active" data-nav-link>
             <span class="nav-link-text">Request to Join</span>
           </a>
         </li>
@@ -867,10 +1485,224 @@
        START SLOT: MAIN PAGE BODY CONTENT
        ======================================================================== -->
   <main class="portal-main" id="mainContent">
-    <h1 class="page-placeholder-heading">Request to Join</h1>
+    <section class="requests-table-card" aria-label="Clients Request to Join">
+      <!-- Card Header & Toolbar -->
+      <div class="requests-card-header">
+        <div class="requests-title-group">
+          <h1 class="requests-card-title">Clients Request to Join</h1>
+          <span class="requests-count-badge" id="requestsCountBadge" aria-label="Total join requests">30</span>
+        </div>
+
+        <div class="requests-toolbar-controls">
+          <button
+            type="button"
+            class="requests-filter-btn"
+            id="contactedFilterBtn"
+            data-filter-state="all"
+            aria-label="Filter by contacted status"
+          >
+            <i class="ph ph-funnel ph-icon-15" style="font-size: 15px;" aria-hidden="true"></i>
+            <span id="contactedFilterLabel">Contacted: All</span>
+          </button>
+
+          <div class="requests-search-wrapper">
+            <i class="ph ph-magnifying-glass ph-icon-15 requests-search-icon" style="font-size: 16px;" aria-hidden="true"></i>
+            <input
+              type="search"
+              class="requests-search-input"
+              id="requestsSearchInput"
+              placeholder="Search company, contact or email"
+              aria-label="Search requests by company name, contact name, or email"
+            />
+            <button
+              type="button"
+              class="requests-search-clear-btn"
+              id="requestsSearchClearBtn"
+              aria-label="Clear search query"
+            >
+              <i class="ph ph-x ph-icon-15" style="font-size: 14px;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="requests-table-scroll">
+        <table class="requests-table" id="requestsTable">
+          <thead>
+            <tr>
+              <th scope="col">
+                <button
+                  type="button"
+                  class="requests-sort-btn"
+                  data-sort-field="companyName"
+                  aria-label="Sort by Company Name"
+                >
+                  <span>Company Name</span>
+                  <i class="ph ph-arrow-down ph-icon-15 requests-sort-arrow" style="font-size: 14px;" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col">
+                <button
+                  type="button"
+                  class="requests-sort-btn"
+                  data-sort-field="contactName"
+                  aria-label="Sort by Contact Name"
+                >
+                  <span>Contact Name</span>
+                  <i class="ph ph-arrow-down ph-icon-15 requests-sort-arrow" style="font-size: 14px;" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col">Email</th>
+              <th scope="col">Contact Number</th>
+              <th scope="col">Company Size</th>
+              <th scope="col">
+                <button
+                  type="button"
+                  class="requests-sort-btn is-sorted"
+                  data-sort-field="contacted"
+                  data-sort-dir="desc"
+                  aria-label="Sort by Contacted status"
+                >
+                  <span>Contacted</span>
+                  <i class="ph ph-arrow-down ph-icon-15 requests-sort-arrow" style="font-size: 14px;" aria-hidden="true"></i>
+                </button>
+              </th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody">
+            <!-- Populated dynamically via joinRequestsData loop -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="requests-pagination-bar">
+        <button
+          type="button"
+          class="requests-page-nav-btn"
+          id="requestsPrevPageBtn"
+          disabled
+          aria-label="Previous page"
+        >
+          <i class="ph ph-arrow-left ph-icon-15" style="font-size: 16px;" aria-hidden="true"></i>
+          <span>Previous</span>
+        </button>
+
+        <div class="requests-page-numbers" id="requestsPageNumbers" role="navigation" aria-label="Pagination pages">
+          <!-- Page buttons rendered dynamically -->
+        </div>
+
+        <button
+          type="button"
+          class="requests-page-nav-btn"
+          id="requestsNextPageBtn"
+          aria-label="Next page"
+        >
+          <span>Next</span>
+          <i class="ph ph-arrow-right ph-icon-15" style="font-size: 16px;" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
   </main>
   <!-- ========================================================================
        END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: REJECT MEMBERSHIP REQUEST MODAL
+       ======================================================================== -->
+  <div
+    class="request-modal-backdrop"
+    id="rejectRequestModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="rejectModalTitle"
+    aria-hidden="true"
+  >
+    <div class="request-modal-card">
+      <div class="modal-status-badge is-reject" aria-hidden="true">
+        <i class="ph ph-x ph-icon-15" style="font-size: 20px;"></i>
+      </div>
+
+      <h2 class="request-modal-title" id="rejectModalTitle">Reject Membership Request</h2>
+
+      <p class="request-modal-description">
+        An automated email will be sent to notify the client that their application was not approved. Write a message below explaining why they do not qualify and outlining the requirements to become a member.
+      </p>
+
+      <div class="reject-reason-field">
+        <textarea
+          id="rejectReasonTextarea"
+          class="reject-reason-textarea"
+          placeholder="Type it here..."
+          aria-label="Reason for rejecting membership request"
+        ></textarea>
+        <p class="reject-reason-error" id="rejectReasonError" role="alert">
+          Please enter a message explaining why this membership request was not approved.
+        </p>
+      </div>
+
+      <div class="request-modal-actions">
+        <button
+          type="button"
+          class="modal-btn-cancel"
+          id="cancelRejectModalBtn"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="modal-btn-reject"
+          id="confirmRejectModalBtn"
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: REJECT MEMBERSHIP REQUEST MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: SUCCESSFULLY APPROVED MODAL
+       ======================================================================== -->
+  <div
+    class="request-modal-backdrop"
+    id="approveRequestModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="approveModalTitle"
+    aria-hidden="true"
+  >
+    <div class="request-modal-card">
+      <div class="modal-status-badge is-approve" aria-hidden="true">
+        <i class="ph ph-check ph-icon-15" style="font-size: 20px;"></i>
+      </div>
+
+      <h2 class="request-modal-title" id="approveModalTitle">Successfully Approved!</h2>
+
+      <p class="request-modal-description">
+        An automated email will be sent to the client so they can click the button to log in to Arena Branding. Their data from the Request to Join tab will also be transferred to the Clients tab.
+      </p>
+
+      <div class="request-modal-actions">
+        <button
+          type="button"
+          class="modal-btn-approve-return"
+          id="returnToRequestsBtn"
+        >
+          Go Back to the Request to Join Page
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: SUCCESSFULLY APPROVED MODAL
        ======================================================================== -->
 
 
@@ -957,7 +1789,7 @@
 
 
   <!-- ========================================================================
-       COMPONENT SCRIPTS: NAVIGATION & PROFILE POPOVER
+       COMPONENT SCRIPTS: NAVIGATION, REQUESTS TABLE, TOGGLE & MODALS
        ======================================================================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -971,8 +1803,8 @@
       const profileDropdownPopover = document.getElementById('profileDropdownPopover');
       const profileActionItems = document.querySelectorAll('[data-profile-action]');
 
-      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
-      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+      const burgerIconClass = 'ph ph-list ph-icon-15';
+      const closeIconClass = 'ph ph-x ph-icon-15';
 
       // Toggle Profile Dropdown Popover
       function toggleProfileMenu(forceClose = false) {
@@ -988,14 +1820,14 @@
         }
       }
 
-      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      // Toggle Mobile Drawer & Swap Phosphor Burger / Close Icon
       function toggleMobileMenu(forceClose = false) {
         const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
         const shouldOpen = forceClose ? false : !isCurrentlyOpen;
 
         mobileNavDrawer.classList.toggle('is-open', shouldOpen);
         mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
-        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+        mobileMenuIcon.className = shouldOpen ? closeIconClass : burgerIconClass;
 
         if (shouldOpen) {
           toggleProfileMenu(true);
@@ -1026,22 +1858,14 @@
             item.classList.toggle('active', item.getAttribute('href') === targetHref);
           });
 
-          // Close mobile menu after selecting an item
           toggleMobileMenu(true);
         });
       });
 
-      // Close profile popover when clicking outside or pressing Escape
+      // Close profile popover when clicking outside
       document.addEventListener('click', (event) => {
         if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
           toggleProfileMenu(true);
-        }
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-          toggleProfileMenu(true);
-          toggleMobileMenu(true);
         }
       });
 
@@ -1051,6 +1875,512 @@
           toggleMobileMenu(true);
         }
       });
+
+      /* ----------------------------------------------------------------------
+         Request to Join Dummy Dataset (30 entries across 3 pages, 10 per page)
+         ---------------------------------------------------------------------- */
+      const PAGE_SIZE = 10;
+
+      const joinRequestsData = [
+        // Page 1 (10 rows)
+        { id: 1, companyName: 'IRONMAN', contactName: 'Jemma Emma', email: 'jemma@ironman.com.au', phone: '+61 491 546 159', companySize: '51 - 100', contacted: false },
+        { id: 2, companyName: 'Coca Leco', contactName: 'Nikki Porch', email: 'nikki@gmail.com', phone: '+61 412 839 204', companySize: '1 - 50', contacted: false },
+        { id: 3, companyName: 'Tumber Co', contactName: 'Lankin Linken', email: 'lankin@tumberco.com.au', phone: '+61 428 614 973', companySize: '1 - 50', contacted: false },
+        { id: 4, companyName: 'Eagle Wood', contactName: 'Seson Inkon', email: 'seson@eaglewood.com.au', phone: '+61 437 920 481', companySize: '1 - 50', contacted: false },
+        { id: 5, companyName: 'Sasi Susi', contactName: 'Nakoy Ong', email: 'nakoy@sasisusi.com.au', phone: '+61 405 318 762', companySize: '1 - 50', contacted: true },
+        { id: 6, companyName: 'King Kung Chips', contactName: 'Icon Hela', email: 'icon@kingkungchips.com.au', phone: '+61 466 742 519', companySize: '1 - 50', contacted: true },
+        { id: 7, companyName: 'Lalisa Oldura', contactName: 'Sisi Orto', email: 'sisi@lalisa.com.au', phone: '+61 451 209 834', companySize: '51 - 100', contacted: true },
+        { id: 8, companyName: 'Wawex', contactName: 'Walay Paldo', email: 'walay@gmail.com', phone: '+61 484 653 127', companySize: '51 - 100', contacted: true },
+        { id: 9, companyName: 'Nanoy ni Saloy', contactName: 'Suro Chatto', email: 'suro@nanoynisaloy.com.au', phone: '+61 479 104 695', companySize: '100+', contacted: true },
+        { id: 10, companyName: 'Rabber Bula', contactName: 'Coco Cola', email: 'coco@cococola.com.au', phone: '+61 493 827 340', companySize: '100+', contacted: true },
+
+        // Page 2 (10 rows - randomized Australian companies, contacts, emails & phone numbers)
+        { id: 11, companyName: 'Kookaburra Run Co', contactName: 'Liam Gallagher', email: 'liam@kookaburrarun.com.au', phone: '+61 414 295 810', companySize: '51 - 100', contacted: false },
+        { id: 12, companyName: 'Harbourlight Events', contactName: 'Chloe Henderson', email: 'chloe@harbourlight.com.au', phone: '+61 423 761 409', companySize: '1 - 50', contacted: true },
+        { id: 13, companyName: 'Southern Cross Trail', contactName: 'Ethan McAllister', email: 'ethan@sctrail.com.au', phone: '+61 431 948 622', companySize: '100+', contacted: false },
+        { id: 14, companyName: 'Bayside Athletics Club', contactName: 'Hannah O’Connor', email: 'hannah@baysideathletics.com.au', phone: '+61 448 503 176', companySize: '1 - 50', contacted: true },
+        { id: 15, companyName: 'Redgum Outdoor Media', contactName: 'Noah Whitmore', email: 'noah@redgummedia.com.au', phone: '+61 457 832 941', companySize: '51 - 100', contacted: false },
+        { id: 16, companyName: 'Goldfields Expo Group', contactName: 'Sophie Kavanagh', email: 'sophie@goldfieldsexpo.com.au', phone: '+61 462 119 385', companySize: '100+', contacted: true },
+        { id: 17, companyName: 'Pacific Surf Series', contactName: 'Lucas Templeton', email: 'lucas@pacificsurf.com.au', phone: '+61 475 684 203', companySize: '1 - 50', contacted: false },
+        { id: 18, companyName: 'Wattle Creek Promotions', contactName: 'Grace Callaghan', email: 'grace@wattlecreek.com.au', phone: '+61 481 390 754', companySize: '1 - 50', contacted: true },
+        { id: 19, companyName: 'Yarra Valley Festivals', contactName: 'Oliver Carmichael', email: 'oliver@yarravalleyfest.com.au', phone: '+61 490 627 818', companySize: '51 - 100', contacted: false },
+        { id: 20, companyName: 'Coral Coast Triathlon', contactName: 'Mia Donnelly', email: 'mia@coralcoasttri.com.au', phone: '+61 402 915 467', companySize: '1 - 50', contacted: true },
+
+        // Page 3 (10 rows - randomized Australian companies, contacts, emails & phone numbers)
+        { id: 21, companyName: 'Blue Mountains Endurance', contactName: 'Jack Fitzsimmons', email: 'jack@bmendurance.com.au', phone: '+61 419 472 930', companySize: '1 - 50', contacted: false },
+        { id: 22, companyName: 'Swan River Exhibitions', contactName: 'Zoe Pennington', email: 'zoe@swanriverexpo.com.au', phone: '+61 426 804 512', companySize: '51 - 100', contacted: true },
+        { id: 23, companyName: 'Sunstate Sporting Live', contactName: 'Cooper Rafferty', email: 'cooper@sunstatesport.com.au', phone: '+61 434 159 684', companySize: '100+', contacted: false },
+        { id: 24, companyName: 'Brindabella Event Co', contactName: 'Ella Thornton', email: 'ella@brindabellaevents.com.au', phone: '+61 445 738 291', companySize: '1 - 50', contacted: true },
+        { id: 25, companyName: 'Daintree Adventure Race', contactName: 'Hudson Langford', email: 'hudson@daintreerace.com.au', phone: '+61 452 601 849', companySize: '1 - 50', contacted: false },
+        { id: 26, companyName: 'Port Phillip Regatta', contactName: 'Ruby Hollingsworth', email: 'ruby@portphillipregatta.com.au', phone: '+61 468 923 175', companySize: '51 - 100', contacted: true },
+        { id: 27, companyName: 'Barossa Harvest Markets', contactName: 'Mason Abernathy', email: 'mason@barossamarkets.com.au', phone: '+61 473 340 962', companySize: '1 - 50', contacted: false },
+        { id: 28, companyName: 'Kimberley Outback Rally', contactName: 'Isla Devereaux', email: 'isla@kimberleyrally.com.au', phone: '+61 488 517 406', companySize: '100+', contacted: true },
+        { id: 29, companyName: 'Newcastle Harbour Run', contactName: 'Charlie Montgomery', email: 'charlie@newcastlerun.com.au', phone: '+61 495 264 738', companySize: '51 - 100', contacted: false },
+        { id: 30, companyName: 'Tamar Rowing & Marine', contactName: 'Harper Sinclair', email: 'harper@tamarmarine.com.au', phone: '+61 408 791 325', companySize: '1 - 50', contacted: true }
+      ];
+
+      let currentPage = 1;
+      let searchQuery = '';
+      let contactedFilter = 'all'; // 'all' | 'yes' | 'no'
+      let sortField = 'default';
+      let sortDirection = 'desc';
+      let pendingActionRequestId = null;
+      let lastFocusedModalTrigger = null;
+
+      const requestsTableBody = document.getElementById('requestsTableBody');
+      const requestsCountBadge = document.getElementById('requestsCountBadge');
+      const contactedFilterBtn = document.getElementById('contactedFilterBtn');
+      const contactedFilterLabel = document.getElementById('contactedFilterLabel');
+      const requestsSearchInput = document.getElementById('requestsSearchInput');
+      const requestsSearchClearBtn = document.getElementById('requestsSearchClearBtn');
+      const sortHeaderBtns = document.querySelectorAll('[data-sort-field]');
+      const requestsPrevPageBtn = document.getElementById('requestsPrevPageBtn');
+      const requestsNextPageBtn = document.getElementById('requestsNextPageBtn');
+      const requestsPageNumbers = document.getElementById('requestsPageNumbers');
+
+      // Modals
+      const rejectRequestModal = document.getElementById('rejectRequestModal');
+      const rejectReasonTextarea = document.getElementById('rejectReasonTextarea');
+      const rejectReasonError = document.getElementById('rejectReasonError');
+      const cancelRejectModalBtn = document.getElementById('cancelRejectModalBtn');
+      const confirmRejectModalBtn = document.getElementById('confirmRejectModalBtn');
+
+      const approveRequestModal = document.getElementById('approveRequestModal');
+      const returnToRequestsBtn = document.getElementById('returnToRequestsBtn');
+
+      function getFilteredAndSortedRequests() {
+        const query = searchQuery.trim().toLowerCase();
+
+        const filtered = joinRequestsData.filter((req) => {
+          if (contactedFilter === 'yes' && !req.contacted) return false;
+          if (contactedFilter === 'no' && req.contacted) return false;
+
+          if (!query) return true;
+          return (
+            req.companyName.toLowerCase().includes(query) ||
+            req.contactName.toLowerCase().includes(query) ||
+            req.email.toLowerCase().includes(query) ||
+            req.phone.toLowerCase().includes(query)
+          );
+        });
+
+        if (sortField === 'default') {
+          return filtered;
+        }
+
+        return [...filtered].sort((a, b) => {
+          if (sortField === 'companyName') {
+            const cmp = a.companyName.localeCompare(b.companyName, undefined, { sensitivity: 'base' });
+            return sortDirection === 'asc' ? cmp : -cmp;
+          }
+
+          if (sortField === 'contactName') {
+            const cmp = a.contactName.localeCompare(b.contactName, undefined, { sensitivity: 'base' });
+            return sortDirection === 'asc' ? cmp : -cmp;
+          }
+
+          if (sortField === 'contacted') {
+            const cmp = Number(a.contacted) - Number(b.contacted);
+            if (cmp !== 0) {
+              return sortDirection === 'asc' ? cmp : -cmp;
+            }
+            return a.id - b.id;
+          }
+
+          return a.id - b.id;
+        });
+      }
+
+      function updateSortHeaderUI() {
+        sortHeaderBtns.forEach((btn) => {
+          const field = btn.dataset.sortField;
+          const isSorted = field === sortField || (sortField === 'default' && field === 'contacted');
+          btn.classList.toggle('is-sorted', isSorted);
+          if (isSorted) {
+            btn.dataset.sortDir = sortField === 'default' ? 'desc' : sortDirection;
+          } else {
+            btn.removeAttribute('data-sort-dir');
+          }
+        });
+      }
+
+      function renderPaginationNumbers(totalPages) {
+        if (!requestsPageNumbers) return;
+        const buttons = [];
+        for (let page = 1; page <= totalPages; page += 1) {
+          const isActive = page === currentPage;
+          buttons.push(`
+            <button
+              type="button"
+              class="requests-page-num-btn ${isActive ? 'is-active' : ''}"
+              data-page-num="${page}"
+              aria-label="Go to page ${page}"
+              ${isActive ? 'aria-current="page"' : ''}
+            >
+              ${page}
+            </button>
+          `);
+        }
+        requestsPageNumbers.innerHTML = buttons.join('');
+      }
+
+      function renderRequestsTable() {
+        const filteredRequests = getFilteredAndSortedRequests();
+        const totalItems = filteredRequests.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const pageItems = filteredRequests.slice(startIndex, startIndex + PAGE_SIZE);
+
+        if (requestsCountBadge) {
+          requestsCountBadge.textContent = String(joinRequestsData.length);
+        }
+
+        updateSortHeaderUI();
+        renderPaginationNumbers(totalPages);
+
+        if (requestsPrevPageBtn) {
+          requestsPrevPageBtn.disabled = currentPage <= 1;
+        }
+        if (requestsNextPageBtn) {
+          requestsNextPageBtn.disabled = currentPage >= totalPages || totalItems === 0;
+        }
+
+        if (!requestsTableBody) return;
+
+        if (pageItems.length === 0) {
+          requestsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="requests-empty-cell">No matching membership requests found.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        requestsTableBody.innerHTML = pageItems
+          .map((item) => {
+            const isChecked = Boolean(item.contacted);
+            return `
+              <tr data-request-id="${item.id}">
+                <td class="requests-company-cell">${item.companyName}</td>
+                <td>${item.contactName}</td>
+                <td>${item.email}</td>
+                <td class="requests-phone-cell">${item.phone}</td>
+                <td>${item.companySize}</td>
+                <td>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked="${isChecked}"
+                    class="contacted-toggle-btn"
+                    data-action="toggle-contacted"
+                    data-request-id="${item.id}"
+                    aria-label="Mark ${item.companyName} as ${isChecked ? 'not contacted' : 'contacted'}"
+                    title="${isChecked ? 'Contacted: Yes' : 'Contacted: No'}"
+                  >
+                    <span class="contacted-toggle-thumb" aria-hidden="true"></span>
+                  </button>
+                </td>
+                <td>
+                  <div class="requests-actions-group">
+                    <button
+                      type="button"
+                      class="request-action-btn is-reject"
+                      data-action="reject"
+                      data-request-id="${item.id}"
+                      aria-label="Reject membership request for ${item.companyName}"
+                      title="Reject membership request"
+                    >
+                      <i class="ph ph-x ph-icon-15" style="font-size: 18px;" aria-hidden="true"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="request-action-btn is-approve"
+                      data-action="approve"
+                      data-request-id="${item.id}"
+                      aria-label="Approve membership request for ${item.companyName}"
+                      title="Approve membership request"
+                    >
+                      <i class="ph ph-check ph-icon-15" style="font-size: 18px;" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+      }
+
+      /* ----------------------------------------------------------------------
+         Modal Management (Reject Membership & Successfully Approved)
+         ---------------------------------------------------------------------- */
+      function syncBodyModalState() {
+        const isAnyModalOpen =
+          (rejectRequestModal && rejectRequestModal.classList.contains('is-open')) ||
+          (approveRequestModal && approveRequestModal.classList.contains('is-open'));
+        document.body.classList.toggle('is-modal-open', Boolean(isAnyModalOpen));
+      }
+
+      function openRejectModal(requestId, triggerEl = null) {
+        if (!rejectRequestModal) return;
+        pendingActionRequestId = requestId;
+        lastFocusedModalTrigger = triggerEl;
+
+        if (rejectReasonTextarea) {
+          rejectReasonTextarea.value = '';
+        }
+        if (rejectReasonError) {
+          rejectReasonError.classList.remove('is-visible');
+        }
+
+        rejectRequestModal.classList.add('is-open');
+        rejectRequestModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (rejectReasonTextarea) {
+          rejectReasonTextarea.focus();
+        }
+      }
+
+      function closeRejectModal(restoreFocus = true) {
+        if (!rejectRequestModal || !rejectRequestModal.classList.contains('is-open')) return;
+        rejectRequestModal.classList.remove('is-open');
+        rejectRequestModal.setAttribute('aria-hidden', 'true');
+        pendingActionRequestId = null;
+        syncBodyModalState();
+
+        if (restoreFocus && lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+          lastFocusedModalTrigger.focus();
+        }
+        lastFocusedModalTrigger = null;
+      }
+
+      function openApproveModal(requestId, triggerEl = null) {
+        if (!approveRequestModal) return;
+        lastFocusedModalTrigger = triggerEl;
+
+        // Transfer/remove approved request from Request to Join list
+        const idx = joinRequestsData.findIndex((entry) => entry.id === requestId);
+        if (idx !== -1) {
+          const [approvedClient] = joinRequestsData.splice(idx, 1);
+          try {
+            const existingTransferred = JSON.parse(localStorage.getItem('arenaApprovedClients') || '[]');
+            existingTransferred.unshift({
+              ...approvedClient,
+              approvedAt: new Date().toISOString()
+            });
+            localStorage.setItem('arenaApprovedClients', JSON.stringify(existingTransferred));
+          } catch (_) {
+            // Ignore storage errors in restricted environments
+          }
+          renderRequestsTable();
+        }
+
+        approveRequestModal.classList.add('is-open');
+        approveRequestModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (returnToRequestsBtn) {
+          returnToRequestsBtn.focus();
+        }
+      }
+
+      function closeApproveModal() {
+        if (!approveRequestModal || !approveRequestModal.classList.contains('is-open')) return;
+        approveRequestModal.classList.remove('is-open');
+        approveRequestModal.setAttribute('aria-hidden', 'true');
+        syncBodyModalState();
+        lastFocusedModalTrigger = null;
+      }
+
+      // Table Event Delegation: Contacted Toggle, Reject (X) & Approve (Check)
+      if (requestsTableBody) {
+        requestsTableBody.addEventListener('click', (event) => {
+          const toggleBtn = event.target.closest('[data-action="toggle-contacted"]');
+          if (toggleBtn) {
+            const requestId = Number(toggleBtn.dataset.requestId);
+            const targetItem = joinRequestsData.find((entry) => entry.id === requestId);
+            if (targetItem) {
+              targetItem.contacted = !targetItem.contacted;
+              renderRequestsTable();
+            }
+            return;
+          }
+
+          const rejectBtn = event.target.closest('[data-action="reject"]');
+          if (rejectBtn) {
+            const requestId = Number(rejectBtn.dataset.requestId);
+            openRejectModal(requestId, rejectBtn);
+            return;
+          }
+
+          const approveBtn = event.target.closest('[data-action="approve"]');
+          if (approveBtn) {
+            const requestId = Number(approveBtn.dataset.requestId);
+            openApproveModal(requestId, approveBtn);
+          }
+        });
+      }
+
+      // Reject Modal Handlers
+      if (cancelRejectModalBtn) {
+        cancelRejectModalBtn.addEventListener('click', () => closeRejectModal(true));
+      }
+
+      if (rejectReasonTextarea) {
+        rejectReasonTextarea.addEventListener('input', () => {
+          if (rejectReasonError && rejectReasonTextarea.value.trim().length > 0) {
+            rejectReasonError.classList.remove('is-visible');
+          }
+        });
+      }
+
+      if (confirmRejectModalBtn) {
+        confirmRejectModalBtn.addEventListener('click', () => {
+          const reasonText = rejectReasonTextarea ? rejectReasonTextarea.value.trim() : '';
+          if (!reasonText) {
+            if (rejectReasonError) {
+              rejectReasonError.classList.add('is-visible');
+            }
+            if (rejectReasonTextarea) {
+              rejectReasonTextarea.focus();
+            }
+            return;
+          }
+
+          if (pendingActionRequestId !== null) {
+            const idx = joinRequestsData.findIndex((entry) => entry.id === pendingActionRequestId);
+            if (idx !== -1) {
+              joinRequestsData.splice(idx, 1);
+            }
+          }
+
+          closeRejectModal(false);
+          renderRequestsTable();
+        });
+      }
+
+      if (rejectRequestModal) {
+        rejectRequestModal.addEventListener('click', (event) => {
+          if (event.target === rejectRequestModal) {
+            closeRejectModal(true);
+          }
+        });
+      }
+
+      // Approve Modal Handlers
+      if (returnToRequestsBtn) {
+        returnToRequestsBtn.addEventListener('click', closeApproveModal);
+      }
+
+      if (approveRequestModal) {
+        approveRequestModal.addEventListener('click', (event) => {
+          if (event.target === approveRequestModal) {
+            closeApproveModal();
+          }
+        });
+      }
+
+      // Toolbar Filter Chip: Cycles All -> Contacted (Yes) -> Not Contacted (No)
+      if (contactedFilterBtn) {
+        contactedFilterBtn.addEventListener('click', () => {
+          if (contactedFilter === 'all') {
+            contactedFilter = 'yes';
+            contactedFilterBtn.classList.add('is-active');
+            if (contactedFilterLabel) contactedFilterLabel.textContent = 'Contacted: Yes';
+          } else if (contactedFilter === 'yes') {
+            contactedFilter = 'no';
+            contactedFilterBtn.classList.add('is-active');
+            if (contactedFilterLabel) contactedFilterLabel.textContent = 'Contacted: No';
+          } else {
+            contactedFilter = 'all';
+            contactedFilterBtn.classList.remove('is-active');
+            if (contactedFilterLabel) contactedFilterLabel.textContent = 'Contacted: All';
+          }
+          currentPage = 1;
+          renderRequestsTable();
+        });
+      }
+
+      // Search Input & Black (#171717) Clear Button
+      if (requestsSearchInput) {
+        requestsSearchInput.addEventListener('input', () => {
+          searchQuery = requestsSearchInput.value;
+          if (requestsSearchClearBtn) {
+            requestsSearchClearBtn.classList.toggle('is-visible', searchQuery.length > 0);
+          }
+          currentPage = 1;
+          renderRequestsTable();
+        });
+      }
+
+      if (requestsSearchClearBtn && requestsSearchInput) {
+        requestsSearchClearBtn.addEventListener('click', () => {
+          requestsSearchInput.value = '';
+          searchQuery = '';
+          requestsSearchClearBtn.classList.remove('is-visible');
+          currentPage = 1;
+          renderRequestsTable();
+          requestsSearchInput.focus();
+        });
+      }
+
+      // Column Header Sorting
+      sortHeaderBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const clickedField = btn.dataset.sortField;
+          if (sortField === clickedField) {
+            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortField = clickedField;
+            sortDirection = clickedField === 'contacted' ? 'desc' : 'asc';
+          }
+          currentPage = 1;
+          renderRequestsTable();
+        });
+      });
+
+      // Pagination Controls
+      if (requestsPrevPageBtn) {
+        requestsPrevPageBtn.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage -= 1;
+            renderRequestsTable();
+          }
+        });
+      }
+
+      if (requestsNextPageBtn) {
+        requestsNextPageBtn.addEventListener('click', () => {
+          currentPage += 1;
+          renderRequestsTable();
+        });
+      }
+
+      if (requestsPageNumbers) {
+        requestsPageNumbers.addEventListener('click', (event) => {
+          const pageBtn = event.target.closest('[data-page-num]');
+          if (!pageBtn) return;
+          currentPage = Number(pageBtn.dataset.pageNum);
+          renderRequestsTable();
+        });
+      }
+
+      // Escape key closes popovers & active modals
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+          closeRejectModal(true);
+          closeApproveModal();
+        }
+      });
+
+      // Initial render
+      renderRequestsTable();
     });
   </script>
 </body>
