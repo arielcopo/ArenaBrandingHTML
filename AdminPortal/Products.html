@@ -1,0 +1,3888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Admin Portal</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect,
+    .ph-icon-15 polyline,
+    .ph-icon-15 polygon {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: ADMIN PORTAL NAVIGATION
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* 3-Column Grid locks the center nav links to the exact horizontal center of the viewport */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Left Track) */
+    .brand-logo-link {
+      grid-column: 1;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Desktop & Tablet Navigation Links (Center Track - Horizontal Row) */
+    .nav-links-list {
+      grid-column: 2;
+      justify-self: center;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+      padding: 4px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-link-item:hover .nav-link-text,
+    .nav-link-item.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* Right Controls: Profile Avatar & Mobile Hamburger Trigger (Right Track) */
+    .nav-actions {
+      grid-column: 3;
+      justify-self: end;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .profile-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .profile-avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-btn:hover,
+    .profile-avatar-btn:focus-visible,
+    .profile-avatar-btn[aria-expanded="true"] {
+      border-color: var(--color-navy);
+      outline: none;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Profile Popover Menu */
+    .profile-dropdown-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 1100;
+    }
+
+    .profile-dropdown-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-dropdown-header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-dropdown-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-dropdown-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-online-dot {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--color-trend-up-stroke);
+      border: 1.5px solid var(--color-white);
+    }
+
+    .profile-dropdown-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    .profile-dropdown-divider-soft {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .profile-dropdown-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .profile-dropdown-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover,
+    .profile-dropdown-item:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--color-navy);
+      font-size: 24px;
+    }
+
+    /* Mobile Dropdown Drawer */
+    .mobile-nav-drawer {
+      display: none;
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px 24px;
+    }
+
+    .mobile-nav-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 22px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    .mobile-nav-link:hover .nav-link-text,
+    .mobile-nav-link.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .nav-links-list {
+        gap: 16px;
+      }
+
+      .nav-link-item {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .nav-links-list {
+        display: none;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .profile-dropdown-popover {
+        right: -56px;
+      }
+    }
+
+    /* ==========================================================================
+       4. MAIN PAGE BODY: ADMIN PRODUCT CATEGORIES & EDIT TRIGGER
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .products-header-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .products-controls-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Segmented Category Tabs Bar */
+    .category-tabs-bar {
+      display: inline-flex;
+      align-items: stretch;
+      min-width: 0;
+      max-width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-tabs-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-tab-btn {
+      padding: 10px 16px;
+      background-color: var(--color-white);
+      border-right: 1px solid var(--color-input-border);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .category-tab-btn:last-child {
+      border-right: none;
+    }
+
+    .category-tab-btn:hover,
+    .category-tab-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      outline: none;
+    }
+
+    .category-tab-btn.is-active,
+    .category-tab-btn[aria-selected="true"] {
+      background-color: var(--color-divider-soft);
+
+    }
+
+    /* Pencil Icon Button next to Category Tabs (Hooked for upcoming Edit Category Modal) */
+    .category-edit-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .category-edit-icon-btn:hover,
+    .category-edit-icon-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Anchor wrapper for Edit Categories Button + Popover */
+    .category-edit-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .category-edit-icon-btn.is-active {
+      color: var(--color-trend-up-text);
+      background-color: var(--color-badge-approved-bg);
+    }
+
+    .category-edit-icon-btn.is-active:hover,
+    .category-edit-icon-btn.is-active:focus-visible {
+      color: var(--color-trend-up-text);
+      background-color: #DCFCE7;
+    }
+
+    /* Categories Management Popover (320px card matching Figma & screenshot) */
+    .categories-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      width: 320px;
+      max-width: calc(100vw - 40px);
+      padding: 35px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      z-index: 950;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .categories-popover.is-open {
+      display: flex;
+    }
+
+    .categories-popover-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .categories-popover-list {
+      width: 100%;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .category-manage-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 2px 0;
+      border-radius: 6px;
+      background-color: var(--color-white);
+      transition: opacity var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .category-manage-item.is-dragging {
+      opacity: 0.45;
+    }
+
+    .category-manage-item.is-drag-over {
+      box-shadow: 0 -2px 0 0 var(--color-orange);
+    }
+
+    .category-manage-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .category-drag-handle {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-button);
+      cursor: grab;
+      flex-shrink: 0;
+      border-radius: 4px;
+      touch-action: none;
+    }
+
+    .category-drag-handle:hover,
+    .category-drag-handle:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .category-drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .category-manage-name {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      word-break: break-word;
+    }
+
+    .category-manage-input {
+      width: 100%;
+      min-width: 0;
+      padding: 0 0 2px;
+      border: none;
+      border-bottom: 1.5px dotted var(--color-text-muted);
+      background: transparent;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      outline: none;
+    }
+
+    .category-manage-input:focus {
+      border-bottom-color: var(--color-trend-up-text);
+      color: var(--color-text-primary);
+    }
+
+    .category-row-action-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-button);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .category-row-action-btn:hover,
+    .category-row-action-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .category-row-action-btn.is-save {
+      color: var(--color-trend-up-text);
+    }
+
+    .category-row-action-btn.is-save:hover,
+    .category-row-action-btn.is-save:focus-visible {
+      background-color: var(--color-badge-approved-bg);
+      color: var(--color-trend-up-text);
+    }
+
+    .category-add-btn {
+      width: 100%;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-white);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .category-add-btn:hover,
+    .category-add-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-input-border);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Empty Category State inside Products Table */
+    .products-empty-state-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px 16px;
+    }
+
+    .products-empty-state-text {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .categories-popover {
+        left: auto;
+        right: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .categories-popover {
+        padding: 24px 20px;
+        gap: 24px;
+        left: auto;
+        right: 0;
+      }
+    }
+
+    /* Table Header Action Buttons */
+    .btn-secondary-outline {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-input-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-secondary-outline:hover,
+    .btn-secondary-outline:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      border-color: var(--color-text-secondary);
+      outline: none;
+    }
+
+    .btn-primary-orange {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--color-orange);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-primary-orange:hover,
+    .btn-primary-orange:focus-visible {
+      background-color: var(--color-orange-hover);
+      border-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    .products-table-slot {
+      width: 100%;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 64px 48px 80px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 64px 32px 64px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 32px 20px 56px;
+        gap: 24px;
+      }
+
+      .products-controls-row {
+        gap: 8px;
+      }
+    }
+
+    /* ==========================================================================
+       4B. ADMIN PRODUCTS TABLE (4 COLUMNS: PRODUCTS, VARIANT, PRICE, ACTIONS)
+       ========================================================================== */
+    .products-table-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .products-table-header {
+      width: 100%;
+      padding: 20px 24px 19px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .products-table-title-group {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .products-table-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .products-count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .products-table-header-actions {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .products-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .products-items-table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .products-items-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .products-items-table tbody tr {
+      height: 132px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .products-items-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .products-items-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .products-items-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+    }
+
+    .products-item-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+    }
+
+    .products-item-thumb {
+      width: 100px;
+      height: 100px;
+      border-radius: 14px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-white);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .products-item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .products-item-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .products-item-name {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .products-item-details-link {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      transition: color var(--transition-fast);
+    }
+
+    .products-item-details-link:hover,
+    .products-item-details-link:focus-visible {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+
+    .products-variant-text {
+      max-width: 180px;
+      white-space: normal;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .products-price-text {
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    /* Row Actions Column: Edit (Pencil), Duplicate, Delete */
+    .products-items-table th.col-actions,
+    .products-items-table td.col-actions {
+      width: 152px;
+      min-width: 152px;
+      white-space: nowrap;
+    }
+
+    .row-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .row-action-icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .row-action-icon-btn:hover,
+    .row-action-icon-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .row-action-icon-btn.is-delete:hover,
+    .row-action-icon-btn.is-delete:focus-visible {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-trend-down-text);
+    }
+
+    .products-table-empty {
+      text-align: center !important;
+      padding: 48px 24px !important;
+      color: var(--color-text-muted) !important;
+      font-size: 14px !important;
+    }
+
+    @media (max-width: 768px) {
+      .products-table-header {
+        padding: 16px;
+      }
+
+      .products-items-table thead th,
+      .products-items-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .products-table-header-actions {
+        width: 100%;
+      }
+    }
+
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       4C. FULL-SCREEN MODALS: DELETE CATEGORY & CREATE PRODUCT
+       ========================================================================== */
+    .portal-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .portal-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    /* Delete Category Confirmation Modal (400px card matching Figma & screenshot) */
+    .delete-modal-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .delete-modal-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .delete-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #FEE2E2;
+      outline: 8px solid var(--color-badge-rejected-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #DC2626;
+      stroke: #DC2626;
+      flex-shrink: 0;
+    }
+
+    .delete-modal-copy {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .delete-modal-description {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .delete-modal-warning {
+      margin-top: 8px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .delete-accent-red {
+      color: #DC2626;
+    }
+
+    .modal-text-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .modal-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .modal-text-input:focus {
+      border-color: var(--color-navy);
+    }
+
+    .modal-text-input.is-danger-focus:focus {
+      border-color: #DC2626;
+    }
+
+    .modal-actions-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .btn-modal-cancel {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-modal-cancel:hover,
+    .btn-modal-cancel:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    .btn-modal-danger {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #DC2626;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), opacity var(--transition-fast);
+    }
+
+    .btn-modal-danger:hover:not(:disabled),
+    .btn-modal-danger:focus-visible:not(:disabled) {
+      background-color: #B91C1C;
+      outline: none;
+    }
+
+    .btn-modal-danger:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Duplicate & Delete Product Confirmation Modals (400px card matching screenshots) */
+    .product-confirm-modal-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .product-confirm-modal-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .duplicate-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 8px solid var(--color-footer-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .btn-modal-orange {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-orange);
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-modal-orange:hover,
+    .btn-modal-orange:focus-visible {
+      background-color: var(--color-orange-hover);
+      outline: none;
+    }
+
+    /* Create Product Modal (580px card matching Figma & screenshot) */
+    .create-product-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin: auto;
+    }
+
+    .create-product-modal-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .create-product-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #DCFCE7;
+      outline: 8px solid var(--color-badge-approved-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #16A34A;
+      stroke: #16A34A;
+      flex-shrink: 0;
+    }
+
+    .create-product-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .create-product-fields {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .create-field-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .create-field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .create-field-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .upload-dropzone-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .upload-dropzone-box {
+      width: 100%;
+      padding: 16px 24px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .upload-dropzone-box:hover,
+    .upload-dropzone-box:focus-visible,
+    .upload-dropzone-box.is-dragover {
+      border-color: #16A34A;
+      background-color: var(--color-badge-approved-bg);
+      outline: none;
+    }
+
+    .upload-dropzone-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 6px solid var(--color-footer-bg);
+      outline-offset: -3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .upload-dropzone-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .upload-dropzone-prompt {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .upload-dropzone-action-text {
+      color: #16A34A;
+      font-weight: 600;
+    }
+
+    .upload-dropzone-hint {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .upload-file-card {
+      width: 100%;
+      padding: 16px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .upload-file-card.is-visible {
+      display: flex;
+    }
+
+    .upload-file-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .upload-file-icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 28px;
+      background-color: #DCFCE7;
+      outline: 4px solid var(--color-badge-approved-bg);
+      outline-offset: -2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #16A34A;
+      stroke: #16A34A;
+      flex-shrink: 0;
+    }
+
+    .upload-file-meta {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .upload-file-name {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      word-break: break-all;
+    }
+
+    .upload-file-size {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .upload-progress-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .upload-progress-track {
+      flex: 1;
+      height: 8px;
+      background-color: var(--color-divider-soft);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .upload-progress-fill {
+      width: 100%;
+      height: 100%;
+      background-color: #16A34A;
+      border-radius: 4px;
+      transition: width var(--transition-fast);
+    }
+
+    .upload-progress-pct {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .upload-status-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #16A34A;
+      color: var(--color-white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .btn-modal-green {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #16A34A;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-modal-green:hover,
+    .btn-modal-green:focus-visible {
+      background-color: var(--color-trend-up-text);
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .delete-modal-card,
+      .product-confirm-modal-card {
+        padding: 20px 16px;
+        gap: 24px;
+      }
+
+      .create-product-modal-card {
+        padding: 24px 16px;
+        gap: 20px;
+      }
+
+      .create-product-form {
+        gap: 28px;
+      }
+
+      .create-field-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .modal-actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: ADMIN PORTAL NAVIGATION
+       ======================================================================== -->
+  <header class="portal-header" id="adminPortalHeader">
+    <nav class="portal-nav-container" aria-label="Admin Portal Primary Navigation">
+
+      <!-- Arena Branding Logo -->
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+
+      <!-- Center Navigation Links (Desktop & Tablet) -->
+      <ul class="nav-links-list">
+        <li>
+          <a href="Dashboard.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="nav-link-item active" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Clients.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Clients</span>
+          </a>
+        </li>
+        <li>
+          <a href="Orders.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Controls: Profile Circle & Mobile Burger Trigger -->
+      <div class="nav-actions">
+        <!-- Profile Avatar Button & Popover Menu -->
+        <div class="profile-menu-wrapper" id="profileMenuWrapper">
+          <button
+            type="button"
+            class="profile-avatar-btn"
+            id="profileMenuTrigger"
+            aria-label="Open admin profile menu"
+            aria-expanded="false"
+            aria-controls="profileDropdownPopover"
+          >
+            <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
+            <img
+              src=""
+              alt="Admin Profile"
+              class="profile-avatar-img"
+              style="display: none;"
+              onerror="this.style.display='none'"
+            />
+          </button>
+
+          <!-- Profile Dropdown Popover -->
+          <div
+            class="profile-dropdown-popover"
+            id="profileDropdownPopover"
+            role="menu"
+            aria-label="Admin profile options"
+          >
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar-wrap">
+                <img
+                  src=""
+                  alt="Admin Profile"
+                  class="profile-dropdown-avatar-img"
+                  style="display: none;"
+                  onerror="this.style.display='none'"
+                />
+                <span class="profile-online-dot" aria-hidden="true"></span>
+              </div>
+              <span class="profile-dropdown-name">Donna Baker</span>
+            </div>
+
+            <div class="profile-dropdown-divider-soft"></div>
+
+            <div class="profile-dropdown-actions">
+              <a href="Profile.html" class="profile-dropdown-item" role="menuitem" data-profile-action="view-profile">
+                View profile
+              </a>
+              <div class="profile-dropdown-divider"></div>
+              <a href="Login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+                Log out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileNavDrawer"
+        >
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Collapsible Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="Dashboard.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="mobile-nav-link active" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Clients.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Clients</span>
+          </a>
+        </li>
+        <li>
+          <a href="Orders.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: ADMIN PORTAL NAVIGATION
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+
+    <!-- Section 1: Category Tabs & Edit Pencil Trigger -->
+    <section class="products-header-section" aria-label="Product Categories">
+      <div class="products-controls-row">
+        <div class="category-tabs-bar" role="tablist" aria-label="Product categories">
+          <button
+            type="button"
+            class="category-tab-btn is-active"
+            role="tab"
+            aria-selected="true"
+            data-category-tab="outdoor-signs"
+            data-category-label="Outdoor Signs"
+          >
+            Outdoor Signs
+          </button>
+          <button
+            type="button"
+            class="category-tab-btn"
+            role="tab"
+            aria-selected="false"
+            data-category-tab="branded-furniture"
+            data-category-label="Branded Furniture"
+          >
+            Branded Furniture
+          </button>
+          <button
+            type="button"
+            class="category-tab-btn"
+            role="tab"
+            aria-selected="false"
+            data-category-tab="inflatable-signs-and-tents"
+            data-category-label="Inflatable Signs and Tents"
+          >
+            Inflatable Signs and Tents
+          </button>
+          <button
+            type="button"
+            class="category-tab-btn"
+            role="tab"
+            aria-selected="false"
+            data-category-tab="indoor-signs"
+            data-category-label="Indoor Signs"
+          >
+            Indoor Signs
+          </button>
+          <button
+            type="button"
+            class="category-tab-btn"
+            role="tab"
+            aria-selected="false"
+            data-category-tab="signboards"
+            data-category-label="Signboards"
+          >
+            Signboards
+          </button>
+          <button
+            type="button"
+            class="category-tab-btn"
+            role="tab"
+            aria-selected="false"
+            data-category-tab="accessories"
+            data-category-label="Accessories"
+          >
+            Accessories
+          </button>
+        </div>
+
+        <!-- Edit Categories Button (Toggles Pencil <-> Green Save) & Categories Popover -->
+        <div class="category-edit-wrapper" id="categoryEditWrapper">
+          <button
+            type="button"
+            class="category-edit-icon-btn"
+            id="editCategoriesBtn"
+            aria-label="Edit product categories"
+            aria-expanded="false"
+            aria-controls="categoriesPopover"
+            title="Edit categories"
+          >
+            <svg id="editCategoriesMainIcon" class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M92.6863 216H48C45.8783 216 43.8434 215.157 42.3431 213.657C40.8429 212.157 40 210.122 40 208V163.314C40 161.192 40.8429 159.157 42.3431 157.657L165.657 34.3431C167.157 32.8429 169.192 32 171.314 32C173.435 32 175.47 32.8429 176.971 34.3431L221.657 79.0294C223.157 80.5297 224 82.5646 224 84.6863C224 86.808 223.157 88.8429 221.657 90.3431L98.3431 213.657C96.8429 215.157 94.808 216 92.6863 216Z" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M136 64L192 120" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div
+            class="categories-popover"
+            id="categoriesPopover"
+            role="dialog"
+            aria-label="Manage product categories"
+            aria-hidden="true"
+          >
+            <h2 class="categories-popover-title">Categories</h2>
+
+            <ul class="categories-popover-list" id="categoriesManageList">
+              <!-- Populated dynamically with draggable & inline-editable category items -->
+            </ul>
+
+            <button
+              type="button"
+              class="category-add-btn"
+              id="addCategoryBtn"
+              aria-label="Add new category"
+              title="Add category"
+            >
+              <svg class="ph-icon-15" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M128 40V216" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Admin Products Table (Products, Variant, Price, Actions) -->
+    <section class="products-table-slot" id="productsTableSlot" data-active-category="outdoor-signs" aria-label="Category Products Management">
+      <div class="products-table-card">
+        <!-- Table Header -->
+        <div class="products-table-header">
+          <div class="products-table-title-group">
+            <h1 class="products-table-title" id="productsCategoryHeading">Outdoor Signs</h1>
+            <span class="products-count-pill" id="productsCategoryCountBadge">17 products</span>
+          </div>
+
+          <div class="products-table-header-actions">
+            <button
+              type="button"
+              class="btn-secondary-outline"
+              id="deleteCategoryBtn"
+            >
+              <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M104 104V168" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M152 104V168" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M168 56V40C168 35.7565 166.314 31.6869 163.314 28.6863C160.313 25.6857 156.243 24 152 24H104C99.7565 24 95.6869 25.6857 92.6863 28.6863C89.6857 31.6869 88 35.7565 88 40V56" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Delete this category</span>
+            </button>
+
+            <button
+              type="button"
+              class="btn-primary-orange"
+              id="uploadProductBtn"
+            >
+              <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M96 144L128 112L160 144" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M128 208V112" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M176 208H192C206.849 208.006 221.224 202.779 232.607 193.237C243.99 183.694 251.653 170.445 254.253 155.81C256.854 141.174 254.226 126.085 246.83 113.186C239.433 100.288 227.741 90.3982 213.8 85.25C208.607 66.2249 196.453 49.9462 179.729 39.6152C163.005 29.2842 142.931 25.6615 123.457 29.4596C103.982 33.2577 86.5293 44.1976 74.532 60.1257C62.5346 76.0537 56.8588 95.8266 58.62 115.77C46.3063 117.78 35.1258 124.132 27.0928 133.679C19.0598 143.226 14.7024 155.34 14.8058 167.839C14.9092 180.338 19.4666 192.378 27.6568 201.791C35.847 211.203 47.1319 217.367 59.48 219.17" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Upload Product</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Responsive 4-Column Products Table -->
+        <div class="products-table-scroll">
+          <table class="products-items-table" id="productsItemsTable">
+            <thead>
+              <tr>
+                <th scope="col">Products</th>
+                <th scope="col">Variant</th>
+                <th scope="col">Price</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsItemsTableBody">
+              <!-- Populated dynamically based on selected product category -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: DELETE CATEGORY CONFIRMATION MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="deleteCategoryModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteCategoryModalTitle"
+    aria-hidden="true"
+  >
+    <div class="delete-modal-card" id="deleteCategoryModalCard">
+      <div class="delete-modal-body">
+        <div class="delete-modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M88 24H168" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="delete-modal-copy">
+          <h2 class="modal-title" id="deleteCategoryModalTitle">Delete Category</h2>
+          <p class="delete-modal-description">
+            Please type in '<span class="delete-accent-red">delete</span>' in the field below to DELETE this category (<strong id="deleteCategoryTargetName">Outdoor Signs</strong>).
+          </p>
+          <p class="delete-modal-warning">
+            THIS ACTION IS <span class="delete-accent-red">NOT REVERSIBLE.</span>
+          </p>
+        </div>
+
+        <input
+          type="text"
+          id="deleteConfirmInput"
+          class="modal-text-input is-danger-focus"
+          placeholder="delete"
+          autocomplete="off"
+          aria-label="Type delete to confirm category deletion"
+        />
+      </div>
+
+      <div class="modal-actions-grid">
+        <button
+          type="button"
+          class="btn-modal-cancel"
+          id="cancelDeleteCategoryBtn"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn-modal-danger"
+          id="confirmDeleteCategoryBtn"
+          disabled
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: DELETE CATEGORY CONFIRMATION MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: CREATE / UPLOAD PRODUCT MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="createProductModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="createProductModalTitle"
+    aria-hidden="true"
+  >
+    <div class="create-product-modal-card" id="createProductModalCard">
+      <div class="create-product-modal-header">
+        <div class="create-product-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M224 177.321V78.6789C224 75.8644 223.271 73.0977 221.884 70.649C220.497 68.2003 218.499 66.1539 216.086 64.7107L136.086 16.8678C133.638 15.4041 130.844 14.6309 128 14.6309C125.156 14.6309 122.362 15.4041 119.914 16.8678L39.9143 64.7107C37.5011 66.1539 35.5028 68.2003 34.1158 70.649C32.7289 73.0977 32 75.8644 32 78.6789V177.321C32 180.136 32.7289 182.902 34.1158 185.351C35.5028 187.8 37.5011 189.846 39.9143 191.289L119.914 239.132C122.362 240.596 125.156 241.369 128 241.369C130.844 241.369 133.638 240.596 136.086 239.132L216.086 191.289C218.499 189.846 220.497 187.8 221.884 185.351C223.271 182.902 224 180.136 224 177.321Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M177.024 152.51V100.58L80 42.8101" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M222.897 74.6199L128.949 128L33.103 74.6199" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M128.949 128L128 241.37" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="modal-title" id="createProductModalTitle">Create Product</h2>
+      </div>
+
+      <form class="create-product-form" id="createProductForm">
+        <div class="create-product-fields">
+          <div class="create-field-group">
+            <label class="create-field-label" for="createProductNameInput">Product Name</label>
+            <input
+              type="text"
+              id="createProductNameInput"
+              name="productName"
+              class="modal-text-input"
+              placeholder="Crowd Control Barrier Cover"
+              required
+            />
+          </div>
+
+          <div class="create-field-row">
+            <div class="create-field-group">
+              <label class="create-field-label" for="createProductPriceInput">Price ($ AUD)</label>
+              <input
+                type="number"
+                id="createProductPriceInput"
+                name="productPrice"
+                class="modal-text-input"
+                placeholder="120"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <div class="create-field-group">
+              <label class="create-field-label" for="createProductVariantInput">Variant Name</label>
+              <input
+                type="text"
+                id="createProductVariantInput"
+                name="variantName"
+                class="modal-text-input"
+                placeholder="The Gymnast"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="create-field-group">
+            <label class="create-field-label" for="productImageFileInput">Upload Product Image</label>
+
+            <div class="upload-dropzone-wrapper">
+              <input
+                type="file"
+                id="productImageFileInput"
+                accept="image/png, image/jpeg"
+                hidden
+              />
+
+              <div
+                class="upload-dropzone-box"
+                id="productUploadDropzone"
+                role="button"
+                tabindex="0"
+                aria-label="Click to upload or drag and drop product image (PNG or JPG)"
+              >
+                <div class="upload-dropzone-icon-badge" aria-hidden="true">
+                  <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M160 16L144 96L208 120L96 240L112 160L48 136L160 16Z" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <div class="upload-dropzone-copy">
+                  <p class="upload-dropzone-prompt">
+                    <span class="upload-dropzone-action-text">Click to upload</span> or drag and drop
+                  </p>
+                  <p class="upload-dropzone-hint">PNG, JPG (max. 1000 x 1000px)</p>
+                </div>
+              </div>
+
+              <!-- Uploaded Image Preview & Progress Card -->
+              <div class="upload-file-card" id="uploadedProductFileCard" aria-live="polite">
+                <div class="upload-file-main">
+                  <div class="upload-file-icon-badge" aria-hidden="true">
+                    <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="32" y="48" width="192" height="160" rx="8" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="156" cy="100" r="12" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M32 168L82.3431 117.657C83.8434 116.157 85.8783 115.314 88 115.314C90.1217 115.314 92.1566 116.157 93.6569 117.657L144 168" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M128 152L154.343 125.657C155.843 124.157 157.878 123.314 160 123.314C162.122 123.314 164.157 124.157 165.657 125.657L224 184" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+
+                  <div class="upload-file-meta">
+                    <div>
+                      <p class="upload-file-name" id="uploadedFileNameText">CCB.jpg</p>
+                      <p class="upload-file-size" id="uploadedFileSizeText">200 KB</p>
+                    </div>
+
+                    <div class="upload-progress-row">
+                      <div class="upload-progress-track">
+                        <div class="upload-progress-fill" id="uploadedFileProgressFill" style="width: 100%;"></div>
+                      </div>
+                      <span class="upload-progress-pct" id="uploadedFileProgressPct">100%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <span class="upload-status-check" aria-label="Upload complete" title="Upload complete">
+                  <svg width="10" height="10" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40 144L96 200L224 72" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions-grid">
+          <button
+            type="button"
+            class="btn-modal-cancel"
+            id="cancelCreateProductBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-modal-green"
+            id="submitCreateProductBtn"
+          >
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: CREATE / EDIT PRODUCT MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: DUPLICATE PRODUCT CONFIRMATION MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="duplicateProductModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="duplicateProductModalTitle"
+    aria-hidden="true"
+  >
+    <div class="product-confirm-modal-card" id="duplicateProductModalCard">
+      <div class="product-confirm-modal-body">
+        <div class="duplicate-modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M168 88H40V216H168V88Z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="modal-title" id="duplicateProductModalTitle">Are you sure you want to duplicate this product?</h2>
+      </div>
+
+      <div class="modal-actions-grid">
+        <button
+          type="button"
+          class="btn-modal-cancel"
+          id="cancelDuplicateProductBtn"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn-modal-orange"
+          id="confirmDuplicateProductBtn"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: DUPLICATE PRODUCT CONFIRMATION MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: DELETE PRODUCT CONFIRMATION MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="deleteProductModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteProductModalTitle"
+    aria-hidden="true"
+  >
+    <div class="product-confirm-modal-card" id="deleteProductModalCard">
+      <div class="product-confirm-modal-body">
+        <div class="delete-modal-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M104 104V168" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M152 104V168" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M168 56V40C168 35.7565 166.314 31.6869 163.314 28.6863C160.313 25.6857 156.243 24 152 24H104C99.7565 24 95.6869 25.6857 92.6863 28.6863C89.6857 31.6869 88 35.7565 88 40V56" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="modal-title" id="deleteProductModalTitle">Are you sure you want to delete this product?</h2>
+      </div>
+
+      <div class="modal-actions-grid">
+        <button
+          type="button"
+          class="btn-modal-cancel"
+          id="cancelDeleteProductBtn"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn-modal-danger"
+          id="confirmDeleteProductBtn"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: DELETE PRODUCT CONFIRMATION MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="adminPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: NAVIGATION, PROFILE POPOVER & ADMIN PRODUCTS TABLE
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+
+      const profileMenuWrapper = document.getElementById('profileMenuWrapper');
+      const profileMenuTrigger = document.getElementById('profileMenuTrigger');
+      const profileDropdownPopover = document.getElementById('profileDropdownPopover');
+      const profileActionItems = document.querySelectorAll('[data-profile-action]');
+
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Profile Dropdown Popover
+      function toggleProfileMenu(forceClose = false) {
+        if (!profileMenuTrigger || !profileDropdownPopover) return;
+        const isCurrentlyOpen = profileDropdownPopover.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        profileDropdownPopover.classList.toggle('is-open', shouldOpen);
+        profileMenuTrigger.setAttribute('aria-expanded', String(shouldOpen));
+
+        if (shouldOpen) {
+          toggleMobileMenu(true);
+        }
+      }
+
+      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      function toggleMobileMenu(forceClose = false) {
+        const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        mobileNavDrawer.classList.toggle('is-open', shouldOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+
+        if (shouldOpen) {
+          toggleProfileMenu(true);
+        }
+      }
+
+      if (profileMenuTrigger) {
+        profileMenuTrigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleProfileMenu();
+        });
+      }
+
+      profileActionItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          toggleProfileMenu(true);
+        });
+      });
+
+      mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+
+      // Sync Active Link State Across Desktop & Mobile Navigation
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          const targetHref = link.getAttribute('href');
+
+          navLinks.forEach((item) => {
+            item.classList.toggle('active', item.getAttribute('href') === targetHref);
+          });
+
+          toggleMobileMenu(true);
+        });
+      });
+
+      // Close profile popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
+          toggleProfileMenu(true);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+        }
+      });
+
+      // Automatically close mobile drawer if resized above mobile breakpoint
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileNavDrawer.classList.contains('is-open')) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         Product Categories Management: Tabs, Edit/Save Toggle, Drag Reorder & Add
+         ---------------------------------------------------------------------- */
+      const categoryTabsBar = document.querySelector('.category-tabs-bar');
+      const productsTableSlot = document.getElementById('productsTableSlot');
+      const categoryEditWrapper = document.getElementById('categoryEditWrapper');
+      const editCategoriesBtn = document.getElementById('editCategoriesBtn');
+      const editCategoriesMainIcon = document.getElementById('editCategoriesMainIcon');
+      const categoriesPopover = document.getElementById('categoriesPopover');
+      const categoriesManageList = document.getElementById('categoriesManageList');
+      const addCategoryBtn = document.getElementById('addCategoryBtn');
+
+      const productsCategoryHeading = document.getElementById('productsCategoryHeading');
+      const productsCategoryCountBadge = document.getElementById('productsCategoryCountBadge');
+      const productsItemsTableBody = document.getElementById('productsItemsTableBody');
+      const uploadProductBtn = document.getElementById('uploadProductBtn');
+
+      // 1.5px Stroke Phosphor Icons
+      const mainPencilPaths = '<path d="M92.6863 216H48C45.8783 216 43.8434 215.157 42.3431 213.657C40.8429 212.157 40 210.122 40 208V163.314C40 161.192 40.8429 159.157 42.3431 157.657L165.657 34.3431C167.157 32.8429 169.192 32 171.314 32C173.435 32 175.47 32.8429 176.971 34.3431L221.657 79.0294C223.157 80.5297 224 82.5646 224 84.6863C224 86.808 223.157 88.8429 221.657 90.3431L98.3431 213.657C96.8429 215.157 94.808 216 92.6863 216Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M136 64L192 120" stroke-linecap="round" stroke-linejoin="round"/>';
+      const mainSavePaths = '<path d="M216 83.3137V208C216 210.122 215.157 212.157 213.657 213.657C212.157 215.157 210.122 216 208 216H48C45.8783 216 43.8434 215.157 42.3431 213.657C40.8429 212.157 40 210.122 40 208V48C40 45.8783 40.8429 43.8434 42.3431 42.3431C43.8434 40.8429 45.8783 40 48 40H172.686C174.808 40 176.843 40.8429 178.343 42.3431L213.657 77.6569C215.157 79.1571 216 81.192 216 83.3137Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M80 216V144H176V216" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 72H96" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      const rowPencilIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' + mainPencilPaths + '</svg>';
+      const rowSaveIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' + mainSavePaths + '</svg>';
+      const dragDotsIconSvg = '<svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="92" cy="60" r="12"/><circle cx="164" cy="60" r="12"/><circle cx="92" cy="128" r="12"/><circle cx="164" cy="128" r="12"/><circle cx="92" cy="196" r="12"/><circle cx="164" cy="196" r="12"/></svg>';
+      const duplicateIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/><path d="M168 88H40V216H168V88Z" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const deleteIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/><path d="M104 104V168" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 104V168" stroke-linecap="round" stroke-linejoin="round"/><path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/><path d="M168 56V40C168 35.7565 166.314 31.6869 163.314 28.6863C160.313 25.6857 156.243 24 152 24H104C99.7565 24 95.6869 25.6857 92.6863 28.6863C89.6857 31.6869 88 35.7565 88 40V56" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const uploadCloudIconSvg = '<svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M96 144L128 112L160 144" stroke-linecap="round" stroke-linejoin="round"/><path d="M128 208V112" stroke-linecap="round" stroke-linejoin="round"/><path d="M176 208H192C206.849 208.006 221.224 202.779 232.607 193.237C243.99 183.694 251.653 170.445 254.253 155.81C256.854 141.174 254.226 126.085 246.83 113.186C239.433 100.288 227.741 90.3982 213.8 85.25C208.607 66.2249 196.453 49.9462 179.729 39.6152C163.005 29.2842 142.931 25.6615 123.457 29.4596C103.982 33.2577 86.5293 44.1976 74.532 60.1257C62.5346 76.0537 56.8588 95.8266 58.62 115.77C46.3063 117.78 35.1258 124.132 27.0928 133.679C19.0598 143.226 14.7024 155.34 14.8058 167.839C14.9092 180.338 19.4666 192.378 27.6568 201.791C35.847 211.203 47.1319 217.367 59.48 219.17" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      let categoryOrder = [
+        'outdoor-signs',
+        'branded-furniture',
+        'inflatable-signs-and-tents',
+        'indoor-signs',
+        'signboards',
+        'accessories'
+      ];
+
+      const productsCatalogByCategory = {
+        'outdoor-signs': {
+          label: 'Outdoor Signs',
+          uniqueCount: 17,
+          items: [
+            { id: 'os-1', name: 'Crowd Control Barrier Covers', image: 'images/CrowdControlBarrierCovers.png', variant: 'The Gymnast', price: 120 },
+            { id: 'os-2', name: 'Crowd Control Barrier Covers', image: 'images/CrowdControlBarrierCovers.png', variant: 'The Sprinter', price: 75 },
+            { id: 'os-3', name: 'Polyester Mesh Scrim', image: 'images/PolyesterMeshScrim.png', variant: 'Polyester Mesh Scrim', price: 75 },
+            { id: 'os-4', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 75 },
+            { id: 'os-5', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Plain Coloured Bin Covers', price: 75 },
+            { id: 'os-6', name: 'Rectangle Flags', image: 'images/RectangleFlags.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-7', name: 'Feather Flags', image: 'images/FeatherFlags.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-8', name: 'Teardrop Flags', image: 'images/TeardropFlags.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-9', name: 'Vinyl Banner Mesh', image: 'images/VinylBannerMesh.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-10', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-11', name: 'A-Frame Sign', image: 'images/AFrameSign.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-12', name: 'Mesh Banners', image: 'images/MeshBanners.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-13', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-14', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Small (1200 x 650mm)', price: 20 },
+            { id: 'os-15', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Medium (1800 x 400mm)', price: 30 },
+            { id: 'os-16', name: 'Corflute Toblerone Sign', image: 'images/CorfluteTobleroneSign.png', variant: 'Large (2400 x 400mm)', price: 40 },
+            { id: 'os-17', name: 'Custom Coffee Umbrella', image: 'images/CustomCoffeeUmbrella.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-18', name: 'Corflute Pillar Wrap', image: 'images/CorflutePillarWrap.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-19', name: 'Pop-up Banners', image: 'images/PopUpBanners.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-20', name: 'Metal Frame Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'os-21', name: 'Custom Marquee Gable', image: 'images/CustomMarqueeGable.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        },
+        'branded-furniture': {
+          label: 'Branded Furniture',
+          uniqueCount: 7,
+          items: [
+            { id: 'bf-1', name: 'Seat Covers', image: 'images/SeatCovers.png', variant: 'Stadium & Outdoor Arena', price: 15 },
+            { id: 'bf-2', name: 'Seat Covers', image: 'images/SeatCovers.png', variant: 'Theatre, Cinema & VIP Lounge', price: 25 },
+            { id: 'bf-3', name: 'Deck Chair', image: 'images/DeckChair.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'bf-4', name: 'Directors Chair', image: 'images/DirectorsChair.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'bf-5', name: 'Inflatable Furniture', image: 'images/InflatableFurniture.png', variant: 'I don’t know yet', price: 20 },
+            { id: 'bf-6', name: 'Pop-up Gazebos', image: 'images/PopUpGazebos.png', variant: 'I don’t know yet', price: 40 },
+            { id: 'bf-7', name: 'Table Cloth', image: 'images/TableCloth.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        },
+        'inflatable-signs-and-tents': {
+          label: 'Inflatable Signs and Tents',
+          uniqueCount: 8,
+          items: [
+            { id: 'ist-1', name: 'Giant Inflatable Flags', image: 'images/GiantInflatableFlags.png', variant: 'I don’t know yet', price: 120 },
+            { id: 'ist-2', name: 'Inflatable Arch', image: 'images/InflatableArch.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'ist-3', name: 'Inflatable Dome Tent', image: 'images/InflatableDomeTent.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'ist-4', name: 'Inflatable Pillars', image: 'images/InflatablePillars.png', variant: 'Need to Discuss for variants', price: 20 },
+            { id: 'ist-5', name: 'Inflatable Tunnel', image: 'images/InflatableTunnel.png', variant: 'I don’t know yet', price: 40 },
+            { id: 'ist-6', name: 'Victor Inflatable Tent', image: 'images/VictorInflatableTent.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'ist-7', name: 'Inflatable Furniture', image: 'images/InflatableFurniture.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'ist-8', name: 'Inflatable Race Bouoys', image: 'images/InflatableRaceBouoys.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        },
+        'indoor-signs': {
+          label: 'Indoor Signs',
+          uniqueCount: 8,
+          items: [
+            { id: 'is-1', name: 'Deck Chairs', image: 'images/DeckChair.png', variant: 'I don’t know yet', price: 120 },
+            { id: 'is-2', name: 'Floor Decals', image: 'images/FloorDecals.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'is-3', name: 'Media Walls', image: 'images/MediaWalls.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'is-4', name: 'Table Cloth', image: 'images/TableCloth.png', variant: 'I don’t know yet', price: 20 },
+            { id: 'is-5', name: 'Pull Up Banners', image: 'images/PullUpBanners.png', variant: 'I don’t know yet', price: 40 },
+            { id: 'is-6', name: 'Metal Arches', image: 'images/MetalFrameArches.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'is-7', name: 'Custom Bunting', image: 'images/CustomBunting.png', variant: 'I don’t know yet', price: 75 },
+            { id: 'is-8', name: 'Custom Stage Backdrops', image: 'images/CustomStageBackdrops.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        },
+        'signboards': {
+          label: 'Signboards',
+          uniqueCount: 2,
+          items: [
+            { id: 'sb-1', name: 'Aluminum Composite Panel', image: 'images/AluminumCompositePanel.png', variant: 'I don’t know yet', price: 120 },
+            { id: 'sb-2', name: 'Corflute Signs', image: 'images/CorfluteSigns.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        },
+        'accessories': {
+          label: 'Accessories',
+          uniqueCount: 2,
+          items: [
+            { id: 'ac-1', name: 'Bin Covers', image: 'images/BinCovers.png', variant: 'Full Print Bin Covers', price: 120 },
+            { id: 'ac-2', name: 'Toggle Ties', image: 'images/ToggleTies.png', variant: 'I don’t know yet', price: 75 }
+          ]
+        }
+      };
+
+      let editingCategorySlug = null;
+      let draggedCategorySlug = null;
+      let customCategoryCounter = 1;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function slugifyCategoryLabel(label) {
+        const base = label
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '') || 'category';
+        if (!productsCatalogByCategory[base]) return base;
+        let suffix = 2;
+        while (productsCatalogByCategory[`${base}-${suffix}`]) {
+          suffix += 1;
+        }
+        return `${base}-${suffix}`;
+      }
+
+      function getCurrentCategorySlug() {
+        const activeSlug = productsTableSlot ? productsTableSlot.dataset.activeCategory : categoryOrder[0];
+        if (activeSlug && productsCatalogByCategory[activeSlug]) {
+          return activeSlug;
+        }
+        return categoryOrder[0];
+      }
+
+      function getCurrentCategoryData() {
+        return productsCatalogByCategory[getCurrentCategorySlug()];
+      }
+
+      function renderCategoryTabs() {
+        if (!categoryTabsBar) return;
+        const activeSlug = getCurrentCategorySlug();
+
+        categoryTabsBar.innerHTML = categoryOrder
+          .map((slug) => {
+            const cat = productsCatalogByCategory[slug];
+            if (!cat) return '';
+            const isActive = slug === activeSlug;
+            return `
+              <button
+                type="button"
+                class="category-tab-btn${isActive ? ' is-active' : ''}"
+                role="tab"
+                aria-selected="${isActive ? 'true' : 'false'}"
+                data-category-tab="${slug}"
+                data-category-label="${escapeHtml(cat.label)}"
+              >
+                ${escapeHtml(cat.label)}
+              </button>
+            `;
+          })
+          .join('');
+      }
+
+      function setActiveCategory(categorySlug, updateHash = true) {
+        const targetSlug = productsCatalogByCategory[categorySlug] ? categorySlug : categoryOrder[0];
+        if (!targetSlug) return;
+
+        if (productsTableSlot) {
+          productsTableSlot.dataset.activeCategory = targetSlug;
+        }
+
+        renderCategoryTabs();
+
+        if (updateHash) {
+          history.replaceState(null, '', `#${targetSlug}`);
+        }
+
+        const activeTabEl = categoryTabsBar
+          ? categoryTabsBar.querySelector(`[data-category-tab="${targetSlug}"]`)
+          : null;
+        if (activeTabEl && typeof activeTabEl.scrollIntoView === 'function') {
+          activeTabEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+
+        renderProductsTable();
+      }
+
+      if (categoryTabsBar) {
+        categoryTabsBar.addEventListener('click', (event) => {
+          const tabBtn = event.target.closest('[data-category-tab]');
+          if (!tabBtn) return;
+          setActiveCategory(tabBtn.dataset.categoryTab, true);
+        });
+      }
+
+      function renderCategoriesManageList(focusSlug = null) {
+        if (!categoriesManageList) return;
+
+        categoriesManageList.innerHTML = categoryOrder
+          .map((slug) => {
+            const cat = productsCatalogByCategory[slug];
+            if (!cat) return '';
+            const isEditing = editingCategorySlug === slug;
+
+            return `
+              <li
+                class="category-manage-item"
+                draggable="${isEditing ? 'false' : 'true'}"
+                data-manage-category="${slug}"
+              >
+                <div class="category-manage-left">
+                  <span
+                    class="category-drag-handle"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Drag to reorder ${escapeHtml(cat.label)}"
+                    title="Drag to reorder"
+                  >
+                    ${dragDotsIconSvg}
+                  </span>
+                  ${
+                    isEditing
+                      ? `<input
+                          type="text"
+                          class="category-manage-input"
+                          value="${escapeHtml(cat.label)}"
+                          aria-label="Category name"
+                          data-category-input="${slug}"
+                        />`
+                      : `<span class="category-manage-name">${escapeHtml(cat.label)}</span>`
+                  }
+                </div>
+
+                <button
+                  type="button"
+                  class="category-row-action-btn${isEditing ? ' is-save' : ''}"
+                  aria-label="${isEditing ? `Save ${escapeHtml(cat.label)}` : `Edit ${escapeHtml(cat.label)}`}"
+                  title="${isEditing ? 'Save category' : 'Edit category'}"
+                  data-category-row-toggle="${slug}"
+                >
+                  ${isEditing ? rowSaveIconSvg : rowPencilIconSvg}
+                </button>
+              </li>
+            `;
+          })
+          .join('');
+
+        if (focusSlug) {
+          const inputEl = categoriesManageList.querySelector(`[data-category-input="${focusSlug}"]`);
+          if (inputEl) {
+            inputEl.focus();
+            inputEl.select();
+          }
+        }
+      }
+
+      function commitCategoryNameEdit(slug) {
+        if (!slug || !productsCatalogByCategory[slug]) {
+          editingCategorySlug = null;
+          return;
+        }
+
+        const inputEl = categoriesManageList
+          ? categoriesManageList.querySelector(`[data-category-input="${slug}"]`)
+          : null;
+        if (inputEl) {
+          const trimmed = inputEl.value.trim();
+          if (trimmed) {
+            productsCatalogByCategory[slug].label = trimmed;
+          }
+        }
+
+        editingCategorySlug = null;
+        renderCategoryTabs();
+        renderProductsTable();
+        renderCategoriesManageList();
+      }
+
+      function setCategoriesPopoverOpen(shouldOpen) {
+        if (!categoriesPopover || !editCategoriesBtn || !editCategoriesMainIcon) return;
+
+        if (!shouldOpen && editingCategorySlug) {
+          commitCategoryNameEdit(editingCategorySlug);
+        }
+
+        categoriesPopover.classList.toggle('is-open', shouldOpen);
+        categoriesPopover.setAttribute('aria-hidden', String(!shouldOpen));
+        editCategoriesBtn.setAttribute('aria-expanded', String(shouldOpen));
+        editCategoriesBtn.classList.toggle('is-active', shouldOpen);
+        editCategoriesBtn.setAttribute(
+          'aria-label',
+          shouldOpen ? 'Save product categories' : 'Edit product categories'
+        );
+        editCategoriesBtn.setAttribute(
+          'title',
+          shouldOpen ? 'Save categories' : 'Edit categories'
+        );
+        editCategoriesMainIcon.innerHTML = shouldOpen ? mainSavePaths : mainPencilPaths;
+
+        if (shouldOpen) {
+          editingCategorySlug = null;
+          renderCategoriesManageList();
+        }
+      }
+
+      if (editCategoriesBtn) {
+        editCategoriesBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const isOpen = categoriesPopover && categoriesPopover.classList.contains('is-open');
+          setCategoriesPopoverOpen(!isOpen);
+        });
+      }
+
+      if (categoriesManageList) {
+        // Toggle row Pencil <-> Green Save icon
+        categoriesManageList.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const toggleBtn = event.target.closest('[data-category-row-toggle]');
+          if (!toggleBtn) return;
+
+          const slug = toggleBtn.dataset.categoryRowToggle;
+          if (editingCategorySlug === slug) {
+            commitCategoryNameEdit(slug);
+          } else {
+            if (editingCategorySlug) {
+              commitCategoryNameEdit(editingCategorySlug);
+            }
+            editingCategorySlug = slug;
+            renderCategoriesManageList(slug);
+          }
+        });
+
+        // Commit inline rename with Enter or cancel with Escape
+        categoriesManageList.addEventListener('keydown', (event) => {
+          const inputEl = event.target.closest('[data-category-input]');
+          if (!inputEl) return;
+
+          const slug = inputEl.dataset.categoryInput;
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            commitCategoryNameEdit(slug);
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            editingCategorySlug = null;
+            renderCategoriesManageList();
+          }
+        });
+
+        // Drag and Drop Reordering of Categories
+        categoriesManageList.addEventListener('dragstart', (event) => {
+          const itemEl = event.target.closest('.category-manage-item');
+          if (!itemEl || editingCategorySlug) {
+            event.preventDefault();
+            return;
+          }
+          draggedCategorySlug = itemEl.dataset.manageCategory;
+          itemEl.classList.add('is-dragging');
+          if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', draggedCategorySlug);
+          }
+        });
+
+        categoriesManageList.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          const targetItem = event.target.closest('.category-manage-item');
+          categoriesManageList.querySelectorAll('.category-manage-item').forEach((el) => {
+            el.classList.toggle('is-drag-over', el === targetItem && el.dataset.manageCategory !== draggedCategorySlug);
+          });
+        });
+
+        categoriesManageList.addEventListener('dragleave', (event) => {
+          const targetItem = event.target.closest('.category-manage-item');
+          if (targetItem) {
+            targetItem.classList.remove('is-drag-over');
+          }
+        });
+
+        categoriesManageList.addEventListener('drop', (event) => {
+          event.preventDefault();
+          const targetItem = event.target.closest('.category-manage-item');
+          categoriesManageList.querySelectorAll('.category-manage-item').forEach((el) => {
+            el.classList.remove('is-drag-over', 'is-dragging');
+          });
+
+          if (!targetItem || !draggedCategorySlug) return;
+          const targetSlug = targetItem.dataset.manageCategory;
+          if (targetSlug === draggedCategorySlug) return;
+
+          const fromIndex = categoryOrder.indexOf(draggedCategorySlug);
+          const toIndex = categoryOrder.indexOf(targetSlug);
+          if (fromIndex === -1 || toIndex === -1) return;
+
+          categoryOrder.splice(fromIndex, 1);
+          categoryOrder.splice(toIndex, 0, draggedCategorySlug);
+
+          renderCategoryTabs();
+          renderCategoriesManageList();
+        });
+
+        categoriesManageList.addEventListener('dragend', () => {
+          draggedCategorySlug = null;
+          categoriesManageList.querySelectorAll('.category-manage-item').forEach((el) => {
+            el.classList.remove('is-drag-over', 'is-dragging');
+          });
+        });
+      }
+
+      if (categoriesPopover) {
+        categoriesPopover.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      }
+
+      // Add New Category under the last item (e.g., Sky Banner under Accessories)
+      if (addCategoryBtn) {
+        addCategoryBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if (editingCategorySlug) {
+            commitCategoryNameEdit(editingCategorySlug);
+          }
+
+          const defaultNewLabel = customCategoryCounter === 1 ? 'Sky Banner' : `New Category ${customCategoryCounter}`;
+          customCategoryCounter += 1;
+          const newSlug = slugifyCategoryLabel(defaultNewLabel);
+
+          productsCatalogByCategory[newSlug] = {
+            label: defaultNewLabel,
+            uniqueCount: 0,
+            items: []
+          };
+
+          categoryOrder.push(newSlug);
+          editingCategorySlug = newSlug;
+
+          setActiveCategory(newSlug, true);
+          renderCategoriesManageList(newSlug);
+        });
+      }
+
+      // Close categories popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (
+          categoriesPopover &&
+          categoriesPopover.classList.contains('is-open') &&
+          categoryEditWrapper &&
+          !categoryEditWrapper.contains(event.target) &&
+          document.contains(event.target)
+        ) {
+          setCategoriesPopoverOpen(false);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && categoriesPopover && categoriesPopover.classList.contains('is-open')) {
+          setCategoriesPopoverOpen(false);
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         Admin Products Catalog Table (Products, Variant, Price, Actions)
+         ---------------------------------------------------------------------- */
+      function formatProductCurrency(amount) {
+        const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
+        const formattedNumber = Number.isInteger(rounded)
+          ? rounded.toLocaleString('en-AU')
+          : rounded.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return '$' + formattedNumber;
+      }
+
+      function renderProductsTable() {
+        const categoryData = getCurrentCategoryData();
+        if (!categoryData) return;
+
+        const items = categoryData.items;
+        const displayCount = typeof categoryData.uniqueCount === 'number' ? categoryData.uniqueCount : items.length;
+
+        if (productsCategoryHeading) {
+          productsCategoryHeading.textContent = categoryData.label;
+        }
+        if (productsCategoryCountBadge) {
+          productsCategoryCountBadge.textContent = `${displayCount} ${displayCount === 1 ? 'product' : 'products'}`;
+        }
+
+        if (!productsItemsTableBody) return;
+
+        if (items.length === 0) {
+          productsItemsTableBody.innerHTML = `
+            <tr>
+              <td colspan="4" class="products-table-empty">
+                <div class="products-empty-state-box">
+                  <p class="products-empty-state-text">No products available in ${escapeHtml(categoryData.label)} yet.</p>
+                  <button
+                    type="button"
+                    class="btn-primary-orange"
+                    data-empty-add-products
+                  >
+                    ${uploadCloudIconSvg}
+                    <span>Upload Product</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        productsItemsTableBody.innerHTML = items
+          .map(
+            (item) => `
+              <tr data-product-row-id="${item.id}">
+                <td>
+                  <div class="products-item-cell">
+                    <div class="products-item-thumb">
+                      <img src="${item.image}" alt="${escapeHtml(item.name)}" />
+                    </div>
+                    <div class="products-item-info">
+                      <span class="products-item-name">${escapeHtml(item.name)}</span>
+                      <a href="#product-details-${item.id}" class="products-item-details-link">View details</a>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="products-variant-text">${escapeHtml(item.variant)}</div>
+                </td>
+                <td>
+                  <span class="products-price-text">${formatProductCurrency(item.price)}</span>
+                </td>
+                <td class="col-actions">
+                  <div class="row-actions-group">
+                    <button
+                      type="button"
+                      class="row-action-icon-btn"
+                      aria-label="Edit ${escapeHtml(item.name)} (${escapeHtml(item.variant)})"
+                      title="Edit product"
+                      data-product-action="edit"
+                      data-product-id="${item.id}"
+                    >
+                      ${rowPencilIconSvg}
+                    </button>
+                    <button
+                      type="button"
+                      class="row-action-icon-btn"
+                      aria-label="Duplicate ${escapeHtml(item.name)} (${escapeHtml(item.variant)})"
+                      title="Duplicate product"
+                      data-product-action="duplicate"
+                      data-product-id="${item.id}"
+                    >
+                      ${duplicateIconSvg}
+                    </button>
+                    <button
+                      type="button"
+                      class="row-action-icon-btn is-delete"
+                      aria-label="Delete ${escapeHtml(item.name)} (${escapeHtml(item.variant)})"
+                      title="Delete product"
+                      data-product-action="delete"
+                      data-product-id="${item.id}"
+                    >
+                      ${deleteIconSvg}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `
+          )
+          .join('');
+      }
+
+      /* ----------------------------------------------------------------------
+         Delete Category Confirmation Modal (Requires typing "delete")
+         ---------------------------------------------------------------------- */
+      const deleteCategoryBtn = document.getElementById('deleteCategoryBtn');
+      const deleteCategoryModal = document.getElementById('deleteCategoryModal');
+      const deleteCategoryTargetName = document.getElementById('deleteCategoryTargetName');
+      const deleteConfirmInput = document.getElementById('deleteConfirmInput');
+      const cancelDeleteCategoryBtn = document.getElementById('cancelDeleteCategoryBtn');
+      const confirmDeleteCategoryBtn = document.getElementById('confirmDeleteCategoryBtn');
+
+      /* ----------------------------------------------------------------------
+         Create / Edit Product Modal (Form + Drag/Drop Image Upload)
+         ---------------------------------------------------------------------- */
+      const createProductModal = document.getElementById('createProductModal');
+      const createProductModalTitle = document.getElementById('createProductModalTitle');
+      const createProductForm = document.getElementById('createProductForm');
+      const createProductNameInput = document.getElementById('createProductNameInput');
+      const createProductPriceInput = document.getElementById('createProductPriceInput');
+      const createProductVariantInput = document.getElementById('createProductVariantInput');
+      const cancelCreateProductBtn = document.getElementById('cancelCreateProductBtn');
+      const submitCreateProductBtn = document.getElementById('submitCreateProductBtn');
+
+      const productImageFileInput = document.getElementById('productImageFileInput');
+      const productUploadDropzone = document.getElementById('productUploadDropzone');
+      const uploadedProductFileCard = document.getElementById('uploadedProductFileCard');
+      const uploadedFileNameText = document.getElementById('uploadedFileNameText');
+      const uploadedFileSizeText = document.getElementById('uploadedFileSizeText');
+      const uploadedFileProgressFill = document.getElementById('uploadedFileProgressFill');
+      const uploadedFileProgressPct = document.getElementById('uploadedFileProgressPct');
+
+      /* ----------------------------------------------------------------------
+         Duplicate & Delete Product Confirmation Modals
+         ---------------------------------------------------------------------- */
+      const duplicateProductModal = document.getElementById('duplicateProductModal');
+      const cancelDuplicateProductBtn = document.getElementById('cancelDuplicateProductBtn');
+      const confirmDuplicateProductBtn = document.getElementById('confirmDuplicateProductBtn');
+
+      const deleteProductModal = document.getElementById('deleteProductModal');
+      const cancelDeleteProductBtn = document.getElementById('cancelDeleteProductBtn');
+      const confirmDeleteProductBtn = document.getElementById('confirmDeleteProductBtn');
+
+      let uploadedProductDataUrl = 'images/CrowdControlBarrierCovers.png';
+      let uploadedProductFileName = '';
+      let uploadedProductFileSize = '200 KB';
+      let productModalMode = 'create'; // 'create' | 'edit'
+      let editingProductId = null;
+      let pendingDuplicateProductId = null;
+      let pendingDeleteProductId = null;
+      let lastFocusedModalTrigger = null;
+
+      function syncBodyModalLock() {
+        const hasOpenModal = [
+          deleteCategoryModal,
+          createProductModal,
+          duplicateProductModal,
+          deleteProductModal
+        ].some((modalEl) => modalEl && modalEl.classList.contains('is-open'));
+        document.body.classList.toggle('is-modal-open', hasOpenModal);
+      }
+
+      function recalculateCategoryUniqueCount(catData) {
+        if (!catData || !Array.isArray(catData.items)) return;
+        const uniqueNames = new Set(
+          catData.items.map((item) => String(item.name || '').trim().toLowerCase())
+        );
+        catData.uniqueCount = uniqueNames.size;
+      }
+
+      function extractFileNameFromPath(imagePath) {
+        if (!imagePath) return 'product-image.png';
+        if (imagePath.startsWith('data:')) return 'uploaded-image.png';
+        const parts = imagePath.split('/');
+        return parts[parts.length - 1] || 'product-image.png';
+      }
+
+      // --- Table Row Actions & Empty State Click Handler ---
+      if (productsItemsTableBody) {
+        productsItemsTableBody.addEventListener('click', (event) => {
+          const emptyAddBtn = event.target.closest('[data-empty-add-products]');
+          if (emptyAddBtn && uploadProductBtn) {
+            uploadProductBtn.click();
+            return;
+          }
+
+          const actionBtn = event.target.closest('[data-product-action]');
+          if (!actionBtn) return;
+
+          const actionType = actionBtn.dataset.productAction;
+          const productId = actionBtn.dataset.productId;
+          const currentCat = getCurrentCategoryData();
+          if (!currentCat || !productId) return;
+
+          const targetProduct = currentCat.items.find((item) => item.id === productId);
+          if (!targetProduct) return;
+
+          if (actionType === 'edit') {
+            openEditProductModal(targetProduct, actionBtn);
+          } else if (actionType === 'duplicate') {
+            openDuplicateProductModal(targetProduct.id, actionBtn);
+          } else if (actionType === 'delete') {
+            openDeleteProductModal(targetProduct.id, actionBtn);
+          }
+        });
+      }
+
+      // --- Delete Category Modal Logic ---
+      function updateDeleteButtonState() {
+        if (!deleteConfirmInput || !confirmDeleteCategoryBtn) return;
+        const isExactMatch = deleteConfirmInput.value.trim() === 'delete';
+        confirmDeleteCategoryBtn.disabled = !isExactMatch;
+      }
+
+      function openDeleteCategoryModal(triggerEl = null) {
+        const currentCat = getCurrentCategoryData();
+        if (!deleteCategoryModal || !currentCat) return;
+
+        lastFocusedModalTrigger = triggerEl || deleteCategoryBtn;
+        if (deleteCategoryTargetName) {
+          deleteCategoryTargetName.textContent = currentCat.label;
+        }
+        if (deleteConfirmInput) {
+          deleteConfirmInput.value = '';
+        }
+        updateDeleteButtonState();
+
+        deleteCategoryModal.classList.add('is-open');
+        deleteCategoryModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (deleteConfirmInput) {
+          deleteConfirmInput.focus();
+        }
+      }
+
+      function closeDeleteCategoryModal() {
+        if (!deleteCategoryModal || !deleteCategoryModal.classList.contains('is-open')) return;
+        deleteCategoryModal.classList.remove('is-open');
+        deleteCategoryModal.setAttribute('aria-hidden', 'true');
+        if (deleteConfirmInput) {
+          deleteConfirmInput.value = '';
+        }
+        updateDeleteButtonState();
+        syncBodyModalLock();
+
+        if (lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+          lastFocusedModalTrigger.focus();
+        }
+        lastFocusedModalTrigger = null;
+      }
+
+      if (deleteCategoryBtn) {
+        deleteCategoryBtn.addEventListener('click', () => {
+          openDeleteCategoryModal(deleteCategoryBtn);
+        });
+      }
+
+      if (deleteConfirmInput) {
+        deleteConfirmInput.addEventListener('input', updateDeleteButtonState);
+        deleteConfirmInput.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            if (confirmDeleteCategoryBtn && !confirmDeleteCategoryBtn.disabled) {
+              confirmDeleteCategoryBtn.click();
+            }
+          }
+        });
+      }
+
+      if (cancelDeleteCategoryBtn) {
+        cancelDeleteCategoryBtn.addEventListener('click', closeDeleteCategoryModal);
+      }
+
+      if (confirmDeleteCategoryBtn) {
+        confirmDeleteCategoryBtn.addEventListener('click', () => {
+          if (!deleteConfirmInput || deleteConfirmInput.value.trim() !== 'delete') return;
+
+          const slugToDelete = getCurrentCategorySlug();
+          const currentIndex = categoryOrder.indexOf(slugToDelete);
+          if (currentIndex !== -1) {
+            categoryOrder.splice(currentIndex, 1);
+            delete productsCatalogByCategory[slugToDelete];
+          }
+
+          closeDeleteCategoryModal();
+
+          if (categoryOrder.length === 0) {
+            const fallbackSlug = 'outdoor-signs';
+            productsCatalogByCategory[fallbackSlug] = {
+              label: 'Outdoor Signs',
+              uniqueCount: 0,
+              items: []
+            };
+            categoryOrder.push(fallbackSlug);
+          }
+
+          const nextSlug = categoryOrder[Math.min(currentIndex, categoryOrder.length - 1)] || categoryOrder[0];
+          setActiveCategory(nextSlug, true);
+        });
+      }
+
+      if (deleteCategoryModal) {
+        deleteCategoryModal.addEventListener('click', (event) => {
+          if (event.target === deleteCategoryModal) {
+            closeDeleteCategoryModal();
+          }
+        });
+      }
+
+      // --- Create / Edit Product Modal Logic ---
+      function formatFileSizeBytes(bytes) {
+        if (!bytes || bytes <= 0) return '200 KB';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      function showUploadedFilePreview(fileName, fileSizeLabel) {
+        if (uploadedFileNameText) {
+          uploadedFileNameText.textContent = fileName;
+        }
+        if (uploadedFileSizeText) {
+          uploadedFileSizeText.textContent = fileSizeLabel;
+        }
+        if (uploadedFileProgressFill) {
+          uploadedFileProgressFill.style.width = '100%';
+        }
+        if (uploadedFileProgressPct) {
+          uploadedFileProgressPct.textContent = '100%';
+        }
+        if (uploadedProductFileCard) {
+          uploadedProductFileCard.classList.add('is-visible');
+        }
+      }
+
+      function handleSelectedProductFile(file) {
+        if (!file) return;
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        if (!validTypes.includes(file.type)) return;
+
+        uploadedProductFileName = file.name;
+        uploadedProductFileSize = formatFileSizeBytes(file.size);
+        showUploadedFilePreview(uploadedProductFileName, uploadedProductFileSize);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target && typeof e.target.result === 'string') {
+            uploadedProductDataUrl = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function openCreateProductModal(triggerEl = null) {
+        if (!createProductModal) return;
+        productModalMode = 'create';
+        editingProductId = null;
+        lastFocusedModalTrigger = triggerEl || uploadProductBtn;
+
+        if (createProductModalTitle) {
+          createProductModalTitle.textContent = 'Create Product';
+        }
+        if (submitCreateProductBtn) {
+          submitCreateProductBtn.textContent = 'Create';
+        }
+
+        if (createProductForm) {
+          createProductForm.reset();
+        }
+        if (productImageFileInput) {
+          productImageFileInput.value = '';
+        }
+        uploadedProductDataUrl = 'images/CrowdControlBarrierCovers.png';
+        uploadedProductFileName = '';
+        uploadedProductFileSize = '200 KB';
+        if (uploadedProductFileCard) {
+          uploadedProductFileCard.classList.remove('is-visible');
+        }
+
+        createProductModal.classList.add('is-open');
+        createProductModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (createProductNameInput) {
+          createProductNameInput.focus();
+        }
+      }
+
+      function openEditProductModal(productItem, triggerEl = null) {
+        if (!createProductModal || !productItem) return;
+        productModalMode = 'edit';
+        editingProductId = productItem.id;
+        lastFocusedModalTrigger = triggerEl;
+
+        if (createProductModalTitle) {
+          createProductModalTitle.textContent = 'Edit Product';
+        }
+        if (submitCreateProductBtn) {
+          submitCreateProductBtn.textContent = 'Update';
+        }
+
+        if (productImageFileInput) {
+          productImageFileInput.value = '';
+        }
+        if (createProductNameInput) {
+          createProductNameInput.value = productItem.name;
+        }
+        if (createProductPriceInput) {
+          createProductPriceInput.value = String(productItem.price);
+        }
+        if (createProductVariantInput) {
+          createProductVariantInput.value = productItem.variant;
+        }
+
+        uploadedProductDataUrl = productItem.image || 'images/CrowdControlBarrierCovers.png';
+        uploadedProductFileName = productItem.fileName || extractFileNameFromPath(uploadedProductDataUrl);
+        uploadedProductFileSize = productItem.fileSize || '200 KB';
+        showUploadedFilePreview(uploadedProductFileName, uploadedProductFileSize);
+
+        createProductModal.classList.add('is-open');
+        createProductModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (createProductNameInput) {
+          createProductNameInput.focus();
+        }
+      }
+
+      function closeCreateProductModal() {
+        if (!createProductModal || !createProductModal.classList.contains('is-open')) return;
+        createProductModal.classList.remove('is-open');
+        createProductModal.setAttribute('aria-hidden', 'true');
+        productModalMode = 'create';
+        editingProductId = null;
+        syncBodyModalLock();
+
+        if (lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+          lastFocusedModalTrigger.focus();
+        }
+        lastFocusedModalTrigger = null;
+      }
+
+      if (uploadProductBtn) {
+        uploadProductBtn.addEventListener('click', () => {
+          openCreateProductModal(uploadProductBtn);
+        });
+      }
+
+      if (cancelCreateProductBtn) {
+        cancelCreateProductBtn.addEventListener('click', closeCreateProductModal);
+      }
+
+      if (createProductModal) {
+        createProductModal.addEventListener('click', (event) => {
+          if (event.target === createProductModal) {
+            closeCreateProductModal();
+          }
+        });
+      }
+
+      if (productUploadDropzone && productImageFileInput) {
+        productUploadDropzone.addEventListener('click', () => {
+          productImageFileInput.click();
+        });
+
+        productUploadDropzone.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            productImageFileInput.click();
+          }
+        });
+
+        productUploadDropzone.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          productUploadDropzone.classList.add('is-dragover');
+        });
+
+        productUploadDropzone.addEventListener('dragleave', () => {
+          productUploadDropzone.classList.remove('is-dragover');
+        });
+
+        productUploadDropzone.addEventListener('drop', (event) => {
+          event.preventDefault();
+          productUploadDropzone.classList.remove('is-dragover');
+          const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+          if (file) {
+            handleSelectedProductFile(file);
+          }
+        });
+
+        productImageFileInput.addEventListener('change', () => {
+          const file = productImageFileInput.files && productImageFileInput.files[0];
+          if (file) {
+            handleSelectedProductFile(file);
+          }
+        });
+      }
+
+      if (createProductForm) {
+        createProductForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!createProductForm.checkValidity()) {
+            createProductForm.reportValidity();
+            return;
+          }
+
+          const currentCat = getCurrentCategoryData();
+          if (!currentCat) return;
+
+          const productName = createProductNameInput ? createProductNameInput.value.trim() : 'New Product';
+          const productPrice = createProductPriceInput ? parseFloat(createProductPriceInput.value) || 0 : 0;
+          const variantName = createProductVariantInput ? createProductVariantInput.value.trim() : 'Standard';
+
+          if (productModalMode === 'edit' && editingProductId) {
+            const targetItem = currentCat.items.find((item) => item.id === editingProductId);
+            if (targetItem) {
+              targetItem.name = productName;
+              targetItem.price = productPrice;
+              targetItem.variant = variantName;
+              targetItem.image = uploadedProductDataUrl;
+              targetItem.fileName = uploadedProductFileName || extractFileNameFromPath(uploadedProductDataUrl);
+              targetItem.fileSize = uploadedProductFileSize || '200 KB';
+            }
+            recalculateCategoryUniqueCount(currentCat);
+            closeCreateProductModal();
+            renderProductsTable();
+            return;
+          }
+
+          const existingSameName = currentCat.items.some(
+            (item) => item.name.toLowerCase() === productName.toLowerCase()
+          );
+
+          const newProductItem = {
+            id: `${getCurrentCategorySlug()}-${Date.now()}`,
+            name: productName,
+            image: uploadedProductDataUrl,
+            fileName: uploadedProductFileName || extractFileNameFromPath(uploadedProductDataUrl),
+            fileSize: uploadedProductFileSize || '200 KB',
+            variant: variantName,
+            price: productPrice
+          };
+
+          currentCat.items.unshift(newProductItem);
+          if (typeof currentCat.uniqueCount === 'number' && !existingSameName) {
+            currentCat.uniqueCount += 1;
+          }
+
+          closeCreateProductModal();
+          renderProductsTable();
+        });
+      }
+
+      // --- Duplicate Product Confirmation Modal Logic ---
+      function openDuplicateProductModal(productId, triggerEl = null) {
+        if (!duplicateProductModal || !productId) return;
+        pendingDuplicateProductId = productId;
+        lastFocusedModalTrigger = triggerEl;
+
+        duplicateProductModal.classList.add('is-open');
+        duplicateProductModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (confirmDuplicateProductBtn) {
+          confirmDuplicateProductBtn.focus();
+        }
+      }
+
+      function closeDuplicateProductModal() {
+        if (!duplicateProductModal || !duplicateProductModal.classList.contains('is-open')) return;
+        duplicateProductModal.classList.remove('is-open');
+        duplicateProductModal.setAttribute('aria-hidden', 'true');
+        pendingDuplicateProductId = null;
+        syncBodyModalLock();
+
+        if (lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+          lastFocusedModalTrigger.focus();
+        }
+        lastFocusedModalTrigger = null;
+      }
+
+      if (cancelDuplicateProductBtn) {
+        cancelDuplicateProductBtn.addEventListener('click', closeDuplicateProductModal);
+      }
+
+      if (confirmDuplicateProductBtn) {
+        confirmDuplicateProductBtn.addEventListener('click', () => {
+          const currentCat = getCurrentCategoryData();
+          if (currentCat && pendingDuplicateProductId) {
+            const sourceIndex = currentCat.items.findIndex((item) => item.id === pendingDuplicateProductId);
+            if (sourceIndex !== -1) {
+              const sourceItem = currentCat.items[sourceIndex];
+              const duplicatedItem = {
+                ...sourceItem,
+                id: `${getCurrentCategorySlug()}-copy-${Date.now()}`
+              };
+              currentCat.items.splice(sourceIndex + 1, 0, duplicatedItem);
+              recalculateCategoryUniqueCount(currentCat);
+            }
+          }
+
+          closeDuplicateProductModal();
+          renderProductsTable();
+        });
+      }
+
+      if (duplicateProductModal) {
+        duplicateProductModal.addEventListener('click', (event) => {
+          if (event.target === duplicateProductModal) {
+            closeDuplicateProductModal();
+          }
+        });
+      }
+
+      // --- Delete Product Confirmation Modal Logic ---
+      function openDeleteProductModal(productId, triggerEl = null) {
+        if (!deleteProductModal || !productId) return;
+        pendingDeleteProductId = productId;
+        lastFocusedModalTrigger = triggerEl;
+
+        deleteProductModal.classList.add('is-open');
+        deleteProductModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (cancelDeleteProductBtn) {
+          cancelDeleteProductBtn.focus();
+        }
+      }
+
+      function closeDeleteProductModal() {
+        if (!deleteProductModal || !deleteProductModal.classList.contains('is-open')) return;
+        deleteProductModal.classList.remove('is-open');
+        deleteProductModal.setAttribute('aria-hidden', 'true');
+        pendingDeleteProductId = null;
+        syncBodyModalLock();
+
+        if (lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+          lastFocusedModalTrigger.focus();
+        }
+        lastFocusedModalTrigger = null;
+      }
+
+      if (cancelDeleteProductBtn) {
+        cancelDeleteProductBtn.addEventListener('click', closeDeleteProductModal);
+      }
+
+      if (confirmDeleteProductBtn) {
+        confirmDeleteProductBtn.addEventListener('click', () => {
+          const currentCat = getCurrentCategoryData();
+          if (currentCat && pendingDeleteProductId) {
+            const targetIndex = currentCat.items.findIndex((item) => item.id === pendingDeleteProductId);
+            if (targetIndex !== -1) {
+              currentCat.items.splice(targetIndex, 1);
+              recalculateCategoryUniqueCount(currentCat);
+            }
+          }
+
+          closeDeleteProductModal();
+          renderProductsTable();
+        });
+      }
+
+      if (deleteProductModal) {
+        deleteProductModal.addEventListener('click', (event) => {
+          if (event.target === deleteProductModal) {
+            closeDeleteProductModal();
+          }
+        });
+      }
+
+      // Close active modals on Escape key
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (deleteProductModal && deleteProductModal.classList.contains('is-open')) {
+            closeDeleteProductModal();
+            return;
+          }
+          if (duplicateProductModal && duplicateProductModal.classList.contains('is-open')) {
+            closeDuplicateProductModal();
+            return;
+          }
+          if (deleteCategoryModal && deleteCategoryModal.classList.contains('is-open')) {
+            closeDeleteCategoryModal();
+            return;
+          }
+          if (createProductModal && createProductModal.classList.contains('is-open')) {
+            closeCreateProductModal();
+          }
+        }
+      });
+
+      // Initialize active category from URL hash or default first category
+      const initialHashCategory = window.location.hash.replace(/^#/, '');
+      if (initialHashCategory && productsCatalogByCategory[initialHashCategory]) {
+        setActiveCategory(initialHashCategory, false);
+      } else {
+        setActiveCategory(categoryOrder[0], false);
+      }
+    });
+  </script>
+</body>
+</html>

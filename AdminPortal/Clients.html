@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Branding — Admin Portal | Clients</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & GLOBAL RESET (Shared across Client & Admin Portals)
+       ========================================================================== */
+    :root {
+      --color-navy: #292562;
+      --color-navy-hover: #1e1b4b;
+      --color-orange: #F0542B;
+      --color-orange-hover: #d94620;
+      --color-white: #FFFFFF;
+      --color-bg-subtle: #F9FAFB;
+      --color-footer-bg: #FAFAFA;
+      --color-border: #E5E5E5;
+      --color-divider-soft: #F5F5F7;
+      --color-input-border: #D4D4D4;
+      --color-avatar-fallback: #A6A6A6;
+      --color-text-primary: #171717;
+      --color-text-active: #0A0A0A;
+      --color-text-secondary: #525252;
+      --color-text-button: #404040;
+      --color-text-muted: #737373;
+      --color-card-label: #A3A3A3;
+      --color-trend-up-text: #15803D;
+      --color-trend-up-stroke: #22C55E;
+      --color-trend-down-text: #B91C1C;
+      --color-trend-down-stroke: #EF4444;
+      --color-badge-pending-bg: #FEFCE8;
+      --color-badge-pending-text: #A16207;
+      --color-badge-approved-bg: #F0FDF4;
+      --color-badge-approved-text: #15803D;
+      --color-badge-rejected-bg: #FEF2F2;
+      --color-badge-rejected-text: #B91C1C;
+
+      --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --nav-max-width: 1440px;
+      --nav-gutter-desktop: 112px; /* 1440px - (112px * 2) = 1216px inner width */
+      --nav-height-desktop: 96px;
+      --nav-height-tablet: 80px;
+      --nav-height-mobile: 72px;
+
+      --transition-fast: 0.2s ease;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-white);
+      color: var(--color-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 1.5px Screen-Pixel Stroke UI Icons */
+    .ph-icon-15 {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      color: currentColor;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ph-icon-15 path,
+    .ph-icon-15 circle,
+    .ph-icon-15 line,
+    .ph-icon-15 rect,
+    .ph-icon-15 polyline,
+    .ph-icon-15 polygon {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
+       2. COMPONENT: ADMIN PORTAL NAVIGATION
+       ========================================================================== */
+    .portal-header {
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* 3-Column Grid locks the center nav links to the exact horizontal center of the viewport */
+    .portal-nav-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      height: var(--nav-height-desktop);
+      margin: 0 auto;
+      padding: 0 var(--nav-gutter-desktop);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Brand Logo (Left Track) */
+    .brand-logo-link {
+      grid-column: 1;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      max-width: 181px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Desktop & Tablet Navigation Links (Center Track - Horizontal Row) */
+    .nav-links-list {
+      grid-column: 2;
+      justify-self: center;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+      padding: 4px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-link-item:hover .nav-link-text,
+    .nav-link-item.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* Right Controls: Profile Avatar & Mobile Hamburger Trigger (Right Track) */
+    .nav-actions {
+      grid-column: 3;
+      justify-self: end;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .profile-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .profile-avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-btn:hover,
+    .profile-avatar-btn:focus-visible,
+    .profile-avatar-btn[aria-expanded="true"] {
+      border-color: var(--color-navy);
+      outline: none;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Profile Popover Menu */
+    .profile-dropdown-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      max-width: calc(100vw - 40px);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 16px -4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 1100;
+    }
+
+    .profile-dropdown-popover.is-open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-dropdown-header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-dropdown-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      border-radius: 50%;
+      background-color: var(--color-avatar-fallback);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-dropdown-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-online-dot {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--color-trend-up-stroke);
+      border: 1.5px solid var(--color-white);
+    }
+
+    .profile-dropdown-name {
+      flex: 1;
+      min-width: 0;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      word-wrap: break-word;
+    }
+
+    .profile-dropdown-divider-soft {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-divider-soft);
+    }
+
+    .profile-dropdown-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .profile-dropdown-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover,
+    .profile-dropdown-item:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    /* Mobile Hamburger Button (Hidden on Desktop & Tablet) */
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--color-navy);
+      font-size: 24px;
+    }
+
+    /* Mobile Dropdown Drawer */
+    .mobile-nav-drawer {
+      display: none;
+      width: 100%;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px 24px;
+    }
+
+    .mobile-nav-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 22px;
+      text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    .mobile-nav-link:hover .nav-link-text,
+    .mobile-nav-link.active .nav-link-text {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       ========================================================================== */
+    @media (max-width: 1280px) {
+      .portal-nav-container {
+        padding: 0 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-nav-container {
+        height: var(--nav-height-tablet);
+        padding: 0 32px;
+        gap: 16px;
+      }
+
+      .brand-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .nav-links-list {
+        gap: 16px;
+      }
+
+      .nav-link-item {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: var(--nav-height-mobile);
+        padding: 0 20px;
+      }
+
+      .brand-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .nav-links-list {
+        display: none;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .profile-dropdown-popover {
+        right: -56px;
+      }
+    }
+
+    /* ==========================================================================
+       4. MAIN PAGE BODY: ADMIN CLIENTS MANAGEMENT TABLE
+       ========================================================================== */
+    .portal-main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 96px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .clients-section {
+      width: 100%;
+    }
+
+    .clients-table-card {
+      width: 100%;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Card Header Bar */
+    .clients-card-header {
+      width: 100%;
+      padding: 20px 24px 19px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .clients-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .clients-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .clients-count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-button);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Toolbar Search Box (Uniform 36px height per guidelines) */
+    .clients-search-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .clients-search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .clients-search-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 34px 0 38px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .clients-search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .clients-search-input:focus {
+      outline: none;
+      border-color: var(--color-navy);
+      box-shadow: 0 0 0 3px rgba(41, 37, 98, 0.08);
+    }
+
+    /* Hide native browser clear icon so custom #171717 clear button renders consistently */
+    .clients-search-input::-webkit-search-cancel-button,
+    .clients-search-input::-webkit-search-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .clients-search-clear-btn {
+      position: absolute;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      color: var(--color-text-primary); /* #171717 black per guidelines */
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .clients-search-clear-btn.is-visible {
+      display: inline-flex;
+    }
+
+    .clients-search-clear-btn:hover,
+    .clients-search-clear-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      outline: none;
+    }
+
+    /* Horizontal Responsive Scroll Container */
+    .clients-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .clients-data-table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .clients-data-table thead th {
+      height: 44px;
+      padding: 12px 24px;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .clients-data-table thead th.col-tax {
+      text-align: center;
+    }
+
+    .clients-data-table thead th.col-actions {
+      width: 116px;
+      min-width: 116px;
+    }
+
+    /* Sortable Date Joined Header Button */
+    .table-sort-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      padding: 2px 4px;
+      margin-left: -4px;
+      border-radius: 6px;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .table-sort-btn:hover,
+    .table-sort-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .sort-arrow-icon {
+      transition: transform var(--transition-fast);
+    }
+
+    .table-sort-btn[data-sort-dir="asc"] .sort-arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Table Body Rows */
+    .clients-data-table tbody tr {
+      height: 56px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color var(--transition-fast);
+    }
+
+    .clients-data-table tbody tr:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .clients-data-table tbody td {
+      padding: 16px 24px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .clients-data-table tbody td.cell-company {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    .clients-data-table tbody td.cell-date,
+    .clients-data-table tbody td.cell-orders {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clients-data-table tbody td.cell-tax {
+      padding: 8px 24px;
+      text-align: center;
+    }
+
+    /* Inline Set Tax % Display & Edit States */
+    .tax-control-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 8px;
+      background-color: var(--color-white);
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .tax-control-box.is-editing {
+      border-color: var(--color-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .tax-value-display {
+      min-width: 40px;
+      text-align: center;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tax-input-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+    }
+
+    .tax-percent-input {
+      width: 30px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      -moz-appearance: textfield;
+    }
+
+    .tax-percent-input::-webkit-outer-spin-button,
+    .tax-percent-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .tax-percent-input:focus {
+      outline: none;
+      color: var(--color-text-primary);
+    }
+
+    .tax-percent-suffix {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      user-select: none;
+    }
+
+    .tax-icon-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .tax-icon-btn.is-edit {
+      color: var(--color-text-button);
+    }
+
+    .tax-icon-btn.is-edit:hover,
+    .tax-icon-btn.is-edit:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .tax-icon-btn.is-save {
+      color: var(--color-trend-up-text); /* #15803D green save icon per screenshot */
+    }
+
+    .tax-icon-btn.is-save:hover,
+    .tax-icon-btn.is-save:focus-visible {
+      background-color: var(--color-badge-approved-bg);
+      outline: none;
+    }
+
+    /* Row Actions (Pencil & Trash) */
+    .row-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .row-action-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      color: var(--color-text-button);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .row-action-btn:hover,
+    .row-action-btn:focus-visible {
+      background-color: var(--color-divider-soft);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .row-action-btn.is-delete:hover,
+    .row-action-btn.is-delete:focus-visible {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-trend-down-text);
+    }
+
+    .clients-empty-cell {
+      text-align: center !important;
+      padding: 48px 24px !important;
+      color: var(--color-text-muted) !important;
+      font-size: 14px !important;
+    }
+
+    /* Pagination Bar */
+    .clients-pagination-bar {
+      width: 100%;
+      padding: 12px 24px 16px;
+      background-color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .pagination-nav-btn {
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+    }
+
+    .pagination-nav-btn:hover:not(:disabled),
+    .pagination-nav-btn:focus-visible:not(:disabled) {
+      background-color: var(--color-footer-bg);
+      color: var(--color-text-primary);
+      border-color: var(--color-text-secondary);
+      outline: none;
+    }
+
+    .pagination-nav-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .pagination-pages-list {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pagination-page-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-variant-numeric: tabular-nums;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .pagination-page-btn:hover,
+    .pagination-page-btn:focus-visible {
+      background-color: var(--color-footer-bg);
+      color: var(--color-text-active);
+      outline: none;
+    }
+
+    .pagination-page-btn.is-active {
+      background-color: var(--color-footer-bg);
+      color: var(--color-text-active);
+    }
+
+    .pagination-ellipsis {
+      width: 40px;
+      height: 40px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-main {
+        padding: 64px 48px 80px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main {
+        padding: 64px 32px 64px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-main {
+        padding: 64px 20px 56px;
+      }
+
+      .clients-card-header {
+        padding: 16px;
+      }
+
+      .clients-search-wrapper {
+        max-width: 100%;
+      }
+
+      .clients-data-table thead th,
+      .clients-data-table tbody td {
+        padding: 12px 16px;
+      }
+
+      .clients-data-table tbody td.cell-tax {
+        padding: 8px 16px;
+      }
+
+      .clients-pagination-bar {
+        padding: 12px 16px 16px;
+        justify-content: center;
+      }
+    }
+
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       4B. FULL-SCREEN MODALS: EDIT CLIENT & DELETE CLIENT CONFIRMATION
+       ========================================================================== */
+    .portal-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .portal-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    /* Edit Client Modal Card (580px width matching Figma & screenshot) */
+    .edit-client-modal-card {
+      width: 100%;
+      max-width: 580px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin: auto;
+    }
+
+    .edit-client-modal-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .edit-client-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #DCFCE7;
+      outline: 8px solid var(--color-badge-approved-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #16A34A;
+      stroke: #16A34A;
+      flex-shrink: 0;
+    }
+
+    .edit-client-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .edit-client-fields {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .edit-client-field-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .edit-client-field-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .edit-client-label {
+      color: var(--color-text-button);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .modal-text-input {
+      width: 100%;
+      height: 36px;
+      padding: 0 14px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .modal-text-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .modal-text-input:focus {
+      border-color: var(--color-navy);
+      box-shadow: 0 0 0 3px rgba(41, 37, 98, 0.08);
+    }
+
+    .modal-actions-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .btn-modal-secondary {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: var(--color-white);
+      color: var(--color-text-button);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-modal-secondary:hover,
+    .btn-modal-secondary:focus-visible {
+      background-color: var(--color-bg-subtle);
+      border-color: var(--color-text-muted);
+      outline: none;
+    }
+
+    .btn-modal-green {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #16A34A;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-modal-green:hover,
+    .btn-modal-green:focus-visible {
+      background-color: var(--color-trend-up-text);
+      outline: none;
+    }
+
+    /* Delete Client Confirmation Modal Card (400px width matching Figma & screenshot) */
+    .delete-client-modal-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: auto;
+    }
+
+    .delete-client-modal-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .delete-client-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: #FEE2E2;
+      outline: 8px solid var(--color-badge-rejected-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #DC2626;
+      stroke: #DC2626;
+      flex-shrink: 0;
+    }
+
+    .delete-client-title {
+      max-width: 260px;
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .btn-modal-danger {
+      width: 100%;
+      height: 44px;
+      padding: 10px 18px;
+      background-color: #DC2626;
+      color: var(--color-white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-modal-danger:hover,
+    .btn-modal-danger:focus-visible {
+      background-color: #B91C1C;
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .edit-client-modal-card {
+        padding: 24px 16px;
+        gap: 20px;
+      }
+
+      .edit-client-form {
+        gap: 28px;
+      }
+
+      .edit-client-field-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .delete-client-modal-card {
+        padding: 20px 16px;
+        gap: 24px;
+      }
+
+      .modal-actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: PORTAL FOOTER
+       ========================================================================== */
+    .portal-footer {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .portal-footer-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 64px var(--nav-gutter-desktop) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    .footer-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+    }
+
+    .footer-brand-link {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .footer-logo-img {
+      height: 43px;
+      width: auto;
+      max-width: 186px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-columns-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 80px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-col-heading {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .footer-col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .footer-bottom-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border);
+    }
+
+    .footer-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .footer-tagline-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .footer-tagline-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-tagline-sub {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+    }
+
+    .footer-copyright {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1280px) {
+      .portal-footer-container {
+        padding: 56px 48px 40px;
+        gap: 48px;
+      }
+
+      .footer-columns-group {
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .portal-footer-container {
+        padding: 48px 32px 36px;
+        gap: 40px;
+      }
+
+      .footer-top-row {
+        flex-direction: column;
+        gap: 36px;
+      }
+
+      .footer-logo-img {
+        height: 36px;
+        max-width: 156px;
+      }
+
+      .footer-columns-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-footer-container {
+        padding: 40px 20px 32px;
+        gap: 32px;
+      }
+
+      .footer-logo-img {
+        height: 34px;
+        max-width: 148px;
+      }
+
+      .footer-columns-group {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+      }
+
+      .footer-link,
+      .footer-tagline-title,
+      .footer-tagline-sub,
+      .footer-copyright {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .footer-copyright {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       START COMPONENT: ADMIN PORTAL NAVIGATION
+       ======================================================================== -->
+  <header class="portal-header" id="adminPortalHeader">
+    <nav class="portal-nav-container" aria-label="Admin Portal Primary Navigation">
+
+      <!-- Arena Branding Logo -->
+      <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
+        <img
+          src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+          alt="Arena Branding"
+          class="brand-logo-img"
+        />
+      </a>
+
+      <!-- Center Navigation Links (Desktop & Tablet) -->
+      <ul class="nav-links-list">
+        <li>
+          <a href="Dashboard.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Clients.html" class="nav-link-item active" data-nav-link>
+            <span class="nav-link-text">Clients</span>
+          </a>
+        </li>
+        <li>
+          <a href="Orders.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Controls: Profile Circle & Mobile Burger Trigger -->
+      <div class="nav-actions">
+        <!-- Profile Avatar Button & Popover Menu -->
+        <div class="profile-menu-wrapper" id="profileMenuWrapper">
+          <button
+            type="button"
+            class="profile-avatar-btn"
+            id="profileMenuTrigger"
+            aria-label="Open admin profile menu"
+            aria-expanded="false"
+            aria-controls="profileDropdownPopover"
+          >
+            <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
+            <img
+              src=""
+              alt="Admin Profile"
+              class="profile-avatar-img"
+              style="display: none;"
+              onerror="this.style.display='none'"
+            />
+          </button>
+
+          <!-- Profile Dropdown Popover -->
+          <div
+            class="profile-dropdown-popover"
+            id="profileDropdownPopover"
+            role="menu"
+            aria-label="Admin profile options"
+          >
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar-wrap">
+                <img
+                  src=""
+                  alt="Admin Profile"
+                  class="profile-dropdown-avatar-img"
+                  style="display: none;"
+                  onerror="this.style.display='none'"
+                />
+                <span class="profile-online-dot" aria-hidden="true"></span>
+              </div>
+              <span class="profile-dropdown-name">Donna Baker</span>
+            </div>
+
+            <div class="profile-dropdown-divider-soft"></div>
+
+            <div class="profile-dropdown-actions">
+              <a href="Profile.html" class="profile-dropdown-item" role="menuitem" data-profile-action="view-profile">
+                View profile
+              </a>
+              <div class="profile-dropdown-divider"></div>
+              <a href="Login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+                Log out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          id="mobileMenuBtn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileNavDrawer"
+        >
+          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Collapsible Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="Dashboard.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="Products.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="Clients.html" class="mobile-nav-link active" data-nav-link>
+            <span class="nav-link-text">Clients</span>
+          </a>
+        </li>
+        <li>
+          <a href="Orders.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <!-- ========================================================================
+       END COMPONENT: ADMIN PORTAL NAVIGATION
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+  <main class="portal-main" id="mainContent">
+    <section class="clients-section" aria-label="Registered Clients Directory">
+      <div class="clients-table-card">
+
+        <!-- Card Header: Title, Pagination Count Pill & Search Bar -->
+        <div class="clients-card-header">
+          <div class="clients-title-group">
+            <h1 class="clients-title">Clients</h1>
+            <span class="clients-count-pill" id="clientsCountBadge" aria-live="polite">10/100</span>
+          </div>
+
+          <div class="clients-search-wrapper">
+            <svg class="ph-icon-15 clients-search-icon" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="112" cy="112" r="80" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M168.57 168.57L224 224" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input
+              type="search"
+              id="clientsSearchInput"
+              class="clients-search-input"
+              placeholder="Search (Company, Email, Name)"
+              aria-label="Search clients by company name, email, or contact name"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              id="clientsSearchClearBtn"
+              class="clients-search-clear-btn"
+              aria-label="Clear search query"
+              title="Clear search"
+            >
+              <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M200 56L56 200M56 56L200 200" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Responsive Scrollable Table -->
+        <div class="clients-table-scroll">
+          <table class="clients-data-table" id="clientsDataTable">
+            <thead>
+              <tr>
+                <th scope="col">Company Name</th>
+                <th scope="col">Contact Name</th>
+                <th scope="col">Email</th>
+                <th scope="col" aria-sort="descending" id="dateJoinedHeaderCell">
+                  <button
+                    type="button"
+                    class="table-sort-btn"
+                    id="sortDateJoinedBtn"
+                    data-sort-dir="desc"
+                    aria-label="Sort by Date Joined, currently newest to oldest"
+                    title="Sort by Date Joined"
+                  >
+                    <span>Date Joined</span>
+                    <svg class="ph-icon-15 sort-arrow-icon" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M128 40V216" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M56 144L128 216L200 144" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">Number of Orders</th>
+                <th scope="col" class="col-tax">Set Tax %</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <!-- Populated dynamically via JS array -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="clients-pagination-bar" aria-label="Clients table pagination">
+          <button
+            type="button"
+            id="paginationPrevBtn"
+            class="pagination-nav-btn"
+            aria-label="Go to previous page"
+            disabled
+          >
+            <svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M216 128H40" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M112 56L40 128L112 200" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Previous</span>
+          </button>
+
+          <div class="pagination-pages-list" id="paginationPagesList" role="group" aria-label="Page numbers">
+            <!-- Page buttons injected dynamically -->
+          </div>
+
+          <button
+            type="button"
+            id="paginationNextBtn"
+            class="pagination-nav-btn"
+            aria-label="Go to next page"
+          >
+            <span>Next</span>
+            <svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <path d="M40 128H216" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M144 56L216 128L144 200" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </nav>
+
+      </div>
+    </section>
+  </main>
+  <!-- ========================================================================
+       END SLOT: MAIN PAGE BODY CONTENT
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: EDIT CLIENT FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="editClientModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="editClientModalTitle"
+    aria-hidden="true"
+  >
+    <div class="edit-client-modal-card" id="editClientModalCard">
+      <div class="edit-client-modal-header">
+        <div class="edit-client-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="128" cy="96" r="64" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M32 216C51.37 182.53 86.55 160 128 160C169.45 160 204.63 182.53 224 216" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="modal-title" id="editClientModalTitle">Edit Client</h2>
+      </div>
+
+      <form class="edit-client-form" id="editClientForm">
+        <div class="edit-client-fields">
+          <div class="edit-client-field-row">
+            <div class="edit-client-field-group">
+              <label class="edit-client-label" for="editClientCompanyInput">Company Name</label>
+              <input
+                type="text"
+                id="editClientCompanyInput"
+                name="companyName"
+                class="modal-text-input"
+                placeholder="Homenick Builders"
+                required
+              />
+            </div>
+
+            <div class="edit-client-field-group">
+              <label class="edit-client-label" for="editClientContactInput">Contact Name</label>
+              <input
+                type="text"
+                id="editClientContactInput"
+                name="contactName"
+                class="modal-text-input"
+                placeholder="Dejuan Homenick Sr."
+                required
+              />
+            </div>
+          </div>
+
+          <div class="edit-client-field-row">
+            <div class="edit-client-field-group">
+              <label class="edit-client-label" for="editClientEmailInput">Email</label>
+              <input
+                type="email"
+                id="editClientEmailInput"
+                name="email"
+                class="modal-text-input"
+                placeholder="dejuan@homenick.com.au"
+                required
+              />
+            </div>
+
+            <div class="edit-client-field-group">
+              <label class="edit-client-label" for="editClientPhoneInput">Contact Number</label>
+              <input
+                type="tel"
+                id="editClientPhoneInput"
+                name="contactNumber"
+                class="modal-text-input"
+                placeholder="1800 245 626"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions-grid">
+          <button
+            type="button"
+            class="btn-modal-secondary"
+            id="cancelEditClientBtn"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-modal-green"
+            id="submitEditClientBtn"
+          >
+            Update
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: EDIT CLIENT FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: DELETE CLIENT CONFIRMATION MODAL
+       ======================================================================== -->
+  <div
+    class="portal-modal-backdrop"
+    id="deleteClientModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteClientModalTitle"
+    aria-hidden="true"
+  >
+    <div class="delete-client-modal-card" id="deleteClientModalCard">
+      <div class="delete-client-modal-body">
+        <div class="delete-client-icon-badge" aria-hidden="true">
+          <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M88 24H168" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="delete-client-title" id="deleteClientModalTitle">
+          Are you sure you want to delete this client?
+        </h2>
+      </div>
+
+      <div class="modal-actions-grid">
+        <button
+          type="button"
+          class="btn-modal-secondary"
+          id="cancelDeleteClientBtn"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn-modal-danger"
+          id="confirmDeleteClientBtn"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: DELETE CLIENT CONFIRMATION MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       START COMPONENT: PORTAL FOOTER
+       ======================================================================== -->
+  <footer class="portal-footer" id="adminPortalFooter">
+    <div class="portal-footer-container">
+
+      <!-- Top Row: Brand Logo & Navigation Columns -->
+      <div class="footer-top-row">
+        <a href="Dashboard.html" class="footer-brand-link" aria-label="Arena Branding Home">
+          <img
+            src="https://arenabranding.com.au/wp-content/uploads/2026/11/ArenaBrandingLogo.png"
+            alt="Arena Branding"
+            class="footer-logo-img"
+          />
+        </a>
+
+        <div class="footer-columns-group">
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Products</h2>
+            <ul class="footer-col-list">
+              <li><a href="#outdoor-signs" class="footer-link">Outdoor Signs</a></li>
+              <li><a href="#branded-furniture" class="footer-link">Branded Furniture</a></li>
+              <li><a href="#inflatables" class="footer-link">Inflatables</a></li>
+              <li><a href="#indoor-signs" class="footer-link">Indoor Signs</a></li>
+              <li><a href="#signboards" class="footer-link">Signboards</a></li>
+              <li><a href="#accessories" class="footer-link">Accessories</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Company -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Company</h2>
+            <ul class="footer-col-list">
+              <li><a href="#about" class="footer-link">About us</a></li>
+              <li><a href="#contact" class="footer-link">Contact us</a></li>
+              <li><a href="#quote" class="footer-link">Get a Quote</a></li>
+              <li><a href="#terms" class="footer-link">Terms</a></li>
+              <li><a href="#privacy" class="footer-link">Privacy</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Account -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Account</h2>
+            <ul class="footer-col-list">
+              <li><a href="#member-login" class="footer-link">Member Login</a></li>
+              <li><a href="#company-login" class="footer-link">Company Login</a></li>
+              <li><a href="#join-deals" class="footer-link">Join for Deals</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Resources -->
+          <div class="footer-col">
+            <h2 class="footer-col-heading">Resources</h2>
+            <ul class="footer-col-list">
+              <li><a href="#artwork-service" class="footer-link">Artwork Service</a></li>
+              <li><a href="#online-catalog" class="footer-link">Online Catalog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Divider, Tagline & Copyright -->
+      <div class="footer-bottom-section">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <div class="footer-tagline-block">
+            <p class="footer-tagline-title">Your on-demand artwork department.</p>
+            <p class="footer-tagline-sub">From concept layouts to final production prints, we’ve got you covered.</p>
+          </div>
+          <p class="footer-copyright">© 2026 Arena Branding. All rights reserved.</p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <!-- ========================================================================
+       END COMPONENT: PORTAL FOOTER
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
+       COMPONENT SCRIPTS: NAVIGATION, PROFILE POPOVER & CLIENTS DATA TABLE
+       ======================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+
+      const profileMenuWrapper = document.getElementById('profileMenuWrapper');
+      const profileMenuTrigger = document.getElementById('profileMenuTrigger');
+      const profileDropdownPopover = document.getElementById('profileDropdownPopover');
+      const profileActionItems = document.querySelectorAll('[data-profile-action]');
+
+      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
+      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
+
+      // Toggle Profile Dropdown Popover
+      function toggleProfileMenu(forceClose = false) {
+        if (!profileMenuTrigger || !profileDropdownPopover) return;
+        const isCurrentlyOpen = profileDropdownPopover.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        profileDropdownPopover.classList.toggle('is-open', shouldOpen);
+        profileMenuTrigger.setAttribute('aria-expanded', String(shouldOpen));
+
+        if (shouldOpen) {
+          toggleMobileMenu(true);
+        }
+      }
+
+      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      function toggleMobileMenu(forceClose = false) {
+        const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
+        const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+        mobileNavDrawer.classList.toggle('is-open', shouldOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+
+        if (shouldOpen) {
+          toggleProfileMenu(true);
+        }
+      }
+
+      if (profileMenuTrigger) {
+        profileMenuTrigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+          toggleProfileMenu();
+        });
+      }
+
+      profileActionItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          toggleProfileMenu(true);
+        });
+      });
+
+      mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+
+      // Sync Active Link State Across Desktop & Mobile Navigation
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          const targetHref = link.getAttribute('href');
+
+          navLinks.forEach((item) => {
+            item.classList.toggle('active', item.getAttribute('href') === targetHref);
+          });
+
+          toggleMobileMenu(true);
+        });
+      });
+
+      // Close profile popover when clicking outside or pressing Escape
+      document.addEventListener('click', (event) => {
+        if (profileMenuWrapper && !profileMenuWrapper.contains(event.target)) {
+          toggleProfileMenu(true);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          toggleProfileMenu(true);
+          toggleMobileMenu(true);
+        }
+      });
+
+      // Automatically close mobile drawer if resized above mobile breakpoint
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileNavDrawer.classList.contains('is-open')) {
+          toggleMobileMenu(true);
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         CLIENTS DATA ARRAY (100 Australian Business Clients) & INTERACTIVITY
+         ---------------------------------------------------------------------- */
+      const PAGE_SIZE = 10;
+
+      // Initial 10 rows matching the UI design, followed by 90 realistic Australian clients
+      const initialTenClients = [
+        { id: 1, company: 'Homenick Builders', contact: 'Dejuan Homenick Sr.', email: 'dejuan@homenick.com.au', phone: '1800 245 626', dateJoined: '2026-11-27', dateLabel: '27/11/26', orders: 1, tax: 10, isEditingTax: false },
+        { id: 2, company: 'Coca Leco', contact: 'Nikki Porch', email: 'nikki@gmail.com', phone: '0412 883 910', dateJoined: '2026-11-26', dateLabel: '26/11/26', orders: 1, tax: 5, isEditingTax: false },
+        { id: 3, company: 'Tumber Co', contact: 'Lankin Linken', email: 'lankin@tumberco.com.au', phone: '', dateJoined: '2026-11-25', dateLabel: '25/11/26', orders: 3, tax: 3, isEditingTax: false },
+        { id: 4, company: 'Eagle Wood', contact: 'Seson Inkon', email: 'seson@eaglewood.com.au', phone: '0438 119 402', dateJoined: '2026-11-24', dateLabel: '24/11/26', orders: 4, tax: 15, isEditingTax: false },
+        { id: 5, company: 'Sasi Susi', contact: 'Nakoy Ong', email: 'nakoy@sasisusi.com.au', phone: '', dateJoined: '2026-11-23', dateLabel: '23/11/26', orders: 0, tax: 10, isEditingTax: false },
+        { id: 6, company: 'King Kung Chips', contact: 'Icon Hela', email: 'icon@kingkungchips.com.au', phone: '02 9012 3488', dateJoined: '2026-11-22', dateLabel: '22/11/26', orders: 0, tax: 2, isEditingTax: false },
+        { id: 7, company: 'Lalisa Oldura', contact: 'Sisi Orto', email: 'sisi@lalisa.com.au', phone: '0401 774 215', dateJoined: '2026-11-21', dateLabel: '21/11/26', orders: 0, tax: 10, isEditingTax: false },
+        { id: 8, company: 'Wawex', contact: 'Walay Paldo', email: 'walay@gmail.com', phone: '', dateJoined: '2026-11-20', dateLabel: '20/11/26', orders: 1, tax: 5, isEditingTax: false },
+        { id: 9, company: 'Nanoy ni Saloy', contact: 'Suro Chatto', email: 'suro@nanoynisaloy.com.au', phone: '03 8654 1190', dateJoined: '2026-11-19', dateLabel: '19/11/26', orders: 3, tax: 10, isEditingTax: false },
+        { id: 10, company: 'Rabber Bula', contact: 'Coco Cola', email: 'coco@cococola.com.au', phone: '0455 602 891', dateJoined: '2026-11-18', dateLabel: '18/11/26', orders: 2, tax: 3, isEditingTax: false }
+      ];
+
+      const auCompanies = [
+        ['Bondi Event Hire', 'Liam Gallagher', 'liam@bondieventhire.com.au'],
+        ['Melbourne Expo Group', 'Chloe Nguyen', 'chloe@melbourneexpo.com.au'],
+        ['Brisbane Stadium Supplies', 'Jack O’Connor', 'jack@brisbanestadium.com.au'],
+        ['Perth Coastal Signage', 'Sophie Williams', 'sophie@perthcoastal.com.au'],
+        ['Adelaide Festival Co', 'Noah Taylor', 'noah@adelaidefest.com.au'],
+        ['Gold Coast Surf Events', 'Mia Campbell', 'mia@gcsurfevents.com.au'],
+        ['Yarra Valley Vineyards', 'Ethan Brown', 'ethan@yarravalleywine.com.au'],
+        ['Sydney Harbour Marquees', 'Charlotte Wilson', 'charlotte@marquees.com.au'],
+        ['Canberra Civic Displays', 'Lucas Martin', 'lucas@canberracivic.com.au'],
+        ['Hobart Outdoor Expo', 'Amelia White', 'amelia@hobartexpo.com.au'],
+        ['Darwin Tropical Events', 'Oliver Harris', 'oliver@darwintropical.com.au'],
+        ['Newcastle Steel & Build', 'Ava Thompson', 'ava@newcastlesteel.com.au'],
+        ['Geelong Sports Arena', 'William Anderson', 'will@geelongsports.com.au'],
+        ['Sunshine Coast Markets', 'Isabella Thomas', 'isabella@scmarkets.com.au'],
+        ['Wollongong Surf Club', 'James Jackson', 'james@wollongongsurf.com.au'],
+        ['Cairns Reef Tours', 'Harper Lee', 'harper@cairnsreeftours.com.au'],
+        ['Townsville Logistics AU', 'Benjamin Scott', 'ben@townsvillelogistics.com.au'],
+        ['Fremantle Dockside Media', 'Evelyn Green', 'evelyn@freomedia.com.au'],
+        ['Parramatta Retail Group', 'Henry Adams', 'henry@parraretail.com.au'],
+        ['Byron Bay Eco Festivals', 'Grace Baker', 'grace@byronecofest.com.au'],
+        ['Ballarat Heritage Shows', 'Alexander Nelson', 'alex@ballaratshows.com.au'],
+        ['Bendigo Mining Supply', 'Scarlett Carter', 'scarlett@bendigosupply.com.au'],
+        ['Toowoomba Agri Expo', 'Sebastian Mitchell', 'seb@toowoombaagri.com.au'],
+        ['Launceston Craft Brewers', 'Zoe Perez', 'zoe@launcestonbrews.com.au'],
+        ['Mackay Civil Engineering', 'Daniel Roberts', 'daniel@mackaycivil.com.au'],
+        ['Rockhampton Beef Week', 'Lily Turner', 'lily@rockybeefweek.com.au'],
+        ['Coffs Harbour Resorts', 'Matthew Phillips', 'matt@coffsresorts.com.au'],
+        ['Albury Wodonga Motors', 'Hannah Evans', 'hannah@awmotors.com.au'],
+        ['Wagga Wagga Field Days', 'Samuel Edwards', 'sam@waggafielddays.com.au'],
+        ['Port Macquarie Marine', 'Aria Collins', 'aria@portmacmarine.com.au'],
+        ['Tamworth Country Events', 'Joseph Stewart', 'joseph@tamworthevents.com.au'],
+        ['Orange Wine & Food Co', 'Ella Sanchez', 'ella@orangewinefood.com.au'],
+        ['Dubbo Regional Shows', 'David Morris', 'david@dubboshows.com.au'],
+        ['Bathurst Trackside Gear', 'Sofia Rogers', 'sofia@bathurstgear.com.au'],
+        ['Mildura Citrus Growers', 'Harrison Reed', 'harrison@milduracitrus.com.au'],
+        ['Shepparton Dairy Expo', 'Avery Cook', 'avery@sheppdairy.com.au'],
+        ['Warrnambool Coast Events', 'Leo Morgan', 'leo@warrnamboolevents.com.au'],
+        ['Kalgoorlie Goldfields Co', 'Mila Bell', 'mila@kalgoorlieco.com.au'],
+        ['Bunbury South West Hire', 'Gabriel Murphy', 'gabe@bunburyhire.com.au'],
+        ['Geraldton Windfest AU', 'Layla Bailey', 'layla@geraldtonwind.com.au'],
+        ['Broome Pearl Festivals', 'Julian Rivera', 'julian@broomefest.com.au'],
+        ['Alice Springs Outback Co', 'Nora Cooper', 'nora@alicespringsoutback.com.au'],
+        ['Noosa Heads Beach Club', 'Owen Richardson', 'owen@noosabeachclub.com.au'],
+        ['Maroochydore Trade Expo', 'Hazel Cox', 'hazel@maroochyexpo.com.au'],
+        ['Hervey Bay Whale Tours', 'Caleb Howard', 'caleb@herveybaytours.com.au'],
+        ['Bundaberg Rum & Events', 'Ellie Ward', 'ellie@bundabergevents.com.au'],
+        ['Gladstone Harbour Works', 'Isaac Torres', 'isaac@gladstoneworks.com.au'],
+        ['Mount Isa Rodeo Group', 'Violet Peterson', 'violet@mtisarodeo.com.au'],
+        ['Ipswich Motorsport Park', 'Nathan Gray', 'nathan@ipswichmotorsport.com.au'],
+        ['Logan Community Markets', 'Stella Ramirez', 'stella@loganmarkets.com.au'],
+        ['Redcliffe Peninsula Events', 'Ryan James', 'ryan@redcliffeevents.com.au'],
+        ['Southport Yacht Squadron', 'Aurora Watson', 'aurora@southportyacht.com.au'],
+        ['Surfers Paradise Live', 'Luke Brooks', 'luke@surferslive.com.au'],
+        ['Burleigh Heads Surf Co', 'Savannah Kelly', 'savannah@burleighsurf.com.au'],
+        ['Tweed Heads Border Expo', 'Christian Sanders', 'christian@tweedexpo.com.au'],
+        ['Lismore Northern Rivers', 'Audrey Price', 'audrey@lismorenr.com.au'],
+        ['Armidale New England Co', 'Jaxon Bennett', 'jaxon@armidaleco.com.au'],
+        ['Grafton Jacaranda Fest', 'Brooklyn Wood', 'brooklyn@graftonfest.com.au'],
+        ['Nowra Shoalhaven Hire', 'Levi Barnes', 'levi@nowrahire.com.au'],
+        ['Batemans Bay Marine Co', 'Bella Ross', 'bella@batemansmarine.com.au'],
+        ['Bega Valley Dairy Co', 'Lincoln Henderson', 'lincoln@begavalley.com.au'],
+        ['Queanbeyan Capital Signs', 'Claire Coleman', 'claire@queanbeyansigns.com.au'],
+        ['Goulburn Merino Show', 'Mateo Jenkins', 'mateo@goulburnshow.com.au'],
+        ['Bowral Highlands Events', 'Skylar Perry', 'skylar@bowralevents.com.au'],
+        ['Katoomba Blue Mountains', 'Ezra Powell', 'ezra@katoombabm.com.au'],
+        ['Penrith Nepean Rowing', 'Lucy Long', 'lucy@penrithrowing.com.au'],
+        ['Chatswood North Shore', 'Hudson Patterson', 'hudson@chatswoodns.com.au'],
+        ['Manly Ferry & Beach Co', 'Paisley Hughes', 'paisley@manlybeachco.com.au'],
+        ['Cronulla Sutherland Surf', 'Asher Flores', 'asher@cronullasurf.com.au'],
+        ['St Kilda Bayside Fest', 'Anna Washington', 'anna@stkildafest.com.au'],
+        ['Richmond Tigers Merch', 'Thomas Butler', 'thomas@richmondmerch.com.au'],
+        ['Southbank Riverfront Co', 'Caroline Simmons', 'caroline@southbankriver.com.au'],
+        ['Docklands Stadium Expo', 'Charles Foster', 'charles@docklandsexpo.com.au'],
+        ['Frankston Mornington Hire', 'Genesis Gonzales', 'genesis@frankstonhire.com.au'],
+        ['Dandenong Ranges Events', 'Christopher Bryant', 'chris@dandenongevents.com.au'],
+        ['Werribee Open Range Co', 'Kennedy Alexander', 'kennedy@werribeeco.com.au'],
+        ['Subiaco Lions Events', 'Maverick Russell', 'maverick@subiacoevents.com.au'],
+        ['Joondalup Northern Arena', 'Sadie Griffin', 'sadie@joondaluparena.com.au'],
+        ['Mandurah Crab Fest AU', 'Josiah Diaz', 'josiah@mandurahfest.com.au'],
+        ['Rockingham Coastal Hire', 'Piper Hayes', 'piper@rockinghamhire.com.au'],
+        ['Glenelg Jetty Festivals', 'Cooper Myers', 'cooper@glenelgfest.com.au'],
+        ['Norwood Parade Markets', 'Ruby Ford', 'ruby@norwoodmarkets.com.au'],
+        ['Port Adelaide Maritime', 'Easton Hamilton', 'easton@portadelaide.com.au'],
+        ['Mount Gambier Limestone', 'Alice Graham', 'alice@mtgambierco.com.au'],
+        ['Whyalla Steel & Port Co', 'Nolan Sullivan', 'nolan@whyallaport.com.au'],
+        ['Port Lincoln Tuna Fest', 'Eva Wallace', 'eva@portlincolnfest.com.au'],
+        ['Devonport Spirit Events', 'Roman Woods', 'roman@devonportevents.com.au'],
+        ['Burnie North West Expo', 'Hailey Cole', 'hailey@burnieexpo.com.au'],
+        ['Kingston Southern Signs', 'Miles West', 'miles@kingstonsigns.com.au'],
+        ['Palmerston Top End Hire', 'Autumn Jordan', 'autumn@palmerstonhire.com.au']
+      ];
+
+      const auTaxRates = [10, 5, 3, 15, 2, 10, 5, 10, 1, 0];
+      const orderCounts = [0, 1, 2, 3, 4, 5, 7, 9, 12, 14];
+
+      // Build 100 total client records with descending join dates (newest to oldest)
+      const generatedClients = auCompanies.map((item, idx) => {
+        const id = idx + 11;
+        const baseDate = new Date(Date.UTC(2026, 10, 17)); // Nov 17, 2026
+        baseDate.setUTCDate(baseDate.getUTCDate() - idx);
+
+        const yyyy = baseDate.getUTCFullYear();
+        const mm = String(baseDate.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(baseDate.getUTCDate()).padStart(2, '0');
+        const yy = String(yyyy).slice(-2);
+
+        const auPhones = ['0411 234 567', '', '0422 876 543', '02 8005 1122', '', '0433 901 234', '03 9123 4567', '0404 556 789', '', '07 3112 8899'];
+
+        return {
+          id,
+          company: item[0],
+          contact: item[1],
+          email: item[2],
+          phone: auPhones[idx % auPhones.length],
+          dateJoined: `${yyyy}-${mm}-${dd}`,
+          dateLabel: `${dd}/${mm}/${yy}`,
+          orders: orderCounts[(idx * 3 + 1) % orderCounts.length],
+          tax: auTaxRates[idx % auTaxRates.length],
+          isEditingTax: false
+        };
+      });
+
+      const clientsData = [...initialTenClients, ...generatedClients];
+
+      // Table State
+      let currentPage = 1;
+      let sortDirection = 'desc'; // 'desc' = newest to oldest, 'asc' = oldest to newest
+      let searchQuery = '';
+
+      // DOM Elements
+      const clientsCountBadge = document.getElementById('clientsCountBadge');
+      const clientsSearchInput = document.getElementById('clientsSearchInput');
+      const clientsSearchClearBtn = document.getElementById('clientsSearchClearBtn');
+      const sortDateJoinedBtn = document.getElementById('sortDateJoinedBtn');
+      const dateJoinedHeaderCell = document.getElementById('dateJoinedHeaderCell');
+      const clientsTableBody = document.getElementById('clientsTableBody');
+      const paginationPrevBtn = document.getElementById('paginationPrevBtn');
+      const paginationNextBtn = document.getElementById('paginationNextBtn');
+      const paginationPagesList = document.getElementById('paginationPagesList');
+
+      // 1.5px Stroke Phosphor Icons for Table Cells
+      const saveDiskIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M216 83.3137V208C216 210.122 215.157 212.157 213.657 213.657C212.157 215.157 210.122 216 208 216H48C45.8783 216 43.8434 215.157 42.3431 213.657C40.8429 212.157 40 210.122 40 208V48C40 45.8783 40.8429 43.8434 42.3431 42.3431C43.8434 40.8429 45.8783 40 48 40H172.686C174.808 40.0001 176.843 40.843 178.343 42.3433L213.657 77.6569C215.157 79.1571 216 81.192 216 83.3137Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M80 216V152C80 149.878 80.8429 147.843 82.3431 146.343C83.8434 144.843 85.8783 144 88 144H168C170.122 144 172.157 144.843 173.657 146.343C175.157 147.843 176 149.878 176 152V216" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 72H96" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const pencilIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M92.6863 216H48C45.8783 216 43.8434 215.157 42.3431 213.657C40.8429 212.157 40 210.122 40 208V163.314C40 161.192 40.8429 159.157 42.3431 157.657L165.657 34.3431C167.157 32.8429 169.192 32 171.314 32C173.435 32 175.47 32.8429 176.971 34.3431L221.657 79.0294C223.157 80.5297 224 82.5646 224 84.6863C224 86.808 223.157 88.8429 221.657 90.3431L98.3431 213.657C96.8429 215.157 94.808 216 92.6863 216Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M136 64L192 120" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const trashIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M216 56H40" stroke-linecap="round" stroke-linejoin="round"/><path d="M104 104V168" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 104V168" stroke-linecap="round" stroke-linejoin="round"/><path d="M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/><path d="M168 56V40C168 35.7565 166.314 31.6869 163.314 28.6863C160.313 25.6857 156.243 24 152 24H104C99.7565 24 95.6869 25.6857 92.6863 28.6863C89.6857 31.6869 88 35.7565 88 40V56" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function formatOrdersLabel(count) {
+        return count === 1 ? '1 time' : `${count} times`;
+      }
+
+      function getFilteredAndSortedClients() {
+        const normalizedQuery = searchQuery.trim().toLowerCase();
+
+        const filtered = normalizedQuery
+          ? clientsData.filter(
+              (client) =>
+                client.company.toLowerCase().includes(normalizedQuery) ||
+                client.contact.toLowerCase().includes(normalizedQuery) ||
+                client.email.toLowerCase().includes(normalizedQuery)
+            )
+          : [...clientsData];
+
+        filtered.sort((a, b) => {
+          const cmp = a.dateJoined.localeCompare(b.dateJoined);
+          if (cmp !== 0) {
+            return sortDirection === 'desc' ? -cmp : cmp;
+          }
+          return sortDirection === 'desc' ? a.id - b.id : b.id - a.id;
+        });
+
+        return filtered;
+      }
+
+      function buildPageRange(current, totalPages) {
+        if (totalPages <= 7) {
+          return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
+        if (current <= 3) {
+          return [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
+        }
+        if (current >= totalPages - 2) {
+          return [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
+        }
+        return [1, '...', current - 1, current, current + 1, '...', totalPages];
+      }
+
+      function renderPagination(totalItems, totalPages) {
+        if (!paginationPagesList) return;
+
+        paginationPrevBtn.disabled = currentPage <= 1 || totalItems === 0;
+        paginationNextBtn.disabled = currentPage >= totalPages || totalItems === 0;
+
+        if (totalItems === 0) {
+          paginationPagesList.innerHTML = '';
+          return;
+        }
+
+        const items = buildPageRange(currentPage, totalPages);
+        paginationPagesList.innerHTML = items
+          .map((item) => {
+            if (item === '...') {
+              return '<span class="pagination-ellipsis" aria-hidden="true">...</span>';
+            }
+            const isActive = item === currentPage;
+            return `
+              <button
+                type="button"
+                class="pagination-page-btn${isActive ? ' is-active' : ''}"
+                data-page="${item}"
+                aria-label="Go to page ${item}"
+                ${isActive ? 'aria-current="page"' : ''}
+              >
+                ${item}
+              </button>
+            `;
+          })
+          .join('');
+      }
+
+      function renderClientsTable(focusTaxClientId = null) {
+        const filteredClients = getFilteredAndSortedClients();
+        const totalMatching = filteredClients.length;
+        const totalPages = Math.max(1, Math.ceil(totalMatching / PAGE_SIZE));
+
+        if (currentPage > totalPages) {
+          currentPage = totalPages;
+        }
+
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const pageRows = filteredClients.slice(startIndex, startIndex + PAGE_SIZE);
+
+        // Update cumulative range badge (e.g., 10/100 on page 1, 20/100 on page 2)
+        const shownUpTo = totalMatching === 0 ? 0 : Math.min(startIndex + pageRows.length, totalMatching);
+        if (clientsCountBadge) {
+          clientsCountBadge.textContent = `${shownUpTo}/${totalMatching}`;
+        }
+
+        if (!clientsTableBody) return;
+
+        if (pageRows.length === 0) {
+          clientsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="clients-empty-cell">
+                No clients matched "${escapeHtml(searchQuery)}". Try searching by another company name, contact name, or email.
+              </td>
+            </tr>
+          `;
+          renderPagination(0, 1);
+          return;
+        }
+
+        clientsTableBody.innerHTML = pageRows
+          .map((client) => {
+            const safeCompany = escapeHtml(client.company);
+            const safeContact = escapeHtml(client.contact);
+            const safeEmail = escapeHtml(client.email);
+
+            const taxCellHtml = client.isEditingTax
+              ? `
+                <div class="tax-control-box is-editing" data-tax-box="${client.id}">
+                  <div class="tax-input-wrap">
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.5"
+                      class="tax-percent-input"
+                      data-tax-input="${client.id}"
+                      value="${client.tax}"
+                      aria-label="Tax percentage for ${safeCompany}"
+                    />
+                    <span class="tax-percent-suffix">%</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="tax-icon-btn is-save"
+                    data-tax-save="${client.id}"
+                    aria-label="Save tax percentage for ${safeCompany}"
+                    title="Save tax %"
+                  >
+                    ${saveDiskIconSvg}
+                  </button>
+                </div>
+              `
+              : `
+                <div class="tax-control-box" data-tax-box="${client.id}">
+                  <span class="tax-value-display">${client.tax}%</span>
+                  <button
+                    type="button"
+                    class="tax-icon-btn is-edit"
+                    data-tax-edit="${client.id}"
+                    aria-label="Edit tax percentage for ${safeCompany}"
+                    title="Edit tax %"
+                  >
+                    ${pencilIconSvg}
+                  </button>
+                </div>
+              `;
+
+            return `
+              <tr data-client-row="${client.id}">
+                <td class="cell-company">${safeCompany}</td>
+                <td>${safeContact}</td>
+                <td>${safeEmail}</td>
+                <td class="cell-date">${client.dateLabel}</td>
+                <td class="cell-orders">${formatOrdersLabel(client.orders)}</td>
+                <td class="cell-tax">${taxCellHtml}</td>
+                <td>
+                  <div class="row-actions-group">
+                    <button
+                      type="button"
+                      class="row-action-btn"
+                      data-client-action="edit"
+                      data-client-id="${client.id}"
+                      aria-label="Edit ${safeCompany}"
+                      title="Edit client"
+                    >
+                      ${pencilIconSvg}
+                    </button>
+                    <button
+                      type="button"
+                      class="row-action-btn is-delete"
+                      data-client-action="delete"
+                      data-client-id="${client.id}"
+                      aria-label="Delete ${safeCompany}"
+                      title="Delete client"
+                    >
+                      ${trashIconSvg}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+
+        renderPagination(totalMatching, totalPages);
+
+        if (focusTaxClientId !== null) {
+          const activeInput = clientsTableBody.querySelector(`[data-tax-input="${focusTaxClientId}"]`);
+          if (activeInput) {
+            activeInput.focus();
+            activeInput.select();
+          }
+        }
+      }
+
+      // Real-time Search Filtering (Company Name, Contact Name, Email)
+      if (clientsSearchInput) {
+        clientsSearchInput.addEventListener('input', () => {
+          searchQuery = clientsSearchInput.value;
+          currentPage = 1;
+          clientsSearchClearBtn.classList.toggle('is-visible', searchQuery.length > 0);
+          renderClientsTable();
+        });
+      }
+
+      if (clientsSearchClearBtn) {
+        clientsSearchClearBtn.addEventListener('click', () => {
+          searchQuery = '';
+          clientsSearchInput.value = '';
+          currentPage = 1;
+          clientsSearchClearBtn.classList.remove('is-visible');
+          clientsSearchInput.focus();
+          renderClientsTable();
+        });
+      }
+
+      // Date Joined Sorting Toggle (Newest -> Oldest vs Oldest -> Newest)
+      if (sortDateJoinedBtn) {
+        sortDateJoinedBtn.addEventListener('click', () => {
+          sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+          sortDateJoinedBtn.dataset.sortDir = sortDirection;
+
+          const sortDescription =
+            sortDirection === 'desc'
+              ? 'Sort by Date Joined, currently newest to oldest'
+              : 'Sort by Date Joined, currently oldest to newest';
+          sortDateJoinedBtn.setAttribute('aria-label', sortDescription);
+
+          if (dateJoinedHeaderCell) {
+            dateJoinedHeaderCell.setAttribute(
+              'aria-sort',
+              sortDirection === 'desc' ? 'descending' : 'ascending'
+            );
+          }
+
+          currentPage = 1;
+          renderClientsTable();
+        });
+      }
+
+      // Save Inline Tax Value Helper
+      function commitClientTaxEdit(clientId) {
+        const client = clientsData.find((item) => item.id === clientId);
+        if (!client) return;
+
+        const inputEl = clientsTableBody.querySelector(`[data-tax-input="${clientId}"]`);
+        if (inputEl) {
+          const parsed = parseFloat(inputEl.value);
+          if (!Number.isNaN(parsed)) {
+            const clamped = Math.max(0, Math.min(100, Math.round(parsed * 100) / 100));
+            client.tax = clamped;
+          }
+        }
+        client.isEditingTax = false;
+        renderClientsTable();
+      }
+
+      // Event Delegation for Set Tax % Inline Edit/Save & Row Actions
+      if (clientsTableBody) {
+        clientsTableBody.addEventListener('click', (event) => {
+          const editTaxBtn = event.target.closest('[data-tax-edit]');
+          if (editTaxBtn) {
+            const clientId = Number(editTaxBtn.dataset.taxEdit);
+            clientsData.forEach((item) => {
+              item.isEditingTax = item.id === clientId;
+            });
+            renderClientsTable(clientId);
+            return;
+          }
+
+          const saveTaxBtn = event.target.closest('[data-tax-save]');
+          if (saveTaxBtn) {
+            const clientId = Number(saveTaxBtn.dataset.taxSave);
+            commitClientTaxEdit(clientId);
+            return;
+          }
+
+          const rowActionBtn = event.target.closest('[data-client-action]');
+          if (rowActionBtn) {
+            const clientId = Number(rowActionBtn.dataset.clientId);
+            const actionType = rowActionBtn.dataset.clientAction;
+            if (actionType === 'edit') {
+              openEditClientModal(clientId, rowActionBtn);
+            } else if (actionType === 'delete') {
+              openDeleteClientModal(clientId, rowActionBtn);
+            }
+          }
+        });
+
+        clientsTableBody.addEventListener('keydown', (event) => {
+          const taxInput = event.target.closest('[data-tax-input]');
+          if (!taxInput) return;
+
+          const clientId = Number(taxInput.dataset.taxInput);
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            commitClientTaxEdit(clientId);
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            const client = clientsData.find((item) => item.id === clientId);
+            if (client) client.isEditingTax = false;
+            renderClientsTable();
+          }
+        });
+      }
+
+      // Pagination Events
+      if (paginationPrevBtn) {
+        paginationPrevBtn.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage -= 1;
+            renderClientsTable();
+          }
+        });
+      }
+
+      if (paginationNextBtn) {
+        paginationNextBtn.addEventListener('click', () => {
+          const totalMatching = getFilteredAndSortedClients().length;
+          const totalPages = Math.max(1, Math.ceil(totalMatching / PAGE_SIZE));
+          if (currentPage < totalPages) {
+            currentPage += 1;
+            renderClientsTable();
+          }
+        });
+      }
+
+      if (paginationPagesList) {
+        paginationPagesList.addEventListener('click', (event) => {
+          const pageBtn = event.target.closest('[data-page]');
+          if (!pageBtn) return;
+          const targetPage = Number(pageBtn.dataset.page);
+          if (targetPage && targetPage !== currentPage) {
+            currentPage = targetPage;
+            renderClientsTable();
+          }
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         EDIT CLIENT & DELETE CLIENT CONFIRMATION MODALS
+         ---------------------------------------------------------------------- */
+      const editClientModal = document.getElementById('editClientModal');
+      const editClientForm = document.getElementById('editClientForm');
+      const editClientCompanyInput = document.getElementById('editClientCompanyInput');
+      const editClientContactInput = document.getElementById('editClientContactInput');
+      const editClientEmailInput = document.getElementById('editClientEmailInput');
+      const editClientPhoneInput = document.getElementById('editClientPhoneInput');
+      const cancelEditClientBtn = document.getElementById('cancelEditClientBtn');
+
+      const deleteClientModal = document.getElementById('deleteClientModal');
+      const cancelDeleteClientBtn = document.getElementById('cancelDeleteClientBtn');
+      const confirmDeleteClientBtn = document.getElementById('confirmDeleteClientBtn');
+
+      let activeEditingClientId = null;
+      let activeDeletingClientId = null;
+      let lastClientActionTrigger = null;
+
+      function syncBodyModalLock() {
+        const hasOpenModal = [editClientModal, deleteClientModal].some(
+          (modalEl) => modalEl && modalEl.classList.contains('is-open')
+        );
+        document.body.classList.toggle('is-modal-open', hasOpenModal);
+      }
+
+      function openEditClientModal(clientId, triggerEl = null) {
+        const client = clientsData.find((item) => item.id === clientId);
+        if (!client || !editClientModal) return;
+
+        activeEditingClientId = clientId;
+        lastClientActionTrigger = triggerEl;
+
+        if (editClientCompanyInput) editClientCompanyInput.value = client.company || '';
+        if (editClientContactInput) editClientContactInput.value = client.contact || '';
+        if (editClientEmailInput) editClientEmailInput.value = client.email || '';
+        if (editClientPhoneInput) editClientPhoneInput.value = client.phone || '';
+
+        editClientModal.classList.add('is-open');
+        editClientModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (editClientCompanyInput) {
+          editClientCompanyInput.focus();
+        }
+      }
+
+      function closeEditClientModal(restoreFocus = true) {
+        if (!editClientModal || !editClientModal.classList.contains('is-open')) return;
+        editClientModal.classList.remove('is-open');
+        editClientModal.setAttribute('aria-hidden', 'true');
+        activeEditingClientId = null;
+        syncBodyModalLock();
+
+        if (restoreFocus && lastClientActionTrigger && typeof lastClientActionTrigger.focus === 'function') {
+          lastClientActionTrigger.focus();
+        }
+        lastClientActionTrigger = null;
+      }
+
+      if (cancelEditClientBtn) {
+        cancelEditClientBtn.addEventListener('click', () => closeEditClientModal(true));
+      }
+
+      if (editClientModal) {
+        editClientModal.addEventListener('click', (event) => {
+          if (event.target === editClientModal) {
+            closeEditClientModal(true);
+          }
+        });
+      }
+
+      if (editClientForm) {
+        editClientForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          if (!editClientForm.checkValidity()) {
+            editClientForm.reportValidity();
+            return;
+          }
+
+          if (activeEditingClientId !== null) {
+            const client = clientsData.find((item) => item.id === activeEditingClientId);
+            if (client) {
+              client.company = editClientCompanyInput.value.trim();
+              client.contact = editClientContactInput.value.trim();
+              client.email = editClientEmailInput.value.trim();
+              client.phone = editClientPhoneInput.value.trim();
+            }
+          }
+
+          closeEditClientModal(false);
+          renderClientsTable();
+        });
+      }
+
+      function openDeleteClientModal(clientId, triggerEl = null) {
+        const client = clientsData.find((item) => item.id === clientId);
+        if (!client || !deleteClientModal) return;
+
+        activeDeletingClientId = clientId;
+        lastClientActionTrigger = triggerEl;
+
+        deleteClientModal.classList.add('is-open');
+        deleteClientModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalLock();
+
+        if (cancelDeleteClientBtn) {
+          cancelDeleteClientBtn.focus();
+        }
+      }
+
+      function closeDeleteClientModal(restoreFocus = true) {
+        if (!deleteClientModal || !deleteClientModal.classList.contains('is-open')) return;
+        deleteClientModal.classList.remove('is-open');
+        deleteClientModal.setAttribute('aria-hidden', 'true');
+        activeDeletingClientId = null;
+        syncBodyModalLock();
+
+        if (restoreFocus && lastClientActionTrigger && typeof lastClientActionTrigger.focus === 'function') {
+          lastClientActionTrigger.focus();
+        }
+        lastClientActionTrigger = null;
+      }
+
+      if (cancelDeleteClientBtn) {
+        cancelDeleteClientBtn.addEventListener('click', () => closeDeleteClientModal(true));
+      }
+
+      if (confirmDeleteClientBtn) {
+        confirmDeleteClientBtn.addEventListener('click', () => {
+          if (activeDeletingClientId !== null) {
+            const targetIdx = clientsData.findIndex((item) => item.id === activeDeletingClientId);
+            if (targetIdx !== -1) {
+              clientsData.splice(targetIdx, 1);
+            }
+          }
+
+          closeDeleteClientModal(false);
+          renderClientsTable();
+        });
+      }
+
+      if (deleteClientModal) {
+        deleteClientModal.addEventListener('click', (event) => {
+          if (event.target === deleteClientModal) {
+            closeDeleteClientModal(true);
+          }
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (editClientModal && editClientModal.classList.contains('is-open')) {
+            closeEditClientModal(true);
+            return;
+          }
+          if (deleteClientModal && deleteClientModal.classList.contains('is-open')) {
+            closeDeleteClientModal(true);
+          }
+        }
+      });
+
+      // Initial Render
+      renderClientsTable();
+    });
+  </script>
+</body>
+</html>
