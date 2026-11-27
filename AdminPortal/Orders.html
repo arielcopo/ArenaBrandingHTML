@@ -80,6 +80,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body.is-modal-open {
+      overflow: hidden;
+    }
+
     a {
       text-decoration: none;
       color: inherit;
@@ -846,6 +850,220 @@
     }
 
     /* ==========================================================================
+       4C. SHAREABLE LINK FULL-SCREEN MODAL
+       ========================================================================== */
+    .share-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      background-color: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .share-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .share-modal-card {
+      width: 100%;
+      max-width: 618px;
+      padding: 30px;
+      background-color: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.03), 0 20px 24px -4px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .share-modal-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 28px;
+      background-color: var(--color-divider-soft);
+      outline: 8px solid var(--color-footer-bg);
+      outline-offset: -4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .share-modal-title {
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .share-modal-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .share-link-field {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 46px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    .share-link-protocol {
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      border-right: 1px solid var(--color-input-border);
+      background-color: var(--color-white);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .share-link-value-wrap {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 0 12px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background-color: var(--color-white);
+    }
+
+    .share-link-input {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      outline: none;
+      text-overflow: ellipsis;
+    }
+
+    .share-copy-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-copy-btn:hover,
+    .share-copy-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .share-copy-btn.is-copied {
+      color: var(--color-trend-up-text);
+      stroke: var(--color-trend-up-stroke);
+    }
+
+    .share-modal-open-link-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-modal-open-link-btn:hover,
+    .share-modal-open-link-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .share-modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      stroke: var(--color-text-secondary);
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast), stroke var(--transition-fast);
+    }
+
+    .share-modal-close-btn:hover,
+    .share-modal-close-btn:focus-visible {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text-primary);
+      stroke: var(--color-text-primary);
+      outline: none;
+    }
+
+    .share-modal-feedback {
+      min-height: 18px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+    }
+
+
+    .share-modal-backdrop .ph-icon-15 {
+      display: inline-block;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+      -webkit-text-stroke: 0;
+    }
+
+    .share-modal-backdrop .ph-icon-15 path,
+    .share-modal-backdrop .ph-icon-15 circle,
+    .share-modal-backdrop .ph-icon-15 line,
+    .share-modal-backdrop .ph-icon-15 rect {
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ==========================================================================
        5. COMPONENT: PORTAL FOOTER
        ========================================================================== */
     .portal-footer {
@@ -1337,6 +1555,86 @@
 
 
   <!-- ========================================================================
+       START COMPONENT: SHAREABLE LINK FULL-SCREEN MODAL
+       ======================================================================== -->
+  <div
+    class="share-modal-backdrop"
+    id="shareLinkModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="shareLinkModalTitle"
+    aria-hidden="true"
+  >
+    <div class="share-modal-card" id="shareLinkModalCard">
+      <div class="share-modal-icon-badge" aria-hidden="true">
+        <svg class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M176 152L224 104L176 56" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M192 208H40V88" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M72 176C77.3227 155.385 89.3477 137.127 106.183 124.091C123.019 111.057 143.709 103.989 165 104H224" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h2 class="share-modal-title" id="shareLinkModalTitle">Here's the shareable link</h2>
+
+      <div class="share-modal-row">
+        <div class="share-link-field">
+          <span class="share-link-protocol" id="shareLinkProtocol">http://</span>
+          <div class="share-link-value-wrap">
+            <input
+              type="text"
+              id="shareLinkInput"
+              class="share-link-input"
+              value="www.arenabranding.com.au/134"
+              readonly
+              aria-label="Shareable quotation link"
+            />
+            <button
+              type="button"
+              class="share-copy-btn"
+              id="copyShareLinkBtn"
+              aria-label="Copy shareable link"
+            >
+              <svg class="ph-icon-15" width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="40" y="88" width="128" height="128" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <a
+          href="ShareableLink.html"
+          class="share-modal-open-link-btn"
+          id="openShareableLinkPageBtn"
+          aria-label="Open shareable link page"
+        >
+          <svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M72 184L184 72M96 72H184V160" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+
+        <button
+          type="button"
+          class="share-modal-close-btn"
+          id="closeShareLinkModalBtn"
+          aria-label="Close shareable link modal"
+        >
+          <svg class="ph-icon-15" width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="128" cy="128" r="96"/>
+            <path d="M160 96L96 160M96 96L160 160" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="share-modal-feedback" id="shareLinkFeedback" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+  <!-- ========================================================================
+       END COMPONENT: SHAREABLE LINK FULL-SCREEN MODAL
+       ======================================================================== -->
+
+
+  <!-- ========================================================================
        START COMPONENT: PORTAL FOOTER
        ======================================================================== -->
   <footer class="portal-footer" id="adminPortalFooter">
@@ -1572,7 +1870,7 @@
       const ordersNextPageBtn = document.getElementById('ordersNextPageBtn');
       const ordersPageIndicator = document.getElementById('ordersPageIndicator');
 
-      // Phosphor Icons (1.5px stroke styling): Eye for view, ShareNetwork for share link
+      // Phosphor Icons (1.5px stroke styling): Eye for view, ShareIcon for share link
       const eyeIconPh = '<i class="ph ph-eye ph-icon-15" style="font-size: 18px;" aria-hidden="true"></i>';
       const shareLinkIconPh = '<i class="ph ph-share ph-icon-15" style="font-size: 18px;" aria-hidden="true"></i>';
 
@@ -1704,8 +2002,8 @@
                 </td>
                 <td class="col-order-actions">
                   <div class="order-actions-group">
-                    <button
-                      type="button"
+                    <a
+                      href="ViewQuotation.html?id=${encodeURIComponent(order.id)}"
                       class="order-action-btn"
                       aria-label="View quotation for ${order.company} - ${order.eventName} (${order.quoteName})"
                       title="View quotation"
@@ -1713,7 +2011,7 @@
                       data-order-id="${order.id}"
                     >
                       ${eyeIconPh}
-                    </button>
+                    </a>
                     <button
                       type="button"
                       class="order-action-btn"
@@ -1796,6 +2094,157 @@
           renderOrdersTable();
         });
       }
+
+      /* ----------------------------------------------------------------------
+         Shareable Link Modal Logic (Transferred from Dashboard.html)
+         ---------------------------------------------------------------------- */
+      const shareLinkModal = document.getElementById('shareLinkModal');
+      const shareLinkProtocol = document.getElementById('shareLinkProtocol');
+      const shareLinkInput = document.getElementById('shareLinkInput');
+      const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+      const openShareableLinkPageBtn = document.getElementById('openShareableLinkPageBtn');
+      const closeShareLinkModalBtn = document.getElementById('closeShareLinkModalBtn');
+      const shareLinkFeedback = document.getElementById('shareLinkFeedback');
+
+      let lastFocusedShareTrigger = null;
+
+      function syncBodyModalState() {
+        const isOpen = Boolean(shareLinkModal && shareLinkModal.classList.contains('is-open'));
+        document.body.classList.toggle('is-modal-open', isOpen);
+      }
+
+      function getOrderShareUrlParts(orderRow) {
+        const defaultSlug = orderRow && orderRow.id ? String(133 + Number(orderRow.id)) : '134';
+        const basePath =
+          orderRow && orderRow.sharePath
+            ? orderRow.sharePath
+            : `www.arenabranding.com.au/${defaultSlug}`;
+        return {
+          protocol: 'http://',
+          path: basePath,
+          fullUrl: `http://${basePath}`
+        };
+      }
+
+      function openShareLinkModal(orderRow, triggerEl = null) {
+        if (!shareLinkModal) return;
+        lastFocusedShareTrigger = triggerEl;
+
+        toggleProfileMenu(true);
+        toggleMobileMenu(true);
+
+        const parts = getOrderShareUrlParts(orderRow);
+        if (shareLinkProtocol) shareLinkProtocol.textContent = parts.protocol;
+        if (shareLinkInput) {
+          shareLinkInput.value = parts.path;
+          shareLinkInput.dataset.fullUrl = parts.fullUrl;
+        }
+        if (openShareableLinkPageBtn) {
+          const targetHref =
+            orderRow && orderRow.id
+              ? `ShareableLink.html?id=${encodeURIComponent(orderRow.id)}`
+              : 'ShareableLink.html';
+          openShareableLinkPageBtn.setAttribute('href', targetHref);
+        }
+        if (shareLinkFeedback) shareLinkFeedback.textContent = '';
+        if (copyShareLinkBtn) copyShareLinkBtn.classList.remove('is-copied');
+
+        shareLinkModal.classList.add('is-open');
+        shareLinkModal.setAttribute('aria-hidden', 'false');
+        syncBodyModalState();
+
+        if (closeShareLinkModalBtn) {
+          closeShareLinkModalBtn.focus();
+        }
+      }
+
+      function closeShareLinkModal() {
+        if (!shareLinkModal || !shareLinkModal.classList.contains('is-open')) return;
+        shareLinkModal.classList.remove('is-open');
+        shareLinkModal.setAttribute('aria-hidden', 'true');
+        syncBodyModalState();
+
+        if (lastFocusedShareTrigger && typeof lastFocusedShareTrigger.focus === 'function') {
+          lastFocusedShareTrigger.focus();
+        }
+        lastFocusedShareTrigger = null;
+      }
+
+      async function copyCurrentShareLink() {
+        const textToCopy =
+          (shareLinkInput && (shareLinkInput.dataset.fullUrl || shareLinkInput.value)) ||
+          'http://www.arenabranding.com.au/134';
+        let copied = false;
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            copied = true;
+          } catch (_) {
+            copied = false;
+          }
+        }
+
+        if (!copied && shareLinkInput) {
+          const tempInput = document.createElement('input');
+          tempInput.value = textToCopy;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          try {
+            copied = document.execCommand('copy');
+          } catch (_) {
+            copied = false;
+          }
+          document.body.removeChild(tempInput);
+        }
+
+        if (shareLinkInput) {
+          shareLinkInput.select();
+        }
+
+        if (copyShareLinkBtn) {
+          copyShareLinkBtn.classList.toggle('is-copied', copied);
+        }
+
+        if (shareLinkFeedback) {
+          shareLinkFeedback.textContent = copied
+            ? `Copied ${textToCopy} to clipboard.`
+            : 'Select and copy the link manually.';
+        }
+      }
+
+      if (ordersTableBody) {
+        ordersTableBody.addEventListener('click', (event) => {
+          const shareBtn = event.target.closest('[data-order-action="share"]');
+          if (!shareBtn) return;
+
+          const orderId = Number(shareBtn.dataset.orderId);
+          const matchingOrder = ordersData.find((item) => item.id === orderId) || null;
+          openShareLinkModal(matchingOrder, shareBtn);
+        });
+      }
+
+      if (copyShareLinkBtn) {
+        copyShareLinkBtn.addEventListener('click', copyCurrentShareLink);
+      }
+
+      if (closeShareLinkModalBtn) {
+        closeShareLinkModalBtn.addEventListener('click', closeShareLinkModal);
+      }
+
+      if (shareLinkModal) {
+        shareLinkModal.addEventListener('click', (event) => {
+          if (event.target === shareLinkModal) {
+            closeShareLinkModal();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && shareLinkModal && shareLinkModal.classList.contains('is-open')) {
+          closeShareLinkModal();
+        }
+      });
 
       renderOrdersTable();
     });

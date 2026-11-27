@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arena Branding — Client Portal</title>
+  <title>Arena Branding — Admin Portal | View Quotation</title>
 
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,6 +11,12 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
+  />
+
+  <!-- Phosphor Icons Online Stylesheet -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
   />
 
   <style>
@@ -44,6 +50,8 @@
       --color-badge-approved-text: #15803D;
       --color-badge-rejected-bg: #FEF2F2;
       --color-badge-rejected-text: #B91C1C;
+      --color-btn-approve: #16A34A;
+      --color-btn-approve-hover: #15803D;
 
       --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
@@ -91,6 +99,18 @@
       cursor: pointer;
     }
 
+    /* Search Clear Icon in Black (#171717) */
+    input[type="search"]::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 14px;
+      width: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='none' stroke='%23171717' stroke-width='20' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M192 64L64 192M64 64L192 192'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+    }
+
     /* 1.5px Screen-Pixel Stroke UI Icons */
     .ph-icon-15 {
       display: inline-block;
@@ -105,14 +125,25 @@
     .ph-icon-15 path,
     .ph-icon-15 circle,
     .ph-icon-15 line,
-    .ph-icon-15 rect {
+    .ph-icon-15 rect,
+    .ph-icon-15 polyline,
+    .ph-icon-15 polygon {
       stroke: currentColor;
       stroke-width: 1.5px;
       vector-effect: non-scaling-stroke;
     }
 
+    /* Phosphor Webfont 1.5px Optical Stroke Alignment */
+    i.ph {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      -webkit-text-stroke: 0.25px transparent;
+    }
+
     /* ==========================================================================
-       2. COMPONENT: CLIENT PORTAL NAVIGATION (DO NOT MODIFY FOR PAGE CONTENT)
+       2. COMPONENT: ADMIN PORTAL NAVIGATION (FROM NavFooter.html)
        ========================================================================== */
     .portal-header {
       width: 100%;
@@ -179,20 +210,11 @@
       white-space: nowrap;
     }
 
-    /* Underline strictly targets .nav-link-text so (7) is never underlined */
     .nav-link-item:hover .nav-link-text,
     .nav-link-item.active .nav-link-text {
       text-decoration: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 10px;
-    }
-
-    .cart-count-badge {
-      color: var(--color-orange);
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 18px;
-      text-decoration: none;
     }
 
     /* Right Controls: Profile Avatar & Mobile Hamburger Trigger (Right Track) */
@@ -394,7 +416,6 @@
       color: var(--color-navy);
     }
 
-    /* Mobile Hover & Active: Clean 10px offset underline only, no background/shadow */
     .mobile-nav-link:hover .nav-link-text,
     .mobile-nav-link.active .nav-link-text {
       text-decoration: underline;
@@ -403,17 +424,14 @@
     }
 
     /* ==========================================================================
-       3. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
+       3. RESPONSIVE BREAKPOINTS FOR NAVIGATION (Desktop -> Tablet -> Mobile)
        ========================================================================== */
-
-    /* Small Desktop / Laptop (1025px – 1280px): Adjust side gutters smoothly */
     @media (max-width: 1280px) {
       .portal-nav-container {
         padding: 0 48px;
       }
     }
 
-    /* Tablet Breakpoint (769px – 1024px) */
     @media (max-width: 1024px) {
       .portal-nav-container {
         height: var(--nav-height-tablet);
@@ -436,7 +454,6 @@
       }
     }
 
-    /* Mobile Breakpoint (<= 768px): Show Burger Icon & Collapsible Menu */
     @media (max-width: 768px) {
       .portal-nav-container {
         display: flex;
@@ -451,12 +468,10 @@
         max-width: 148px;
       }
 
-      /* Hide inline desktop nav links */
       .nav-links-list {
         display: none;
       }
 
-      /* Show burger button */
       .mobile-menu-toggle {
         display: inline-flex;
       }
@@ -467,14 +482,14 @@
     }
 
     /* ==========================================================================
-       4. MAIN PAGE BODY: VIEW QUOTATION DETAILS
+       4. MAIN PAGE BODY: ADMIN VIEW QUOTATION DETAILS
        ========================================================================== */
     .portal-main {
       flex: 1;
       width: 100%;
       max-width: var(--nav-max-width);
       margin: 0 auto;
-      padding: 64px var(--nav-gutter-desktop) 96px;
+      padding: 64px var(--nav-gutter-desktop) 64px;
       display: flex;
       flex-direction: column;
       align-items: stretch;
@@ -540,13 +555,13 @@
 
     @media (max-width: 1280px) {
       .portal-main {
-        padding: 64px 48px 80px;
+        padding: 64px 48px 56px;
       }
     }
 
     @media (max-width: 1024px) {
       .portal-main {
-        padding: 64px 32px 64px;
+        padding: 64px 32px 48px;
       }
 
       .quote-meta-grid {
@@ -558,7 +573,8 @@
 
     @media (max-width: 768px) {
       .portal-main {
-        padding: 32px 20px 56px;
+        padding: 64px 20px 40px;
+        gap: 48px;
       }
 
       .quote-meta-grid {
@@ -567,9 +583,8 @@
       }
     }
 
-
     /* ==========================================================================
-       4B. MAIN PAGE BODY: YOUR ORDERS TABLE & QUOTATION TOTALS
+       4B. MAIN PAGE BODY: CLIENT ORDERS TABLE & QUOTATION TOTALS
        ========================================================================== */
     .quote-orders-section {
       width: 100%;
@@ -644,6 +659,17 @@
       font-size: 12px;
       font-weight: 500;
       line-height: 18px;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .quote-status-pill.is-approved {
+      background-color: var(--color-badge-approved-bg);
+      color: var(--color-badge-approved-text);
+    }
+
+    .quote-status-pill.is-rejected {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-badge-rejected-text);
     }
 
     .quote-share-bar {
@@ -712,7 +738,7 @@
       background-color: var(--color-badge-approved-bg);
     }
 
-    /* Responsive Table Scroll Container (matches Dashboard table responsiveness) */
+    /* Responsive Table Scroll Container */
     .quote-table-scroll {
       width: 100%;
       overflow-x: auto;
@@ -826,26 +852,8 @@
     }
 
     .quote-variant-text {
-      max-width: 145px;
+      max-width: 155px;
       white-space: normal;
-    }
-
-    .quote-delete-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-text-button);
-      transition: background-color var(--transition-fast), color var(--transition-fast);
-    }
-
-    .quote-delete-btn:hover,
-    .quote-delete-btn:focus-visible {
-      background-color: var(--color-badge-rejected-bg);
-      color: var(--color-badge-rejected-text);
-      outline: none;
     }
 
     .quote-table-empty {
@@ -888,8 +896,9 @@
 
     /* Grand Total AUD Callout */
     .quote-grand-total {
-      padding: 12px 32px;
+      padding: 12px 24px;
       border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       display: inline-flex;
       align-items: center;
       justify-content: flex-end;
@@ -898,11 +907,6 @@
       font-size: 22.54px;
       font-weight: 600;
       line-height: 32px;
-    }
-
-    .quote-grand-total-icon {
-      color: #343330;
-      flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
@@ -934,11 +938,233 @@
       .quote-grand-total {
         font-size: 20px;
         line-height: 28px;
+        padding: 12px 16px;
       }
     }
 
     /* ==========================================================================
-       5. COMPONENT: CLIENT PORTAL FOOTER
+       4C. ADMIN ACTION & NOTE STRIP (BELOW PRICING)
+       ========================================================================== */
+    .admin-decision-banner {
+      width: 100%;
+      background-color: var(--color-footer-bg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .admin-decision-container {
+      width: 100%;
+      max-width: var(--nav-max-width);
+      margin: 0 auto;
+      padding: 36px var(--nav-gutter-desktop);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .admin-note-content {
+      flex: 1;
+      max-width: 828px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .admin-note-heading {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .admin-note-text {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .admin-note-text strong.is-approve-label {
+      color: var(--color-trend-up-text);
+      font-weight: 700;
+    }
+
+    .admin-note-text strong.is-cancel-label {
+      color: var(--color-trend-down-text);
+      font-weight: 700;
+    }
+
+    .admin-client-email-row {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .admin-client-email-link {
+      color: var(--color-text-muted);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color var(--transition-fast);
+    }
+
+    .admin-client-email-link:hover,
+    .admin-client-email-link:focus-visible {
+      color: var(--color-navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+
+    .admin-decision-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn-admin-cancel {
+      height: 36px;
+      padding: 8px 14px;
+      background-color: var(--color-white);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-text-secondary);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-admin-cancel:hover,
+    .btn-admin-cancel:focus-visible {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-badge-rejected-text);
+      border-color: var(--color-badge-rejected-text);
+      outline: none;
+    }
+
+    .btn-admin-cancel.is-selected {
+      background-color: var(--color-badge-rejected-bg);
+      color: var(--color-badge-rejected-text);
+      border-color: var(--color-badge-rejected-text);
+    }
+
+    .btn-admin-approve {
+      height: 36px;
+      padding: 8px 14px;
+      background-color: var(--color-btn-approve);
+      color: var(--color-white);
+      border: 1px solid var(--color-btn-approve);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-admin-approve:hover,
+    .btn-admin-approve:focus-visible {
+      background-color: var(--color-btn-approve-hover);
+      border-color: var(--color-btn-approve-hover);
+      outline: none;
+    }
+
+    .admin-status-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 16px;
+      background-color: var(--color-text-primary);
+      color: var(--color-white);
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      z-index: 1200;
+    }
+
+    .admin-status-toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1280px) {
+      .admin-decision-container {
+        padding: 32px 48px;
+        gap: 32px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .admin-decision-container {
+        padding: 32px 32px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
+      .admin-decision-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-decision-container {
+        padding: 28px 20px;
+        gap: 20px;
+      }
+
+      .admin-decision-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .btn-admin-cancel,
+      .btn-admin-approve {
+        flex: 1;
+      }
+
+      .admin-status-toast {
+        left: 20px;
+        right: 20px;
+        bottom: 16px;
+      }
+    }
+
+    /* ==========================================================================
+       5. COMPONENT: PORTAL FOOTER (FROM NavFooter.html)
        ========================================================================== */
     .portal-footer {
       width: 100%;
@@ -956,7 +1182,6 @@
       gap: 64px;
     }
 
-    /* Top Row: Logo Left + 4 Link Columns Right */
     .footer-top-row {
       width: 100%;
       display: flex;
@@ -1024,7 +1249,6 @@
       text-underline-offset: 4px;
     }
 
-    /* Bottom Row: Divider + Tagline & Copyright */
     .footer-bottom-section {
       width: 100%;
       display: flex;
@@ -1075,7 +1299,6 @@
       white-space: nowrap;
     }
 
-    /* Footer Responsive Breakpoints (Matches Navigation Gutters) */
     @media (max-width: 1280px) {
       .portal-footer-container {
         padding: 56px 48px 40px;
@@ -1150,11 +1373,10 @@
 <body>
 
   <!-- ========================================================================
-       START COMPONENT: CLIENT PORTAL NAVIGATION
-       Locked component — add page body and footer below without altering this block.
+       START COMPONENT: ADMIN PORTAL NAVIGATION (FROM NavFooter.html)
        ======================================================================== -->
-  <header class="portal-header" id="clientPortalHeader">
-    <nav class="portal-nav-container" aria-label="Client Portal Primary Navigation">
+  <header class="portal-header" id="adminPortalHeader">
+    <nav class="portal-nav-container" aria-label="Admin Portal Primary Navigation">
 
       <!-- Arena Branding Logo -->
       <a href="Dashboard.html" class="brand-logo-link" aria-label="Arena Branding Home">
@@ -1178,14 +1400,18 @@
           </a>
         </li>
         <li>
-          <a href="Favorites.html" class="nav-link-item" data-nav-link>
-            <span class="nav-link-text">My Favorites</span>
+          <a href="Clients.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Clients</span>
           </a>
         </li>
         <li>
-          <a href="Cart.html" class="nav-link-item" data-nav-link>
-            <span class="nav-link-text">Cart Items</span>
-            <span class="cart-count-badge">(7)</span>
+          <a href="Orders.html" class="nav-link-item active" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="nav-link-item" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
           </a>
         </li>
       </ul>
@@ -1198,14 +1424,14 @@
             type="button"
             class="profile-avatar-btn"
             id="profileMenuTrigger"
-            aria-label="Open user profile menu"
+            aria-label="Open admin profile menu"
             aria-expanded="false"
             aria-controls="profileDropdownPopover"
           >
             <!-- Solid #A6A6A6 fallback circle until user uploads an image -->
             <img
               src=""
-              alt="Jemma Emma"
+              alt="Admin Profile"
               class="profile-avatar-img"
               style="display: none;"
               onerror="this.style.display='none'"
@@ -1217,20 +1443,20 @@
             class="profile-dropdown-popover"
             id="profileDropdownPopover"
             role="menu"
-            aria-label="User profile options"
+            aria-label="Admin profile options"
           >
             <div class="profile-dropdown-header">
               <div class="profile-dropdown-avatar-wrap">
                 <img
                   src=""
-                  alt="Jemma Emma"
+                  alt="Admin Profile"
                   class="profile-dropdown-avatar-img"
                   style="display: none;"
                   onerror="this.style.display='none'"
                 />
                 <span class="profile-online-dot" aria-hidden="true"></span>
               </div>
-              <span class="profile-dropdown-name">Jemma Emma</span>
+              <span class="profile-dropdown-name">Donna Baker</span>
             </div>
 
             <div class="profile-dropdown-divider-soft"></div>
@@ -1240,14 +1466,14 @@
                 View profile
               </a>
               <div class="profile-dropdown-divider"></div>
-              <a href="login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
+              <a href="Login.html" class="profile-dropdown-item" role="menuitem" data-profile-action="logout">
                 Log out
               </a>
             </div>
           </div>
         </div>
 
-        <!-- Mobile Burger Menu Button (1.5px Stroke Icon) -->
+        <!-- Mobile Burger Menu Button -->
         <button
           type="button"
           class="mobile-menu-toggle"
@@ -1256,9 +1482,7 @@
           aria-expanded="false"
           aria-controls="mobileNavDrawer"
         >
-          <svg id="mobileMenuIcon" class="ph-icon-15" width="24" height="24" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <i class="ph ph-list" id="mobileMenuIcon" aria-hidden="true"></i>
         </button>
       </div>
     </nav>
@@ -1267,7 +1491,7 @@
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
       <ul class="mobile-nav-list">
         <li>
-          <a href="Dashboard.html" class="mobile-nav-link active" data-nav-link>
+          <a href="Dashboard.html" class="mobile-nav-link" data-nav-link>
             <span class="nav-link-text">Dashboard</span>
           </a>
         </li>
@@ -1277,21 +1501,25 @@
           </a>
         </li>
         <li>
-          <a href="Favorites.html" class="mobile-nav-link" data-nav-link>
-            <span class="nav-link-text">My Favorites</span>
+          <a href="Clients.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Clients</span>
           </a>
         </li>
         <li>
-          <a href="Cart.html" class="mobile-nav-link" data-nav-link>
-            <span class="nav-link-text">Cart Items</span>
-            <span class="cart-count-badge">(7)</span>
+          <a href="Orders.html" class="mobile-nav-link active" data-nav-link>
+            <span class="nav-link-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="RequestToJoin.html" class="mobile-nav-link" data-nav-link>
+            <span class="nav-link-text">Request to Join</span>
           </a>
         </li>
       </ul>
     </div>
   </header>
   <!-- ========================================================================
-       END COMPONENT: CLIENT PORTAL NAVIGATION
+       END COMPONENT: ADMIN PORTAL NAVIGATION
        ======================================================================== -->
 
 
@@ -1300,10 +1528,8 @@
        ======================================================================== -->
   <main class="portal-main" id="mainContent">
     <section class="quote-overview-section" aria-label="Quotation Summary Details">
-      <a href="Dashboard.html" class="quote-back-link" aria-label="Back to Dashboard">
-        <svg class="ph-icon-15" width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <path d="M216 128H40M112 56L40 128L112 200" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <a href="Orders.html" class="quote-back-link" aria-label="Back to Orders">
+        <i class="ph ph-arrow-left" style="font-size: 16px;" aria-hidden="true"></i>
         <span>Back</span>
       </a>
 
@@ -1340,16 +1566,16 @@
       </dl>
     </section>
 
-    <!-- Section 2: Your Orders Table & Totals -->
-    <section class="quote-orders-section" aria-label="Your Orders">
+    <!-- Section 2: Client Orders Table & Totals -->
+    <section class="quote-orders-section" aria-label="Client Orders">
       <div class="quote-orders-wrapper">
         <div class="quote-orders-card">
           <!-- Card Header -->
           <div class="quote-orders-header">
             <div class="quote-orders-title-group">
-              <h2 class="quote-orders-title">Your Orders</h2>
+              <h2 class="quote-orders-title">Client Orders</h2>
               <span class="quote-count-pill" id="quoteProductCountBadge">7 products</span>
-              <span class="quote-status-pill">Pending</span>
+              <span class="quote-status-pill" id="quoteStatusBadge" aria-live="polite">Pending</span>
             </div>
 
             <div class="quote-share-bar">
@@ -1363,10 +1589,7 @@
                   aria-label="Copy share link to clipboard"
                 >
                   <span id="copyQuoteLinkLabel">Copy Link</span>
-                  <svg class="ph-icon-15" width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M168 168H216V40H88V88" stroke-linecap="round" stroke-linejoin="round"/>
-                    <rect x="40" y="88" width="128" height="128" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                  <i class="ph ph-copy" style="font-size: 12px;" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -1408,20 +1631,69 @@
 
       <!-- Grand Total AUD -->
       <div class="quote-grand-total" aria-label="Grand Total AUD">
-        
         <span id="quoteGrandTotalValue">$18,337.50 AUD</span>
       </div>
     </section>
   </main>
+
+  <!-- ========================================================================
+       START COMPONENT: ADMIN NOTE & APPROVAL ACTION BAR
+       ======================================================================== -->
+  <section class="admin-decision-banner" aria-label="Admin Order Review and Status Actions">
+    <div class="admin-decision-container">
+      <div class="admin-note-content">
+        <h3 class="admin-note-heading">NOTE</h3>
+        <p class="admin-note-text">
+          You need to contact the client via email to get their approval on the products, total amount, delivery fee, artwork fee, proofs, print-ready artwork, and more. Once the client approves it in Gmail, come back here to update the status to
+          <strong class="is-approve-label">Approved</strong>
+          so the client can see their order status once everything is finalized and wait for their products to be delivered. If the client rejects or cancels in Gmail, just click
+          <strong class="is-cancel-label">Cancel</strong>.
+        </p>
+        <div class="admin-client-email-row">
+          <span>Client Email:</span>
+          <a
+            href="mailto:jemma@ironman.com.au?subject=Arena%20Branding%20Quotation%20%E2%80%94%20Auckland%20Marathon%202026%20(AM26)"
+            class="admin-client-email-link"
+            aria-label="Email client Jemma Emma at jemma@ironman.com.au"
+          >
+            <span>jemma@ironman.com.au</span>
+            <i class="ph ph-envelope-simple" style="font-size: 15px;" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="admin-decision-actions">
+        <button
+          type="button"
+          class="btn-admin-cancel"
+          id="adminCancelQuoteBtn"
+          aria-label="Cancel quotation and mark status as Rejected"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn-admin-approve"
+          id="adminApproveQuoteBtn"
+          aria-label="Approve quotation and update client portal status to Approved"
+        >
+          Approved
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Status Feedback Toast -->
+  <div class="admin-status-toast" id="adminStatusToast" role="status" aria-live="polite"></div>
   <!-- ========================================================================
        END SLOT: MAIN PAGE BODY CONTENT
        ======================================================================== -->
 
 
   <!-- ========================================================================
-       START COMPONENT: CLIENT PORTAL FOOTER
+       START COMPONENT: PORTAL FOOTER (FROM NavFooter.html)
        ======================================================================== -->
-  <footer class="portal-footer" id="clientPortalFooter">
+  <footer class="portal-footer" id="adminPortalFooter">
     <div class="portal-footer-container">
 
       <!-- Top Row: Brand Logo & Navigation Columns -->
@@ -1496,12 +1768,12 @@
     </div>
   </footer>
   <!-- ========================================================================
-       END COMPONENT: CLIENT PORTAL FOOTER
+       END COMPONENT: PORTAL FOOTER
        ======================================================================== -->
 
 
   <!-- ========================================================================
-       COMPONENT SCRIPTS: NAVIGATION & PROFILE POPOVER
+       COMPONENT SCRIPTS: NAVIGATION, PROFILE POPOVER, TABLE & ADMIN STATUS
        ======================================================================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -1514,9 +1786,6 @@
       const profileMenuTrigger = document.getElementById('profileMenuTrigger');
       const profileDropdownPopover = document.getElementById('profileDropdownPopover');
       const profileActionItems = document.querySelectorAll('[data-profile-action]');
-
-      const burgerPaths = '<path d="M40 128H216M40 64H216M40 192H216" stroke-linecap="round" stroke-linejoin="round"/>';
-      const closePaths = '<path d="M192 64L64 192M64 64L192 192" stroke-linecap="round" stroke-linejoin="round"/>';
 
       // Toggle Profile Dropdown Popover
       function toggleProfileMenu(forceClose = false) {
@@ -1532,14 +1801,14 @@
         }
       }
 
-      // Toggle Mobile Drawer & Swap 1.5px Stroke Burger / Close Icon
+      // Toggle Mobile Drawer & Swap Phosphor Burger / Close Icon
       function toggleMobileMenu(forceClose = false) {
         const isCurrentlyOpen = mobileNavDrawer.classList.contains('is-open');
         const shouldOpen = forceClose ? false : !isCurrentlyOpen;
 
         mobileNavDrawer.classList.toggle('is-open', shouldOpen);
         mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
-        mobileMenuIcon.innerHTML = shouldOpen ? closePaths : burgerPaths;
+        mobileMenuIcon.className = shouldOpen ? 'ph ph-x' : 'ph ph-list';
 
         if (shouldOpen) {
           toggleProfileMenu(true);
@@ -1570,7 +1839,6 @@
             item.classList.toggle('active', item.getAttribute('href') === targetHref);
           });
 
-          // Close mobile menu after selecting an item
           toggleMobileMenu(true);
         });
       });
@@ -1597,9 +1865,9 @@
       });
 
       /* ----------------------------------------------------------------------
-         Quotation Items Data Array, Delete Row & Copy Share Link Functionality
+         Quotation Items Data Array & Table Rendering
          ---------------------------------------------------------------------- */
-      let quoteItemsData = [
+      const quoteItemsData = [
         {
           id: 1,
           name: 'Crowd Control Barrier Covers',
@@ -1685,8 +1953,6 @@
       const quoteSummaryTax = document.getElementById('quoteSummaryTax');
       const quoteGrandTotalValue = document.getElementById('quoteGrandTotalValue');
 
-      const trashIconSvg = '<svg class="ph-icon-15" width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M216 56H40M88 24H168M200 56V208C200 210.122 199.157 212.157 197.657 213.657C196.157 215.157 194.122 216 192 216H64C61.8783 216 59.8434 215.157 58.3431 213.657C56.8429 212.157 56 210.122 56 208V56" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
       function formatCurrency(amount, forceTwoDecimals = true) {
         const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
         if (!forceTwoDecimals && Number.isInteger(rounded)) {
@@ -1752,16 +2018,6 @@
           .join('');
       }
 
-      if (quoteItemsTableBody) {
-        quoteItemsTableBody.addEventListener('click', (event) => {
-          const deleteBtn = event.target.closest('[data-delete-item-id]');
-          if (!deleteBtn) return;
-          const itemId = Number(deleteBtn.dataset.deleteItemId);
-          quoteItemsData = quoteItemsData.filter((item) => item.id !== itemId);
-          renderQuoteItems();
-        });
-      }
-
       // Copy Share Link Button
       const copyQuoteLinkBtn = document.getElementById('copyQuoteLinkBtn');
       const copyQuoteLinkLabel = document.getElementById('copyQuoteLinkLabel');
@@ -1783,7 +2039,7 @@
               document.body.removeChild(tempInput);
             }
           } catch (_) {
-            // Fallback visual feedback even if clipboard permissions are restricted
+            // Fallback visual feedback
           }
 
           copyQuoteLinkBtn.classList.add('is-copied');
@@ -1794,6 +2050,54 @@
             copyQuoteLinkBtn.classList.remove('is-copied');
             if (copyQuoteLinkLabel) copyQuoteLinkLabel.textContent = 'Copy Link';
           }, 2000);
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         Admin Approve & Cancel Actions -> Updates Quotation Status Badge
+         ---------------------------------------------------------------------- */
+      const quoteStatusBadge = document.getElementById('quoteStatusBadge');
+      const adminCancelQuoteBtn = document.getElementById('adminCancelQuoteBtn');
+      const adminApproveQuoteBtn = document.getElementById('adminApproveQuoteBtn');
+      const adminStatusToast = document.getElementById('adminStatusToast');
+      let toastTimeout = null;
+
+      function showAdminToast(message) {
+        if (!adminStatusToast) return;
+        adminStatusToast.textContent = message;
+        adminStatusToast.classList.add('is-visible');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          adminStatusToast.classList.remove('is-visible');
+        }, 3000);
+      }
+
+      function updateQuotationStatus(newStatus) {
+        if (!quoteStatusBadge) return;
+        quoteStatusBadge.classList.remove('is-approved', 'is-rejected');
+        if (adminCancelQuoteBtn) adminCancelQuoteBtn.classList.remove('is-selected');
+
+        if (newStatus === 'Approved') {
+          quoteStatusBadge.textContent = 'Approved';
+          quoteStatusBadge.classList.add('is-approved');
+          showAdminToast('Quotation status updated to Approved in Client Portal.');
+        } else if (newStatus === 'Rejected') {
+          quoteStatusBadge.textContent = 'Rejected';
+          quoteStatusBadge.classList.add('is-rejected');
+          if (adminCancelQuoteBtn) adminCancelQuoteBtn.classList.add('is-selected');
+          showAdminToast('Quotation canceled — client portal status updated to Rejected.');
+        }
+      }
+
+      if (adminApproveQuoteBtn) {
+        adminApproveQuoteBtn.addEventListener('click', () => {
+          updateQuotationStatus('Approved');
+        });
+      }
+
+      if (adminCancelQuoteBtn) {
+        adminCancelQuoteBtn.addEventListener('click', () => {
+          updateQuotationStatus('Rejected');
         });
       }
 
